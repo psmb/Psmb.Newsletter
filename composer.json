@@ -1,0 +1,18 @@
+{
+    "description": "Generate Newsletters based on Fusion",
+    "type": "neos-package",
+    "name": "psmb/newsletter",
+    "require": {
+        "typo3/neos": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Psmb\\Newsletter": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Psmb.Newsletter"
+        }
+    }
+}
