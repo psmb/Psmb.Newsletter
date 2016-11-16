@@ -1,1 +1,9 @@
+prototype(Psmb.Newsletter:SubscriptionForm) < prototype(TYPO3.TypoScript:Template) {
+	templatePath = 'resource://Psmb.Newsletter/Private/Templates/SubscriptionForm.html'
+}
+
+
+
 newsletter = ${'Hello, ' + user.name}
+
+root = Psmb.Newsletter:SubscriptionForm

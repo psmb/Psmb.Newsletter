@@ -21,6 +21,7 @@ class Subscriber {
 
 	/**
 	 * @var string
+	 * @Flow\Identity
 	 * @Flow\Validate(type="EmailAddress")
 	 * @Flow\Validate(type="StringLength", options={"minimum"=1, "maximum"=80})
 	 * @ORM\Column(length=80)
@@ -28,8 +29,7 @@ class Subscriber {
 	protected $email;
 
 	/**
-	 * @var string
-	 * @ORM\Column
+	 * @var array
 	 */
 	protected $subscriptions;
 
@@ -64,17 +64,18 @@ class Subscriber {
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
 	public function getSubscriptions() {
 		return $this->subscriptions;
 	}
 
 	/**
-	 * @param string $subscriptions
+	 * @param array $subscriptions
 	 * @return void
 	 */
 	public function setSubscriptions($subscriptions) {
 		$this->subscriptions = $subscriptions;
 	}
+
 }

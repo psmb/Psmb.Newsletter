@@ -1,0 +1,11 @@
+privilegeTargets:
+  TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+    'Psmb.Newsletter':
+      matcher: 'method(Psmb\Newsletter\Controller\(.*)Controller->(.*)Action())'
+
+roles:
+  'TYPO3.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: 'Psmb.Newsletter'
+        permission: GRANT

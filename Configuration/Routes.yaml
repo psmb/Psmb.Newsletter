@@ -1,0 +1,23 @@
+#                                                                        #
+# Routes configuration for the Newsletter package                        #
+#                                                                        #
+#
+# In order to activate those routes, add the following snippet to the main
+# Routes.yaml file of your distribution:
+#
+#-
+#  name: 'Subscription'
+#  uriPattern: '<NewsletterSubroutes>'
+#  defaults:
+#    '@package': 'Psmb.Newsletter'
+#    '@format':  'html'
+#  subRoutes:
+#    'NewsletterSubroutes':
+#      package: 'Psmb.Newsletter'
+
+-
+  name: 'Subscription actions'
+  uriPattern:    'subscription/{@action}'
+  defaults:
+    '@package': 'Psmb.Newsletter'
+    '@controller': 'Subscription'
