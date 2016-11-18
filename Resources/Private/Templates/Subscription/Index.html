@@ -1,0 +1,14 @@
+<f:form
+        method="post"
+        action="register"
+        controller="Subscription"
+        package="Psmb.Newsletter"
+        objectName="newSubscriber"
+>
+    <div><f:form.textfield property="name" placeholder="Enter your name" /></div>
+    <div><f:form.textfield property="email" placeholder="Enter your email" /></div>
+    <f:for each="{subscriptions}" as="subscription" key="identifier">
+        <div><label><f:form.checkbox multiple="true" property="subscriptions" value="{identifier}" /> {subscription.label}</label></div>
+    </f:for>
+    <div><f:form.submit class="neos-button" value="Subscribe!"/></div>
+</f:form>

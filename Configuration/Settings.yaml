@@ -3,3 +3,23 @@ TYPO3:
     typoScript:
       autoInclude:
         'Psmb.Newsletter': TRUE
+Psmb:
+  Newsletter:
+    globalSettings:
+      senderAddress: 'robot@server.com'
+      senderName: 'Your robot'
+    subscriptions:
+      -
+        identifier: 'weekly'
+        renderer: 'Psmb.Newsletter:MailRenderer'
+        label: 'Hourly'
+        interval: 1H
+        senderName: 'Dmitri Pisarev'
+      -
+        identifier: 'digestWeekly'
+        label: 'Weekly Digest'
+        interval: 1W
+      -
+        identifier: 'crafted'
+        label: 'Handcrafted digest'
+        interval: 1H
