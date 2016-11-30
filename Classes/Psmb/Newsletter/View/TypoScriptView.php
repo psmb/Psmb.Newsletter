@@ -2,7 +2,6 @@
 namespace Psmb\Newsletter\View;
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Http\Response;
 use TYPO3\Flow\I18n\Locale;
 use TYPO3\Flow\I18n\Service;
 use TYPO3\Flow\Mvc\View\AbstractView;

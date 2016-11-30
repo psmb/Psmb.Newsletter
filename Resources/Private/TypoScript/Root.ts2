@@ -21,22 +21,25 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
 
 
 prototype(Psmb.Newsletter:MailRenderer) {
+	@context.collection = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('isYandex', true).sortDesc('date').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP"))}
+	@if.notEmpty = ${collection.count() > 0}
 	subject = 'hello world'
 	body = TYPO3.TypoScript:Array {
-        title = '<h2>New articles this week:</h2>'
-        latestNews = TYPO3.TypoScript:Collection {
-            @process.tmpl = ${'<ul>' + value + '</ul>'}
-            collection = ${Search.query(site).nodeType('Sfi.Site:News').execute()}
-            itemName = 'node'
-            itemRenderer = TYPO3.TypoScript:Tag {
-                @process.tmpl = ${'<li>' + value + '</li>'}
-                tagName = 'a'
-                content = ${node.properties.title}
-                attributes.href = NodeUri {
-                    node = ${node}
-                }
-            }
-        }
+		title = '<h2>New articles this week:</h2>'
+		latestNews = TYPO3.TypoScript:Collection {
+			@process.tmpl = ${'<ul>' + value + '</ul>'}
+			itemName = 'node'
+			collection = ${collection.execute()}
+			itemRenderer = TYPO3.TypoScript:Tag {
+				@process.tmpl = ${'<li>' + value + '</li>'}
+				tagName = 'a'
+				content = ${node.properties.title}
+				attributes.href = NodeUri {
+					absolute = ${true}
+					node = ${node}
+				}
+			}
+		}
 	}
 }
 

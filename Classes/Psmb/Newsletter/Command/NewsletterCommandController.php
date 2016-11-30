@@ -6,6 +6,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 use TYPO3\Flow\Http\Request;
 use TYPO3\Flow\Http\Response;
+use TYPO3\Flow\Http\Uri;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Flow\Mvc\Controller\Arguments;
@@ -41,6 +42,12 @@ class NewsletterCommandController extends CommandController
     protected $globalSettings;
 
     /**
+     * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
+     * @var string
+     */
+    protected $baseUri;
+
+    /**
      * @Flow\InjectConfiguration(path="subscriptions")
      * @var string
      */
@@ -64,11 +71,16 @@ class NewsletterCommandController extends CommandController
         $this->contextFactory = $contextFactory;
         $this->subscriberRepository = $subscriberRepository;
         $this->siteNode = $this->getSiteNode();
-
-        $controllerContext = $this->createControllerContext();
-        $view->setControllerContext($controllerContext);
-        $view->setTypoScriptPath('newsletter');
         $this->view = $view;
+    }
+
+    /**
+     * We can't do this in constructor as we need configuration to be injected
+     */
+    public function initializeObject() {
+        $controllerContext = $this->createControllerContext();
+        $this->view->setControllerContext($controllerContext);
+        $this->view->setTypoScriptPath('newsletter');
     }
 
     /**
@@ -165,6 +177,8 @@ class NewsletterCommandController extends CommandController
     {
         $this->view->assign('value', [
             'site' => $this->siteNode,
+            'documentNode' => $this->siteNode,
+            'node' => $this->siteNode,
             'subscriber' => $subscriber,
             'subscription' => $subscription,
             'globalSettings' => $this->globalSettings
@@ -180,6 +194,10 @@ class NewsletterCommandController extends CommandController
     protected function createControllerContext()
     {
         $httpRequest = Request::createFromEnvironment();
+        if ($this->baseUri) {
+            $baseUri = new Uri($this->baseUri);
+            $httpRequest->setBaseUri($baseUri);
+        }
         $request = new ActionRequest($httpRequest);
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);

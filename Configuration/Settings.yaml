@@ -13,7 +13,7 @@ Psmb:
         identifier: 'weekly'
         renderer: 'Psmb.Newsletter:MailRenderer'
         label: 'Hourly'
-        interval: 1H
+        interval: P7D
         senderName: 'Dmitri Pisarev'
       -
         identifier: 'digestWeekly'
