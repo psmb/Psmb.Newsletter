@@ -1,6 +1,7 @@
 <?php
 namespace Psmb\Newsletter\Command;
 
+use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
@@ -99,8 +100,7 @@ class NewsletterCommandController extends CommandController
         $letters = array_reduce($nestedLetters, function ($acc, $item) {
             return array_merge($acc, $item);
         }, []);
-        \TYPO3\Flow\var_dump($letters);
-        //array_map([$this, 'sendLetter'], $letters);
+        array_map([$this, 'sendLetter'], $letters);
     }
 
     /**
@@ -109,16 +109,16 @@ class NewsletterCommandController extends CommandController
      */
     protected function sendLetter($letter)
     {
-        $subject = $letter['subject'];
-        $body = $letter['body'];
-        $recipientAddress = $letter['recipientAddress'];
-        $recipientName = $letter['recipientName'];
-        $senderAddress = $letter['senderAddress'];
-        $senderName = $letter['senderName'];
-        $replyToAddress = $letter['replyToAddress'];
-        $carbonCopyAddress = $letter['carbonCopyAddress'];
-        $blindCarbonCopyAddress = $letter['blindCarbonCopyAddress'];
-        $format = $letter['format'];
+        $subject = isset($letter['subject']) ? $letter['subject'] : null;
+        $body = isset($letter['body']) ? $letter['body'] : null;
+        $recipientAddress = isset($letter['recipientAddress']) ? $letter['recipientAddress'] : null;
+        $recipientName = isset($letter['recipientName']) ? $letter['recipientName'] : null;
+        $senderAddress = isset($letter['senderAddress']) ? $letter['senderAddress'] : null;
+        $senderName = isset($letter['senderName']) ? $letter['senderName'] : null;
+        $replyToAddress = isset($letter['replyToAddress']) ? $letter['replyToAddress'] : null;
+        $carbonCopyAddress = isset($letter['carbonCopyAddress']) ? $letter['carbonCopyAddress'] : null;
+        $blindCarbonCopyAddress = isset($letter['blindCarbonCopyAddress']) ? $letter['blindCarbonCopyAddress'] : null;
+        $format = isset($letter['format']) ? $letter['format'] : null;
 
         if (!$subject) {
             throw new \Exception('"subject" must be set.', 1327060321);
@@ -169,11 +169,11 @@ class NewsletterCommandController extends CommandController
     /**
      * Render a Fusion view to generate a letter array for the give subscriber and subscription
      *
-     * @param $subscriber
-     * @param $subscription
+     * @param Subscriber $subscriber
+     * @param array $subscription
      * @return array
      */
-    protected function generateLetter($subscriber, $subscription)
+    protected function generateLetter(Subscriber $subscriber, $subscription)
     {
         $this->view->assign('value', [
             'site' => $this->siteNode,
@@ -193,6 +193,7 @@ class NewsletterCommandController extends CommandController
      */
     protected function createControllerContext()
     {
+        $_SERVER['FLOW_REWRITEURLS'] = 1;
         $httpRequest = Request::createFromEnvironment();
         if ($this->baseUri) {
             $baseUri = new Uri($this->baseUri);

@@ -21,3 +21,4 @@
   defaults:
     '@package': 'Psmb.Newsletter'
     '@controller': 'Subscription'
+  appendExceedingArguments: TRUE
