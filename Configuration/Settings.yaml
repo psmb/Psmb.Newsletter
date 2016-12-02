@@ -10,11 +10,10 @@ Psmb:
       senderName: 'Your robot'
     subscriptions:
       -
-        identifier: 'weekly'
+        identifier: 'hourly'
         renderer: 'Psmb.Newsletter:MailRenderer'
         label: 'Hourly'
         interval: P7D
-        senderName: 'Dmitri Pisarev'
       -
         identifier: 'digestWeekly'
         label: 'Weekly Digest'
