@@ -11,22 +11,23 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Subscriber {
 
-	/**
+    /**
+     * @var string
+     * @ORM\Id
+     * @ORM\Column(length=80)
+     * @Flow\Identity
+     * @Flow\Validate(type="EmailAddress")
+     * @Flow\Validate(type="StringLength", options={"minimum"=1, "maximum"=80})
+     */
+    protected $email;
+
+    /**
 	 * @var string
 	 * @Flow\Validate(type="Text")
 	 * @Flow\Validate(type="StringLength", options={"minimum"=1, "maximum"=80})
 	 * @ORM\Column(length=80)
 	 */
 	protected $name;
-
-	/**
-	 * @var string
-	 * @Flow\Identity
-	 * @Flow\Validate(type="EmailAddress")
-	 * @Flow\Validate(type="StringLength", options={"minimum"=1, "maximum"=80})
-	 * @ORM\Column(length=80)
-	 */
-	protected $email;
 
 	/**
 	 * @var array
