@@ -13,7 +13,6 @@ class Subscriber {
 
     /**
      * @var string
-     * @ORM\Id
      * @ORM\Column(length=80)
      * @Flow\Identity
      * @Flow\Validate(type="EmailAddress")
@@ -33,6 +32,13 @@ class Subscriber {
 	 * @var array
 	 */
 	protected $subscriptions;
+
+	/**
+	 * @return string
+	 */
+	public function getPersistenceObjectIdentifier() {
+		return $this->Persistence_Object_Identifier;
+	}
 
 	/**
 	 * @return string

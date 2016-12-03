@@ -50,8 +50,7 @@ class SubscriptionController extends ActionController
     public function registerAction(Subscriber $newSubscriber)
     {
         $this->subscriberRepository->add($newSubscriber);
-        $hash = md5($newSubscriber->getEmail() . 'salt');
-        $this->redirect('edit', null, null, ['subscriber' => $newSubscriber, 'hash' => $hash]);
+        $this->redirect('edit', null, null, ['subscriber' => $newSubscriber]);
         // $this->view->assign('value', array('success' => true));
     }
 
@@ -59,17 +58,12 @@ class SubscriptionController extends ActionController
      * Render an edit form
      *
      * @param Subscriber $subscriber
-     * @param string $hash
      * @throws \Exception
      * @return void
      */
-    public function editAction(Subscriber $subscriber, $hash)
+    public function editAction(Subscriber $subscriber)
     {
-        if (md5($subscriber->getEmail() . 'salt') !== $hash) {
-            throw new \Exception('Authentication token invalid');
-        }
         $this->view->assign('subscriber', $subscriber);
-        $this->view->assign('hash', $hash);
         $this->view->assign('subscriptions', $this->subscriptions);
     }
 
@@ -78,16 +72,12 @@ class SubscriptionController extends ActionController
      *
      * @param Subscriber $subscriber
      * @Flow\Validate(argumentName="$subscriber", type="UniqueEntity")
-     * @param string $hash
      * @throws \Exception
      * @return void
      */
-    public function updateAction(Subscriber $subscriber, $hash)
+    public function updateAction(Subscriber $subscriber)
     {
-        if (md5($subscriber->getEmail() . 'salt') !== $hash) {
-            throw new \Exception('Authentication token invalid');
-        }
         $this->subscriberRepository->update($subscriber);
-        $this->redirect('edit', null, null, ['subscriber' => $subscriber, 'hash' => $hash]);
+        $this->redirect('edit', null, null, ['subscriber' => $subscriber]);
     }
 }

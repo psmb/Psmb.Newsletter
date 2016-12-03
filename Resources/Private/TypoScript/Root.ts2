@@ -39,7 +39,6 @@ prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(TYPO3.TypoScript:UriBuild
 	absolute = ${true}
 	arguments {
 		subscriber = ${subscriber}
-		hash = ${String.md5(subscriber.email + 'salt')}
 	}
 }
 
