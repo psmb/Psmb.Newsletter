@@ -34,22 +34,16 @@ class SubscriptionController extends ActionController
     protected $subscriberRepository;
 
     /**
-     * @Flow\Inject
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
-
-    /**
-     * @Flow\Inject
-     * @var \TYPO3\Flow\Mvc\Routing\UriBuilder
-     */
-    protected $uriBuilder;
-
-    /**
     * @Flow\InjectConfiguration(path="subscriptions")
     * @var string
     */
     protected $subscriptions;
+
+    /**
+     * @Flow\InjectConfiguration(path="globalSettings")
+     * @var string
+     */
+    protected $globalSettings;
 
     /**
      * Render a form
@@ -77,6 +71,7 @@ class SubscriptionController extends ActionController
             $newSubscriber
         );
         $this->sendActivationMail($email, $hash);
+        $this->addFlashMessage('Please confirm your subscription');
         $this->redirect('index');
     }
 
@@ -92,6 +87,9 @@ class SubscriptionController extends ActionController
             $this->tokenCache->remove($hash);
             $this->subscriberRepository->add($newSubscriber);
             $this->persistenceManager->persistAll();
+            $this->addFlashMessage('Subscirption has been confirmed');
+        } else {
+            $this->addFlashMessage('No token provided', 'Something is wrong', \TYPO3\Flow\Error\Message::SEVERITY_ERROR);
         }
         $this->redirect('index');
     }
@@ -120,6 +118,7 @@ class SubscriptionController extends ActionController
     public function updateAction(Subscriber $subscriber)
     {
         $this->subscriberRepository->update($subscriber);
+        $this->addFlashMessage('Subscription updated');
         $this->redirect('edit', null, null, ['subscriber' => $subscriber]);
     }
 
@@ -141,7 +140,7 @@ class SubscriptionController extends ActionController
                 'Psmb.Newsletter'
             );
         $mail = new Message();
-        $mail->setFrom(['np-reply@psmb.ru' => 'Your Robot'])
+        $mail->setFrom([$this->globalSettings['senderAddress'] => $this->globalSettings['senderName']])
             ->setTo($recipientAddress)
             ->setSubject('Activate your account');
         $mail->setBody($activationLink, 'text/plain');
