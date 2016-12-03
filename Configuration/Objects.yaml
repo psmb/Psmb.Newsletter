@@ -1,0 +1,9 @@
+Psmb\Newsletter\Controller\SubscriptionController:
+  properties:
+    tokenCache:
+      object:
+        factoryObjectName: TYPO3\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: Psmb_Newsletter_TokenCache

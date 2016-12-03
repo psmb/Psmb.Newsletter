@@ -1,0 +1,4 @@
+Psmb_Newsletter_TokenCache:
+  backendOptions:
+    defaultLifetime: 864000
+  persistent: true
