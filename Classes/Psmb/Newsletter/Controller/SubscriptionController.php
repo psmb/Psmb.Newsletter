@@ -3,23 +3,18 @@ namespace Psmb\Newsletter\Controller;
 
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
+use Psmb\Newsletter\Service\FusionMailService;
 use TYPO3\Flow\Mvc\Controller\ActionController;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\View\JsonView;
-use TYPO3\Flow\Persistence\PersistenceManagerInterface;
 use TYPO3\Flow\Utility\Algorithms;
-use TYPO3\Fluid\View\TemplateView;
-use TYPO3\SwiftMailer\Message;
 
 class SubscriptionController extends ActionController
 {
     /**
-     * @var array
+     * @Flow\Inject
+     * @var FusionMailService
      */
-    protected $viewFormatToObjectNameMap = array(
-        'html' => TemplateView::class,
-        'json' => JsonView::class
-    );
+    protected $fusionMailService;
 
     /**
      * @Flow\Inject
@@ -38,12 +33,6 @@ class SubscriptionController extends ActionController
     * @var string
     */
     protected $subscriptions;
-
-    /**
-     * @Flow\InjectConfiguration(path="globalSettings")
-     * @var string
-     */
-    protected $globalSettings;
 
     /**
      * Render a form
@@ -65,12 +54,11 @@ class SubscriptionController extends ActionController
     public function registerAction(Subscriber $newSubscriber)
     {
         $hash = Algorithms::generateRandomToken(16);
-        $email = $newSubscriber->getEmail();
         $this->tokenCache->set(
             $hash,
             $newSubscriber
         );
-        $this->sendActivationMail($email, $hash);
+        $this->sendActivationLetter($newSubscriber, $hash);
         $this->addFlashMessage('Please confirm your subscription');
         $this->redirect('index');
     }
@@ -125,26 +113,14 @@ class SubscriptionController extends ActionController
     /**
      * Sends an activation mail
      *
-     * @param string $recipientAddress
+     * @param Subscriber $subscriber
      * @param string $hash
      * @return int
      */
-    protected function sendActivationMail($recipientAddress, $hash) {
-        $this->uriBuilder->setRequest($this->request);
-        $activationLink = $this->uriBuilder
-            ->setCreateAbsoluteUri(TRUE)
-            ->uriFor(
-                'confirm',
-                ['hash' => $hash],
-                'Subscription',
-                'Psmb.Newsletter'
-            );
-        $mail = new Message();
-        $mail->setFrom([$this->globalSettings['senderAddress'] => $this->globalSettings['senderName']])
-            ->setTo($recipientAddress)
-            ->setSubject('Activate your account');
-        $mail->setBody($activationLink, 'text/plain');
-        return $mail->send();
+    protected function sendActivationLetter(Subscriber $subscriber, $hash) {
+        $this->fusionMailService->setupObject($this->controllerContext, $this->request);
+        $activationLetter = $this->fusionMailService->generateActivationLetter($subscriber, $hash);
+        $this->fusionMailService->sendLetter($activationLetter);
     }
 
 }

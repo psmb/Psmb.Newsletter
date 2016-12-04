@@ -16,7 +16,7 @@ use TYPO3\Flow\Security\Context;
 /**
  * A TypoScript view
  */
-class TypoScriptView extends AbstractView
+class FusionView extends AbstractView
 {
 	/**
 	 * @Flow\Inject
@@ -95,25 +95,6 @@ class TypoScriptView extends AbstractView
 	}
 
 	/**
-	 * Set the TypoScript path to use for rendering the node given in "value"
-	 *
-	 * @param string $typoScriptPath
-	 * @return void
-	 */
-	public function setTypoScriptPath($typoScriptPath)
-	{
-		$this->typoScriptPath = $typoScriptPath;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getTypoScriptPath()
-	{
-		return $this->typoScriptPath;
-	}
-
-	/**
 	 * @param NodeInterface $siteNode
 	 * @return \TYPO3\TypoScript\Core\Runtime
 	 */
@@ -134,7 +115,7 @@ class TypoScriptView extends AbstractView
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return TypoScriptView
+	 * @return FusionView
 	 */
 	public function assign($key, $value)
 	{

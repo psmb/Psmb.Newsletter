@@ -1,8 +1,8 @@
 <?php
 namespace Psmb\Newsletter\Command;
 
-use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
+use Psmb\Newsletter\Service\FusionMailService;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 use TYPO3\Flow\Http\Request;
@@ -12,9 +12,6 @@ use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Flow\Mvc\Controller\Arguments;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
-use TYPO3\TYPO3CR\Domain\Model\Node;
-use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
-use Psmb\Newsletter\View\TypoScriptView;
 
 /**
  * @Flow\Scope("singleton")
@@ -22,25 +19,16 @@ use Psmb\Newsletter\View\TypoScriptView;
 class NewsletterCommandController extends CommandController
 {
     /**
-     * @var ContextFactoryInterface
+     * @Flow\Inject
+     * @var FusionMailService
      */
-    protected $contextFactory;
+    protected $fusionMailService;
 
     /**
-     * @var TypoScriptView
-     */
-    protected $view;
-
-    /**
+     * @Flow\Inject
      * @var SubscriberRepository
      */
     protected $subscriberRepository;
-
-    /**
-     * @Flow\InjectConfiguration(path="globalSettings")
-     * @var string
-     */
-    protected $globalSettings;
 
     /**
      * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
@@ -55,33 +43,12 @@ class NewsletterCommandController extends CommandController
     protected $subscriptions;
 
     /**
-     * @var Node
-     */
-    protected $siteNode;
-
-    /**
-     * NewsletterCommandController constructor.
-     *
-     * @param TypoScriptView $view
-     * @param ContextFactoryInterface $contextFactory
-     * @param SubscriberRepository $subscriberRepository
-     */
-    public function __construct(TypoScriptView $view, ContextFactoryInterface $contextFactory, SubscriberRepository $subscriberRepository)
-    {
-        parent::__construct();
-        $this->contextFactory = $contextFactory;
-        $this->subscriberRepository = $subscriberRepository;
-        $this->siteNode = $this->getSiteNode();
-        $this->view = $view;
-    }
-
-    /**
      * We can't do this in constructor as we need configuration to be injected
      */
     public function initializeObject() {
-        $controllerContext = $this->createControllerContext();
-        $this->view->setControllerContext($controllerContext);
-        $this->view->setTypoScriptPath('newsletter');
+        $request = $this->createRequest();
+        $controllerContext = $this->createControllerContext($request);
+        $this->fusionMailService->setupObject($controllerContext, $request);
     }
 
     /**
@@ -100,56 +67,9 @@ class NewsletterCommandController extends CommandController
         $letters = array_reduce($nestedLetters, function ($acc, $item) {
             return array_merge($acc, $item);
         }, []);
-        array_map([$this, 'sendLetter'], $letters);
-    }
-
-    /**
-     * @param array $letter
-     * @throws \Exception
-     */
-    protected function sendLetter($letter)
-    {
-        $subject = isset($letter['subject']) ? $letter['subject'] : null;
-        $body = isset($letter['body']) ? $letter['body'] : null;
-        $recipientAddress = isset($letter['recipientAddress']) ? $letter['recipientAddress'] : null;
-        $recipientName = isset($letter['recipientName']) ? $letter['recipientName'] : null;
-        $senderAddress = isset($letter['senderAddress']) ? $letter['senderAddress'] : null;
-        $senderName = isset($letter['senderName']) ? $letter['senderName'] : null;
-        $replyToAddress = isset($letter['replyToAddress']) ? $letter['replyToAddress'] : null;
-        $carbonCopyAddress = isset($letter['carbonCopyAddress']) ? $letter['carbonCopyAddress'] : null;
-        $blindCarbonCopyAddress = isset($letter['blindCarbonCopyAddress']) ? $letter['blindCarbonCopyAddress'] : null;
-        $format = isset($letter['format']) ? $letter['format'] : null;
-
-        if (!$subject) {
-            throw new \Exception('"subject" must be set.', 1327060321);
-        }
-        if (!$recipientAddress) {
-            throw new \Exception('"recipientAddress" must be set.', 1327060201);
-        }
-        if (!$senderAddress) {
-            throw new \Exception('"senderAddress" must be set.', 1327060211);
-        }
-
-        $mail = new \TYPO3\SwiftMailer\Message();
-        $mail
-            ->setFrom(array($senderAddress => $senderName))
-            ->setTo(array($recipientAddress => $recipientName))
-            ->setSubject($subject);
-        if ($replyToAddress) {
-            $mail->setReplyTo($replyToAddress);
-        }
-        if ($carbonCopyAddress) {
-            $mail->setCc($carbonCopyAddress);
-        }
-        if ($blindCarbonCopyAddress) {
-            $mail->setBcc($blindCarbonCopyAddress);
-        }
-        if ($format === 'plaintext') {
-            $mail->setBody($body, 'text/plain');
-        } else {
-            $mail->setBody($body, 'text/html');
-        }
-        $mail->send();
+        array_map(function($letter) {
+            $this->fusionMailService->sendLetter($letter);
+        }, $letters);
     }
 
     /**
@@ -162,44 +82,31 @@ class NewsletterCommandController extends CommandController
     {
         $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
         return array_map(function ($subscriber) use ($subscription) {
-            return $this->generateLetter($subscriber, $subscription);
+            return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
         }, $subscribers);
     }
 
     /**
-     * Render a Fusion view to generate a letter array for the give subscriber and subscription
-     *
-     * @param Subscriber $subscriber
-     * @param array $subscription
-     * @return array
+     * @return ActionRequest
      */
-    protected function generateLetter(Subscriber $subscriber, $subscription)
-    {
-        $this->view->assign('value', [
-            'site' => $this->siteNode,
-            'documentNode' => $this->siteNode,
-            'node' => $this->siteNode,
-            'subscriber' => $subscriber,
-            'subscription' => $subscription,
-            'globalSettings' => $this->globalSettings
-        ]);
-        return $this->view->render();
-    }
-
-    /**
-     * Creates a controller content context for live dimension
-     *
-     * @return ControllerContext
-     */
-    protected function createControllerContext()
-    {
+    protected function createRequest() {
         $_SERVER['FLOW_REWRITEURLS'] = 1;
         $httpRequest = Request::createFromEnvironment();
         if ($this->baseUri) {
             $baseUri = new Uri($this->baseUri);
             $httpRequest->setBaseUri($baseUri);
         }
-        $request = new ActionRequest($httpRequest);
+        return new ActionRequest($httpRequest);
+    }
+
+    /**
+     * Creates a controller content context for live dimension
+     *
+     * @param ActionRequest $request
+     * @return ControllerContext
+     */
+    protected function createControllerContext($request)
+    {
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);
         $controllerContext = new ControllerContext(
@@ -209,20 +116,5 @@ class NewsletterCommandController extends CommandController
             $uriBuilder
         );
         return $controllerContext;
-    }
-
-    /**
-     * @return Node
-     */
-    protected function getSiteNode()
-    {
-        $contextProperties = array(
-            'workspaceName' => 'live',
-            'dimensions' => [],
-            'invisibleContentShown' => false,
-            'inaccessibleContentShown' => false
-        );
-        $context = $this->contextFactory->create($contextProperties);
-        return $context->getCurrentSiteNode();
     }
 }
