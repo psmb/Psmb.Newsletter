@@ -1,3 +1,14 @@
+# Put this plugin wherever you want to insert the subscription form
+prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(TYPO3.Neos:Plugin) {
+	package = 'Psmb.Newsletter'
+	controller = 'Subscription'
+	argumentNamespace = 'newsletter'
+}
+
+prototype(TYPO3.TypoScript:GlobalCacheIdentifiers) {
+	newsletterAction = ${request.pluginArguments['newsletter']['@action']}
+}
+
 #
 # This object is meant to be used with @process.
 # `cssPath` should contain a path to a CSS file, e.g. `cssPath = 'resource://Psmb.Newsletter/Public/styles.css'`
@@ -45,14 +56,30 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
 	}
 }
 
-prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(TYPO3.TypoScript:UriBuilder) {
-	package = 'Psmb.Newsletter'
-	controller = 'Subscription'
-	action = 'edit'
-	absolute = ${true}
-	arguments {
-		subscriber = ${subscriber}
+prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
+	node = ${site}
+	additionalParams {
+		--newsletter = TYPO3.TypoScript:RawArray {
+			'@package' = 'Psmb.Newsletter'
+			'@controller' = 'Subscription'
+			'@action' = 'Edit'
+			subscriber = ${subscriber}
+		}
 	}
+	absolute = ${true}
+}
+
+prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
+	node = ${site}
+	additionalParams {
+		--newsletter = TYPO3.TypoScript:RawArray {
+			'@package' = 'Psmb.Newsletter'
+			'@controller' = 'Subscription'
+			'@action' = 'Unsubscribe'
+			subscriber = ${subscriber}
+		}
+	}
+	absolute = ${true}
 }
 
 newsletter = Psmb.Newsletter:SubscriptionCase

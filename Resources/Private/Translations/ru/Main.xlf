@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="" product-name="Psmb.Newsletter" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="flash.confirm" xml:space="preserve">
+                <source>Please confirm your subscription. Check your mail and click the validation link.</source>
+                <target>Почти всё! Осталось подтвердить вашу подписку. Зайдите в вашу почту и пройдите по ссылке.</target>
+            </trans-unit>
+            <trans-unit id="flash.noEmail" xml:space="preserve">
+                <source>You haven't filled in the email field</source>
+                <target>Вы не ввели свой e-mail</target>
+            </trans-unit>
+            <trans-unit id="flash.alreadyRegistered" xml:space="preserve">
+                <source>You are already registered to our newsletter</source>
+                <target>Вы уже подписаны на нашу рассылку</target>
+            </trans-unit>
+            <trans-unit id="flash.confirmed" xml:space="preserve">
+                <source>Subscription has been confirmed</source>
+                <target>Ваша подписка оформлена! Ждите от нас новых писем.</target>
+            </trans-unit>
+            <trans-unit id="flash.noToken" xml:space="preserve">
+                <source>Something went wrong. Maybe you have already activated your subscription?</source>
+                <target>Что-то пошло не так... Возможно вы уже активировали свою подписку?</target>
+            </trans-unit>
+            <trans-unit id="flash.unsubscribed" xml:space="preserve">
+                <source>You have succefully unsubscribed from our newsletter</source>
+                <target>Вы отписали от рассылки</target>
+            </trans-unit>
+            <trans-unit id="flash.updated" xml:space="preserve">
+                <source>Subscription updated</source>
+                <target>Ваша подписка обновлена</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

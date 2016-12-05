@@ -8,17 +8,59 @@
 #-
 #  name: 'Subscription'
 #  uriPattern: '<NewsletterSubroutes>'
-#  defaults:
-#    '@package': 'Psmb.Newsletter'
-#    '@format':  'html'
 #  subRoutes:
 #    'NewsletterSubroutes':
 #      package: 'Psmb.Newsletter'
 
 -
-  name: 'Subscription actions'
-  uriPattern:    'subscription/{@action}'
+  name: 'Psmb.Newsletter edit route'
+  uriPattern: '{node}~newsletter/edit/{--newsletter.subscriber}'
   defaults:
-    '@package': 'Psmb.Newsletter'
-    '@controller': 'Subscription'
+    '@package':    'TYPO3.Neos'
+    '@controller': 'Frontend\Node'
+    '@format':     'html'
+    '@action':     'show'
+    '--newsletter':
+      '@package': 'Psmb.Newsletter'
+      '@controller': 'Subscription'
+      '@action': 'edit'
+      '@format': 'html'
+  routeParts:
+    node:
+      handler: TYPO3\Neos\Routing\FrontendNodeRoutePartHandler
+  appendExceedingArguments: TRUE
+
+-
+  name: 'Psmb.Newsletter unsubscribe route'
+  uriPattern: '{node}~newsletter/unsubscribe/{--newsletter.subscriber}'
+  defaults:
+    '@package':    'TYPO3.Neos'
+    '@controller': 'Frontend\Node'
+    '@format':     'html'
+    '@action':     'show'
+    '--newsletter':
+      '@package': 'Psmb.Newsletter'
+      '@controller': 'Subscription'
+      '@action': 'unsubscribe'
+      '@format': 'html'
+  routeParts:
+    node:
+      handler: TYPO3\Neos\Routing\FrontendNodeRoutePartHandler
+  appendExceedingArguments: TRUE
+
+-
+  name: 'Psmb.Newsletter other routes'
+  uriPattern: '{node}~newsletter/{--newsletter.@action}'
+  defaults:
+    '@package':    'TYPO3.Neos'
+    '@controller': 'Frontend\Node'
+    '@format':     'html'
+    '@action':     'show'
+    '--newsletter':
+      '@package': 'Psmb.Newsletter'
+      '@controller': 'Subscription'
+      '@format': 'html'
+  routeParts:
+    node:
+      handler: TYPO3\Neos\Routing\FrontendNodeRoutePartHandler
   appendExceedingArguments: TRUE

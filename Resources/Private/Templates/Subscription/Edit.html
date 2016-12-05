@@ -1,3 +1,4 @@
+<!-- this template is just an example! Override it and make it your own! -->
 <f:form
         method="post"
         action="update"
@@ -5,12 +6,11 @@
         package="Psmb.Newsletter"
         object="{subscriber}"
         objectName="subscriber"
-        arguments="{hash: hash}"
 >
+    <h2>Subscription parameters for {subscriber.email}</h2>
     <div><f:form.textfield property="name" placeholder="Enter your name" /></div>
-    <div><f:form.textfield property="email" placeholder="Enter your email" /></div>
     <f:for each="{subscriptions}" as="subscription" key="identifier">
         <div><label><f:form.checkbox multiple="true" property="subscriptions" value="{subscription.identifier}" /> {subscription.label}</label></div>
     </f:for>
-    <div><f:form.submit class="neos-button" value="Update!"/></div>
+    <div><f:form.submit value="Update!"/></div>
 </f:form>

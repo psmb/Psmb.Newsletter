@@ -4,12 +4,19 @@ namespace Psmb\Newsletter\Controller;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
+use TYPO3\Flow\Error\Message;
+use TYPO3\Flow\I18n\Translator;
 use TYPO3\Flow\Mvc\Controller\ActionController;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Utility\Algorithms;
 
 class SubscriptionController extends ActionController
 {
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
     /**
      * @Flow\Inject
      * @var FusionMailService
@@ -47,20 +54,31 @@ class SubscriptionController extends ActionController
     /**
      * Registers a new subscriber
      *
-     * @param Subscriber $newSubscriber
-     * @Flow\Validate(argumentName="$newSubscriber", type="UniqueEntity")
+     * @param Subscriber $subscriber
      * @return void
      */
-    public function registerAction(Subscriber $newSubscriber)
+    public function registerAction(Subscriber $subscriber)
     {
-        $hash = Algorithms::generateRandomToken(16);
-        $this->tokenCache->set(
-            $hash,
-            $newSubscriber
-        );
-        $this->sendActivationLetter($newSubscriber, $hash);
-        $this->addFlashMessage('Please confirm your subscription');
-        $this->redirect('index');
+        $email = $subscriber->getEmail();
+        if (!$email) {
+            $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
+            $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+            $this->redirect('index');
+        } elseif ($this->subscriberRepository->countByEmail($email) > 0) {
+            $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
+            $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+            $this->redirect('index');
+        } else {
+            $hash = Algorithms::generateRandomToken(16);
+            $this->tokenCache->set(
+                $hash,
+                $subscriber
+            );
+            $this->sendActivationLetter($subscriber, $hash);
+            $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
+            $this->addFlashMessage($message);
+            $this->redirect('feedback');
+        }
     }
 
     /**
@@ -70,16 +88,18 @@ class SubscriptionController extends ActionController
      */
     public function confirmAction($hash)
     {
-        $newSubscriber = $this->tokenCache->get($hash);
-        if ($newSubscriber) {
+        $subscriber = $this->tokenCache->get($hash);
+        if ($subscriber) {
             $this->tokenCache->remove($hash);
-            $this->subscriberRepository->add($newSubscriber);
+            $this->subscriberRepository->add($subscriber);
             $this->persistenceManager->persistAll();
-            $this->addFlashMessage('Subscirption has been confirmed');
+            $message = $this->translator->translateById('flash.confirmed', [], null, null, 'Main', 'Psmb.Newsletter');
+            $this->addFlashMessage($message);
         } else {
-            $this->addFlashMessage('No token provided', 'Something is wrong', \TYPO3\Flow\Error\Message::SEVERITY_ERROR);
+            $message = $this->translator->translateById('flash.noToken', [], null, null, 'Main', 'Psmb.Newsletter');
+            $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
         }
-        $this->redirect('index');
+        $this->redirect('feedback');
     }
 
     /**
@@ -99,15 +119,36 @@ class SubscriptionController extends ActionController
      * Updates a subscriber
      *
      * @param Subscriber $subscriber
-     * @Flow\Validate(argumentName="$subscriber", type="UniqueEntity")
      * @throws \Exception
      * @return void
      */
     public function updateAction(Subscriber $subscriber)
     {
         $this->subscriberRepository->update($subscriber);
-        $this->addFlashMessage('Subscription updated');
-        $this->redirect('edit', null, null, ['subscriber' => $subscriber]);
+        $message = $this->translator->translateById('flash.updated', [], null, null, 'Main', 'Psmb.Newsletter');
+        $this->addFlashMessage($message);
+        $this->redirect('feedback');
+    }
+
+    /**
+     * Deletes a Subscriber
+     *
+     * @param Subscriber $subscriber
+     */
+    public function unsubscribeAction(Subscriber $subscriber)
+    {
+        $this->subscriberRepository->remove($subscriber);
+        $this->persistenceManager->persistAll();
+        $message = $this->translator->translateById('flash.unsubscribed', [], null, null, 'Main', 'Psmb.Newsletter');
+        $this->addFlashMessage($message);
+        $this->redirect('feedback');
+    }
+
+    /**
+     * Just render flash messages
+     */
+    public function feedbackAction()
+    {
     }
 
     /**

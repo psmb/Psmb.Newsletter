@@ -1,15 +1,16 @@
+<!-- this template is just an example! Override it and make it your own! -->
 <f:form
         method="post"
         action="register"
         controller="Subscription"
         package="Psmb.Newsletter"
-        objectName="newSubscriber"
+        objectName="subscriber"
 >
     <div><f:form.textfield property="name" placeholder="Enter your name" /></div>
     <div><f:form.textfield property="email" placeholder="Enter your email" /></div>
     <f:for each="{subscriptions}" as="subscription" key="identifier">
         <div><label><f:form.checkbox multiple="true" property="subscriptions" value="{subscription.identifier}" /> {subscription.label}</label></div>
     </f:for>
-    <div><f:form.submit class="neos-button" value="Subscribe!"/></div>
+    <div><f:form.submit value="Subscribe!"/></div>
 </f:form>
 <f:flashMessages />

@@ -8,17 +8,9 @@ Psmb:
     globalSettings:
       senderAddress: 'robot@server.com'
       senderName: 'Your robot'
-    subscriptions:
-      -
-        identifier: 'hourly'
-        renderer: 'Psmb.Newsletter:MailRenderer'
-        label: 'Hourly'
-        interval: P7D
-      -
-        identifier: 'digestWeekly'
-        label: 'Weekly Digest'
-        interval: 1W
-      -
-        identifier: 'crafted'
-        label: 'Handcrafted digest'
-        interval: 1H
+#    subscriptions:
+#      -
+#        identifier: 'daily'
+#        renderer: 'Your:LetterRenderer'
+#        label: 'Our daily newsletter'
+#        interval: P1D
