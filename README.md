@@ -147,6 +147,15 @@ Create a `Views.yaml` file in Configuration:
       - 'resource://Sfi.Site/Private/Newsletter/Layouts/'
 ```
 
+## Sending things out
+
+Once you are ready setting up rendering of your subscriptions, it's time to send the out!
+There's a CLI command for it.
+
+`./flow newsletter:send --subscription="daily"` would send out newsletter to all users subscribed to subscription with identifier "daily".
+
+`./flow newsletter:send --interval="P1H"` would find all subscriptions with interval equal to "P1H" and send out letters to them. This is useful for setting up cron tasks based on time interval.
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
