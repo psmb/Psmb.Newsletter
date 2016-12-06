@@ -54,16 +54,26 @@ class NewsletterCommandController extends CommandController
     /**
      * Selects all subscriptions with given interval and sends a letter to each subscriber
      *
-     * @param string $interval Select all subscriptions with this interval
+     * @param string $subscription Subscription id to send newsletter to
+     * @param string $interval Alternatively select all subscriptions with the given interval (useful for cron jobs)
      * @return string
      */
-    public function sendCommand($interval)
+    public function sendCommand($subscription = null, $interval = null)
     {
-        $subscriptionsByInterval = array_filter($this->subscriptions, function ($item) use ($interval) {
-            return $item['interval'] == $interval;
-        });
+        $subscriptions = [];
+        if ($subscription) {
+            $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
+                return $item['identifier'] == $subscription;
+            });
+        } else if ($interval) {
+            $subscriptions = array_filter($this->subscriptions, function ($item) use ($interval) {
+                return $item['interval'] == $interval;
+            });
+        } else {
+            return "Either interval or subscription must be set\n";
+        }
 
-        $nestedLetters = array_map([$this, 'generateLettersForSubscription'], $subscriptionsByInterval);
+        $nestedLetters = array_map([$this, 'generateLettersForSubscription'], $subscriptions);
         $letters = array_reduce($nestedLetters, function ($acc, $item) {
             return array_merge($acc, $item);
         }, []);
@@ -81,7 +91,10 @@ class NewsletterCommandController extends CommandController
     protected function generateLettersForSubscription($subscription)
     {
         $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        echo "Sending letters for subscription '" . $subscription['identifier'] . "' (" . count($subscribers) . " subscribers) \n";
+        echo "-------------------------------------------------------------------------------\n";
         return array_map(function ($subscriber) use ($subscription) {
+            echo "Sending a letter for " . $subscriber->getEmail() . " \n";
             return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
         }, $subscribers);
     }

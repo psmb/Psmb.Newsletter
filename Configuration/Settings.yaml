@@ -3,11 +3,11 @@ TYPO3:
     typoScript:
       autoInclude:
         'Psmb.Newsletter': TRUE
-Psmb:
-  Newsletter:
-    globalSettings:
-      senderAddress: 'robot@server.com'
-      senderName: 'Your robot'
+#Psmb:
+#  Newsletter:
+#    globalSettings:
+#      senderAddress: 'robot@server.com'
+#      senderName: 'Your robot'
 #    subscriptions:
 #      -
 #        identifier: 'daily'
