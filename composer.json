@@ -2,8 +2,9 @@
     "description": "Generate Newsletters based on Fusion",
     "type": "neos-package",
     "name": "psmb/newsletter",
+    "license": "GPL-3.0+",
     "require": {
-        "typo3/neos": "*",
+        "typo3/neos": "^2.3",
         "typo3/swiftmailer": "^5.4",
         "tijsverkoyen/css-to-inline-styles": "^2.2"
     },
