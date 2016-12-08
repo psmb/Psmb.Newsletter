@@ -143,7 +143,7 @@ class FusionMailService {
      */
     public function generateSubscriptionLetter(Subscriber $subscriber, $subscription)
     {
-        $dimensions = $subscription['dimensions'] ?: null;
+        $dimensions = isset($subscription['dimensions']) ? $subscription['dimensions'] : null;
         $siteNode = $this->getSiteNode($dimensions);
         $this->view->assign('value', [
             'site' => $siteNode,
