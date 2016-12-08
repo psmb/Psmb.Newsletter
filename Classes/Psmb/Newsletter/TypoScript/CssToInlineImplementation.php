@@ -24,7 +24,5 @@ class CssToInlineImplementation extends AbstractTypoScriptObject {
             $html,
             $css
         );
-        #$emogrifier = new Emogrifier($html, $css);
-        #return $emogrifier->emogrify();
     }
 }
