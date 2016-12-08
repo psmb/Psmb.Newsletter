@@ -15,4 +15,4 @@ TYPO3:
 #        label: 'Our daily newsletter'
 #        interval: P1D
 #        dimensions:
-#          language: 'presetName'
+#          language: ['dimensionValues']

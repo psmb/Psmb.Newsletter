@@ -78,14 +78,18 @@ class SubscriptionController extends ActionController
                 $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
                 $this->redirect('index');
             } else {
+                $subscriber->setMetadata([
+                    'registrationDate' => new \DateTime(),
+                    'registrationDimensions' => $this->request->getInternalArgument('__node')->getContext()->getDimensions()
+                ]);
                 $hash = Algorithms::generateRandomToken(16);
                 $this->tokenCache->set(
                     $hash,
                     $subscriber
                 );
-                $this->sendActivationLetter($subscriber, $hash);
                 $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
                 $this->addFlashMessage($message);
+                $this->sendActivationLetter($subscriber, $hash);
                 $this->redirect('feedback');
             }
         }

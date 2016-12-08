@@ -34,6 +34,27 @@ class Subscriber {
 	protected $subscriptions;
 
 	/**
+	 * @var array
+	 */
+	protected $metadata;
+
+    /**
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param array $metadata
+     */
+    public function setMetadata($metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
+	/**
 	 * @return string
 	 */
 	public function getPersistenceObjectIdentifier() {
