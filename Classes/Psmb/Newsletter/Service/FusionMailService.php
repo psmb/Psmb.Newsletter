@@ -41,12 +41,6 @@ class FusionMailService {
     protected $globalSettings;
 
     /**
-     * @Flow\Inject
-     * @var ContentDimensionPresetSourceInterface
-     */
-    protected $contentDimensionPresetSource;
-
-    /**
      * @param ControllerContext $controllerContext
      * @param ActionRequest $request
      */
@@ -113,7 +107,8 @@ class FusionMailService {
      */
     public function generateActivationLetter(Subscriber $subscriber, $hash)
     {
-        $siteNode = $this->getSiteNode();
+        $metadata = $subscriber->getMetadata();
+        $siteNode = $this->getSiteNode($metadata['registrationDimensions']);
         $activationLink = $this->uriBuilder
             ->setCreateAbsoluteUri(TRUE)
             ->uriFor(
@@ -157,18 +152,11 @@ class FusionMailService {
     }
 
     /**
-     * @param array $dimensionsPresets
+     * @param array $dimensions
      * @return Node
      */
-    protected function getSiteNode($dimensionsPresets = null)
+    protected function getSiteNode($dimensions = [])
     {
-        $dimensionsConfig = $this->contentDimensionPresetSource->getAllPresets();
-        $dimensions = [];
-        if ($dimensionsPresets) {
-            foreach ($dimensionsPresets as $dimensionName => $dimensionPresetName) {
-                $dimensions[$dimensionName] = $dimensionsConfig[$dimensionName]['presets'][$dimensionPresetName]['values'];
-            }
-        }
         $contextProperties = array(
             'workspaceName' => 'live',
             'dimensions' => $dimensions,
