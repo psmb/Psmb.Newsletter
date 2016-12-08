@@ -1,6 +1,7 @@
 <?php
 namespace Psmb\Newsletter\Command;
 
+use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
 use TYPO3\Flow\Annotations as Flow;
@@ -12,6 +13,7 @@ use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Flow\Mvc\Controller\Arguments;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
+use TYPO3\Flow\Persistence\PersistenceManagerInterface;
 
 /**
  * @Flow\Scope("singleton")
@@ -52,6 +54,42 @@ class NewsletterCommandController extends CommandController
     }
 
     /**
+     * Import newsletter subscribers from CSV.
+     * CSV should be in the format `"user@email.com","User Name","subscriptionId1|sibscriptionId2"`
+     *
+     * @param string $filename
+     * @return string
+     */
+    public function importCsvCommand($filename)
+    {
+        if (!is_readable($filename)) {
+            $this->outputLine('<error>Sorry, but the file "%s" is not readable or does not exist...</error>', [$filename]);
+            $this->outputLine();
+            $this->sendAndExit(1);
+        }
+        $handle = fopen($filename, "r");
+        while (($line = fgetcsv($handle)) !== false) {
+            if (count($line) === 3) {
+                $email = $line[0];
+                $name = $line[1] ?: "";
+                $subscriptions = explode("|", $line[2]);
+
+                if ($this->subscriberRepository->countByEmail($email) > 0) {
+                    $this->outputLine('<error>User with email "%s" already exists, skipping...</error>', [$email]);
+                } else {
+                    $this->outputLine('Creating a subscriber (%s, %s, %s)', [$email, $name, $line[2]]);
+                    $subscriber = new Subscriber();
+                    $subscriber->setEmail($email);
+                    $subscriber->setName($name);
+                    $subscriber->setSubscriptions($subscriptions);
+                    $this->subscriberRepository->add($subscriber);
+                }
+            }
+        }
+        fclose($handle);
+    }
+
+    /**
      * Selects all subscriptions with given interval and sends a letter to each subscriber
      *
      * @param string $subscription Subscription id to send newsletter to
@@ -70,7 +108,9 @@ class NewsletterCommandController extends CommandController
                 return $item['interval'] == $interval;
             });
         } else {
-            return "Either interval or subscription must be set\n";
+            $this->outputLine('<error>Either interval or subscription must be set</error>');
+            $this->outputLine();
+            $this->sendAndExit(1);
         }
 
         $nestedLetters = array_map([$this, 'generateLettersForSubscription'], $subscriptions);
@@ -91,10 +131,11 @@ class NewsletterCommandController extends CommandController
     protected function generateLettersForSubscription($subscription)
     {
         $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
-        echo "Sending letters for subscription '" . $subscription['identifier'] . "' (" . count($subscribers) . " subscribers) \n";
-        echo "-------------------------------------------------------------------------------\n";
+
+        $this->outputLine('Sending letters for subscription %s (%s subscribers)', [$subscription['identifier'], count($subscribers)]);
+        $this->outputLine('-------------------------------------------------------------------------------');
         return array_map(function ($subscriber) use ($subscription) {
-            echo "Sending a letter for " . $subscriber->getEmail() . " \n";
+            $this->outputLine('Sending a letter for %s', [$subscriber->getEmail()]);
             return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
         }, $subscribers);
     }

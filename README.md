@@ -156,6 +156,21 @@ There's a CLI command for it.
 
 `./flow newsletter:send --interval="P1H"` would find all subscriptions with interval equal to "P1H" and send out letters to them. This is useful for setting up cron tasks based on time interval.
 
+## Importing subscribers from CSV
+
+Create a CSV file with your subscribers data and put it somewhere on your server.
+
+The file should have the following format:
+
+```
+"user@email.com","User Name","subscriptionId1|sibscriptionId2"
+"user1@email.com","User1 Name","sibscriptionId2"
+```
+
+Then run (file path is relative to installation root):
+
+`./flow newsletter:importCsv --filename="test.csv"`
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
