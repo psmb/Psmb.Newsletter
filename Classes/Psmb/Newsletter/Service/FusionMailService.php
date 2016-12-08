@@ -7,6 +7,7 @@ use Psmb\Newsletter\View\FusionView;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
+use TYPO3\Neos\Domain\Service\ContentDimensionPresetSourceInterface;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
 
@@ -34,19 +35,16 @@ class FusionMailService {
     protected $view;
 
     /**
-     * @var Node
-     */
-    protected $siteNode;
-
-    /**
      * @Flow\InjectConfiguration(path="globalSettings")
      * @var string
      */
     protected $globalSettings;
 
-    public function initializeObject() {
-        $this->siteNode = $this->getSiteNode();
-    }
+    /**
+     * @Flow\Inject
+     * @var ContentDimensionPresetSourceInterface
+     */
+    protected $contentDimensionPresetSource;
 
     /**
      * @param ControllerContext $controllerContext
@@ -115,6 +113,7 @@ class FusionMailService {
      */
     public function generateActivationLetter(Subscriber $subscriber, $hash)
     {
+        $siteNode = $this->getSiteNode();
         $activationLink = $this->uriBuilder
             ->setCreateAbsoluteUri(TRUE)
             ->uriFor(
@@ -125,9 +124,9 @@ class FusionMailService {
             );
 
         $this->view->assign('value', [
-            'site' => $this->siteNode,
-            'documentNode' => $this->siteNode,
-            'node' => $this->siteNode,
+            'site' => $siteNode,
+            'documentNode' => $siteNode,
+            'node' => $siteNode,
             'subscriber' => $subscriber,
             'globalSettings' => $this->globalSettings,
             'activationLink' => $activationLink
@@ -136,7 +135,7 @@ class FusionMailService {
     }
 
     /**
-     * Genearate a letter for given subscriber and subscription
+     * Generate a letter for given subscriber and subscription
      *
      * @param Subscriber $subscriber
      * @param array $subscription
@@ -144,10 +143,12 @@ class FusionMailService {
      */
     public function generateSubscriptionLetter(Subscriber $subscriber, $subscription)
     {
+        $dimensions = $subscription['dimensions'] ?: null;
+        $siteNode = $this->getSiteNode($dimensions);
         $this->view->assign('value', [
-            'site' => $this->siteNode,
-            'documentNode' => $this->siteNode,
-            'node' => $this->siteNode,
+            'site' => $siteNode,
+            'documentNode' => $siteNode,
+            'node' => $siteNode,
             'subscriber' => $subscriber,
             'subscription' => $subscription,
             'globalSettings' => $this->globalSettings
@@ -156,13 +157,21 @@ class FusionMailService {
     }
 
     /**
+     * @param array $dimensionsPresets
      * @return Node
      */
-    protected function getSiteNode()
+    protected function getSiteNode($dimensionsPresets = null)
     {
+        $dimensionsConfig = $this->contentDimensionPresetSource->getAllPresets();
+        $dimensions = [];
+        if ($dimensionsPresets) {
+            foreach ($dimensionsPresets as $dimensionName => $dimensionPresetName) {
+                $dimensions[$dimensionName] = $dimensionsConfig[$dimensionName]['presets'][$dimensionPresetName]['values'];
+            }
+        }
         $contextProperties = array(
             'workspaceName' => 'live',
-            'dimensions' => [],
+            'dimensions' => $dimensions,
             'invisibleContentShown' => false,
             'inaccessibleContentShown' => false
         );

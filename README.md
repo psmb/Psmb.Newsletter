@@ -27,8 +27,10 @@ Psmb:
       -
         identifier: weekly
         renderer: 'Your.NameSpace:WeeklyLetterRenderer'
-        label: 'Our weekly newsletter'
+        label: 'Our weekly newsletter (In Russian)'
         interval: P1W
+        dimensions:
+          language: 'ru'
 ```
 
 Define as many subscription types under Psmb.Newsletter.subscriptions as you need. 
@@ -39,6 +41,7 @@ Define as many subscription types under Psmb.Newsletter.subscriptions as you nee
 |`renderer`| Fusion object that would be used for rendering emails sent to this subscription. Defaults to `Psmb.Newsletter:MailRenderer`. Must inherit from it.|
 |`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Optional.|
 |`senderName`, `senderAddress`| Override options from `globalSettings`.|
+|`dimensions`| Array of dimensions in form of "dimensionName: 'presetName'". Falls back to default dimension values.|
 
 Also you may need to configure SwiftMailer, [see its docs](http://swiftmailer-for-flow.readthedocs.io/en/latest/#configuration) how to do that.
 
@@ -145,6 +148,7 @@ Create a `Views.yaml` file in Configuration:
       - 'resource://Psmb.Newsletter/Private/Partials/'
     layoutRootPaths:
       - 'resource://Sfi.Site/Private/Newsletter/Layouts/'
+      
 ```
 
 ## Sending things out
