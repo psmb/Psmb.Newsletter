@@ -22,6 +22,7 @@ prototype(Psmb.Newsletter:CssToInline) {
 prototype(Psmb.Newsletter:MailRenderer) < prototype(TYPO3.TypoScript:RawArray) {
 	subject = ''
 	body = ''
+	#body.@cache.mode = 'cached'
 	#body.@process.cssToInline = Psmb.Newsletter:CssToInline {
 	#	cssPath = 'to-be-set'
 	#}
@@ -42,6 +43,11 @@ prototype(Psmb.Newsletter:ConfirmationMailRenderer) < prototype(Psmb.Newsletter:
 }
 
 prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
+	# We need this to work around Fusion's cache limitations, i.e. to allow
+	# subscriber never to be cached within other cache records.
+	# To reliably get subscriber data within cached aread use `${Registry.get('subscriber')}`
+	# See https://github.com/psmb/Psmb.Registry
+	@context.justNeedToExecute = ${Registry.set('subscriber', subscriber)}
 	confirmation {
 		condition = ${activationLink}
 		renderer = Psmb.Newsletter:ConfirmationMailRenderer
@@ -57,29 +63,41 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
 }
 
 prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
-	node = ${site}
+	node = ${documentNode}
 	additionalParams {
 		--newsletter = TYPO3.TypoScript:RawArray {
 			'@package' = 'Psmb.Newsletter'
 			'@controller' = 'Subscription'
 			'@action' = 'Edit'
-			subscriber = ${subscriber}
+			subscriber = ${Registry.get('subscriber')}
 		}
 	}
 	absolute = ${true}
+	@cache {
+		mode = 'uncached'
+		context {
+			1 = 'documentNode'
+		}
+	}
 }
 
 prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
-	node = ${site}
+	node = ${documentNode}
 	additionalParams {
 		--newsletter = TYPO3.TypoScript:RawArray {
 			'@package' = 'Psmb.Newsletter'
 			'@controller' = 'Subscription'
 			'@action' = 'Unsubscribe'
-			subscriber = ${subscriber}
+			subscriber = ${Registry.get('subscriber')}
 		}
 	}
 	absolute = ${true}
+	@cache {
+		mode = 'uncached'
+		context {
+			1 = 'documentNode'
+		}
+	}
 }
 
 newsletter = Psmb.Newsletter:SubscriptionCase
