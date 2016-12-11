@@ -175,6 +175,12 @@ Then run (file path is relative to installation root):
 
 `./flow newsletter:importCsv --filename="test.csv"`
 
+Here's a quick example how to create CSV exports from mysql:
+
+```
+SELECT email, name INTO OUTFILE '/path/test.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n' FROM yourTable;
+```
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
