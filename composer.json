@@ -5,7 +5,7 @@
     "license": "GPL-3.0+",
     "require": {
         "typo3/neos": "^2.3",
-        "psmb/registry": "@dev",
+        "psmb/registry": "*",
         "typo3/swiftmailer": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.2"
     },

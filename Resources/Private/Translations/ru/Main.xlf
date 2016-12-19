@@ -4,11 +4,15 @@
         <body>
             <trans-unit id="flash.confirm" xml:space="preserve">
                 <source>Please confirm your subscription. Check your mail and click the validation link.</source>
-                <target>Почти всё! Осталось подтвердить вашу подписку. Откройте вашу почту и пройдите по ссылке в письме.</target>
+                <target>Осталось подтвердить вашу подписку. Откройте вашу почту и пройдите по ссылке в письме.</target>
             </trans-unit>
             <trans-unit id="flash.noEmail" xml:space="preserve">
                 <source>You haven't filled in the email field</source>
                 <target>Вы не ввели свой e-mail</target>
+            </trans-unit>
+            <trans-unit id="flash.wrongEmail" xml:space="preserve">
+                <source>You have typed a wrong e-mail address</source>
+                <target>Вы ввели некорректный e-mail</target>
             </trans-unit>
             <trans-unit id="flash.alreadyRegistered" xml:space="preserve">
                 <source>You are already registered to our newsletter</source>
@@ -20,15 +24,15 @@
             </trans-unit>
             <trans-unit id="flash.noToken" xml:space="preserve">
                 <source>Something went wrong. Maybe you have already activated your subscription?</source>
-                <target>Что-то пошло не так... Возможно вы уже активировали свою подписку?</target>
+                <target>Что-то не так... Возможно вы уже активировали свою подписку?</target>
             </trans-unit>
             <trans-unit id="flash.unsubscribed" xml:space="preserve">
                 <source>You have succefully unsubscribed from our newsletter</source>
-                <target>Вы отписали от рассылки</target>
+                <target>Вы отписались от рассылки</target>
             </trans-unit>
             <trans-unit id="flash.updated" xml:space="preserve">
                 <source>Subscription updated</source>
-                <target>Ваша подписка обновлена</target>
+                <target>Параметры вашей подписки изменены</target>
             </trans-unit>
         </body>
     </file>

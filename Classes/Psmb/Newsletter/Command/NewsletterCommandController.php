@@ -108,7 +108,7 @@ class NewsletterCommandController extends CommandController
                 return $item['interval'] == $interval;
             });
         } else {
-            $this->outputLine('<error>Either interval or subscription must be set</error>');
+            $this->outputLine('<error>Either an interval or a subscription must be set</error>');
             $this->outputLine();
             $this->sendAndExit(1);
         }
