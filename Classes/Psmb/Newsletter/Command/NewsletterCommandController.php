@@ -134,10 +134,15 @@ class NewsletterCommandController extends CommandController
 
         $this->outputLine('Sending letters for subscription %s (%s subscribers)', [$subscription['identifier'], count($subscribers)]);
         $this->outputLine('-------------------------------------------------------------------------------');
-        return array_map(function ($subscriber) use ($subscription) {
+        $letters = array_map(function ($subscriber) use ($subscription) {
             $this->outputLine('Sending a letter for %s', [$subscriber->getEmail()]);
-            return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
+            $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
+            if (!$letter) {
+                $this->outputLine('<error>Nothing to send</error>');
+            }
+            return $letter;
         }, $subscribers);
+        return array_filter($letters);
     }
 
     /**
