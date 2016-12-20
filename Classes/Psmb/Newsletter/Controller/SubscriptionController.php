@@ -5,6 +5,7 @@ use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
 use TYPO3\Flow\Error\Message;
+use TYPO3\Flow\I18n\Service as I18nService;
 use TYPO3\Flow\I18n\Translator;
 use TYPO3\Flow\Mvc\Controller\ActionController;
 use TYPO3\Flow\Annotations as Flow;
@@ -13,6 +14,12 @@ use TYPO3\Flow\Validation\Validator\EmailAddressValidator;
 
 class SubscriptionController extends ActionController
 {
+    /**
+     * @Flow\Inject
+     * @var I18nService
+     */
+    protected $i18nService;
+
     /**
      * @Flow\Inject
      * @var Translator
@@ -50,6 +57,7 @@ class SubscriptionController extends ActionController
     public function indexAction()
     {
         $this->view->assign('subscriptions', $this->subscriptions);
+        $this->view->assign('currentLocale', $this->i18nService->getConfiguration()->getCurrentLocale());
     }
 
     /**
@@ -127,6 +135,7 @@ class SubscriptionController extends ActionController
     {
         $this->view->assign('subscriber', $subscriber);
         $this->view->assign('subscriptions', $this->subscriptions);
+        $this->view->assign('currentLocale', $this->i18nService->getConfiguration()->getCurrentLocale());
     }
 
     /**
