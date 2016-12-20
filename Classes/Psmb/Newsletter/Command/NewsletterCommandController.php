@@ -94,9 +94,10 @@ class NewsletterCommandController extends CommandController
      *
      * @param string $subscription Subscription id to send newsletter to
      * @param string $interval Alternatively select all subscriptions with the given interval (useful for cron jobs)
+     * @param bool $dryRun DryRun: generate messages but don't send
      * @return string
      */
-    public function sendCommand($subscription = null, $interval = null)
+    public function sendCommand($subscription = null, $interval = null, $dryRun = null)
     {
         $subscriptions = [];
         if ($subscription) {
@@ -117,9 +118,14 @@ class NewsletterCommandController extends CommandController
         $letters = array_reduce($nestedLetters, function ($acc, $item) {
             return array_merge($acc, $item);
         }, []);
-        array_map(function($letter) {
-            $this->fusionMailService->sendLetter($letter);
-        }, $letters);
+
+        if ($dryRun) {
+            $this->outputLine(print_r($letters, 1));
+        } else {
+            array_map(function($letter) {
+              $this->fusionMailService->sendLetter($letter);
+            }, $letters);
+        }
     }
 
     /**
