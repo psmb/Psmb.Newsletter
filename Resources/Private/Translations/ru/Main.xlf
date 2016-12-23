@@ -3,35 +3,35 @@
     <file original="" product-name="Psmb.Newsletter" source-language="en" datatype="plaintext">
         <body>
             <trans-unit id="flash.confirm" xml:space="preserve">
-                <source>Please confirm your subscription. Check your mail and click the validation link.</source>
+                <source>All that remains is to confirm your subscription. Open your email and follow the link in the message.</source>
                 <target>Осталось подтвердить вашу подписку. Откройте вашу почту и пройдите по ссылке в письме.</target>
             </trans-unit>
             <trans-unit id="flash.noEmail" xml:space="preserve">
-                <source>You haven't filled in the email field</source>
+                <source>You haven’t shown your email address</source>
                 <target>Вы не ввели свой e-mail</target>
             </trans-unit>
             <trans-unit id="flash.wrongEmail" xml:space="preserve">
-                <source>You have typed a wrong e-mail address</source>
+                <source>You have shown an incorrect email address</source>
                 <target>Вы ввели некорректный e-mail</target>
             </trans-unit>
             <trans-unit id="flash.alreadyRegistered" xml:space="preserve">
-                <source>You are already registered to our newsletter</source>
+                <source>You are already subscribed to our mailing list</source>
                 <target>Вы уже подписаны на нашу рассылку</target>
             </trans-unit>
             <trans-unit id="flash.confirmed" xml:space="preserve">
-                <source>Subscription has been confirmed</source>
+                <source>Your subscription has been registered! You will now receive mailings from us.</source>
                 <target>Ваша подписка оформлена! Ждите от нас новых писем.</target>
             </trans-unit>
             <trans-unit id="flash.noToken" xml:space="preserve">
-                <source>Something went wrong. Maybe you have already activated your subscription?</source>
-                <target>Что-то не так... Возможно вы уже активировали свою подписку?</target>
+                <source>Something has gone wrong. Perhaps you have already activated your subscription?</source>
+                <target>Что-то не так... Возможно, вы уже активировали свою подписку?</target>
             </trans-unit>
             <trans-unit id="flash.unsubscribed" xml:space="preserve">
-                <source>You have succefully unsubscribed from our newsletter</source>
+                <source>You have successfully unsubscribed from our mailing list</source>
                 <target>Вы отписались от рассылки</target>
             </trans-unit>
             <trans-unit id="flash.updated" xml:space="preserve">
-                <source>Subscription updated</source>
+                <source>You have successfully changed the parameters of your subscription</source>
                 <target>Параметры вашей подписки изменены</target>
             </trans-unit>
         </body>
