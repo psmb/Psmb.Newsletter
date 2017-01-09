@@ -1,6 +1,7 @@
 <?php
 namespace Psmb\Newsletter\Service;
 
+use Html2Text\Html2Text;
 use TYPO3\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\View\FusionView;
@@ -9,6 +10,7 @@ use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Neos\Domain\Service\ContentDimensionPresetSourceInterface;
 use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
 
 /**
@@ -90,11 +92,8 @@ class FusionMailService {
         if ($blindCarbonCopyAddress) {
             $mail->setBcc($blindCarbonCopyAddress);
         }
-        if ($format === 'plaintext') {
-            $mail->setBody($body, 'text/plain');
-        } else {
-            $mail->setBody($body, 'text/html');
-        }
+        $mail->setBody(Html2Text::convert($body), 'text/plain');
+        $mail->addPart($body, 'text/html');
         $mail->send();
     }
 
