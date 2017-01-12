@@ -49,6 +49,7 @@ class NewsletterCommandController extends CommandController
      */
     public function initializeObject() {
         $request = $this->createRequest();
+        $request->setFormat('html');
         $controllerContext = $this->createControllerContext($request);
         $this->fusionMailService->setupObject($controllerContext, $request);
     }
