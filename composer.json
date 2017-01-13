@@ -7,7 +7,8 @@
         "typo3/neos": "^2.3",
         "psmb/registry": "*",
         "typo3/swiftmailer": "*",
-        "tijsverkoyen/css-to-inline-styles": "^2.2"
+        "tijsverkoyen/css-to-inline-styles": "^2.2",
+        "soundasleep/html2text": "~0.3"
     },
     "autoload": {
         "psr-0": {
