@@ -40,7 +40,7 @@ class NewsletterCommandController extends CommandController
 
     /**
      * @Flow\InjectConfiguration(path="subscriptions")
-     * @var string
+     * @var array
      */
     protected $subscriptions;
 

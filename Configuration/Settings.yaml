@@ -3,6 +3,13 @@ TYPO3:
     typoScript:
       autoInclude:
         'Psmb.Newsletter': TRUE
+    userInterface:
+      translation:
+        autoInclude:
+          'Psmb.Newsletter': ['Main', 'NodeTypes/*']
+      requireJsPathMapping:
+        'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+
 #Psmb:
 #  Newsletter:
 #    globalSettings:

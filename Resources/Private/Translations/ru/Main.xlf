@@ -34,6 +34,26 @@
                 <source>You have successfully changed the parameters of your subscription</source>
                 <target>Параметры вашей подписки изменены</target>
             </trans-unit>
+            <trans-unit id="js.send" xml:space="preserve">
+                <source>Send</source>
+                <target>Отправить</target>
+            </trans-unit>
+            <trans-unit id="js.sending" xml:space="preserve">
+                <source>Sending...</source>
+                <target>Отправляю...</target>
+            </trans-unit>
+            <trans-unit id="js.sent" xml:space="preserve">
+                <source>Sent</source>
+                <target>Письмо отправлено</target>
+            </trans-unit>
+            <trans-unit id="js.error" xml:space="preserve">
+                <source>Error</source>
+                <target>Ошибка</target>
+            </trans-unit>
+            <trans-unit id="js.selectSubscription" xml:space="preserve">
+                <source>Please select a subscription</source>
+                <target>Выбирите подписку</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

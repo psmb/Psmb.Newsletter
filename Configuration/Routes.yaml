@@ -64,3 +64,13 @@
     node:
       handler: TYPO3\Neos\Routing\FrontendNodeRoutePartHandler
   appendExceedingArguments: TRUE
+
+-
+  name: 'Psmb.Newsletter send action'
+  uriPattern: 'newsletter/{@action}'
+  defaults:
+    '@package':    'Psmb.Newsletter'
+    '@controller': 'Newsletter'
+    '@format':     'json'
+    '@action':     'send'
+  appendExceedingArguments: TRUE

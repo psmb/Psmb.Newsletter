@@ -9,6 +9,7 @@ use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Neos\Domain\Service\ContentDimensionPresetSourceInterface;
 use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
 
 /**
@@ -134,16 +135,18 @@ class FusionMailService {
      *
      * @param Subscriber $subscriber
      * @param array $subscription
-     * @return string
+     * @param null|NodeInterface $node
+     * @return array
      */
-    public function generateSubscriptionLetter(Subscriber $subscriber, $subscription)
+    public function generateSubscriptionLetter(Subscriber $subscriber, $subscription, $node = NULL)
     {
         $dimensions = isset($subscription['dimensions']) ? $subscription['dimensions'] : null;
         $siteNode = $this->getSiteNode($dimensions);
+        $node = $node ?: $siteNode;
         $this->view->assign('value', [
             'site' => $siteNode,
-            'documentNode' => $siteNode,
-            'node' => $siteNode,
+            'documentNode' => $node,
+            'node' => $node,
             'subscriber' => $subscriber,
             'subscription' => $subscription,
             'globalSettings' => $this->globalSettings
