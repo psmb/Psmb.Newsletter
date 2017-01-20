@@ -2,10 +2,17 @@ privilegeTargets:
   TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
     'Psmb.Newsletter':
       matcher: 'method(Psmb\Newsletter\Controller\(.*)Controller->(.*)Action())'
+    'Psmb.Newsletter:BackendModule':
+      matcher: 'method(Psmb\Newsletter\Controller\BackendController->.*Action())'
 
 roles:
   'TYPO3.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'Psmb.Newsletter'
+        permission: GRANT
+  'TYPO3.Neos:Editor':
+    privileges:
+      -
+        privilegeTarget: 'Psmb.Newsletter:BackendModule'
         permission: GRANT
