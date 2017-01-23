@@ -5,6 +5,8 @@ namespace Psmb\Newsletter\Controller;
  * This file is part of the Globit.Newsletter package.
  */
 
+use League\Csv\Reader;
+use League\Csv\Writer;
 use Psmb\Newsletter\Domain\Model\Filter;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
@@ -18,6 +20,8 @@ use TYPO3\Neos\Controller\Module\AbstractModuleController;
 
 class BackendController extends AbstractModuleController
 {
+    const STATUS_CREATED = 0, STATUS_UPDATED = 1, STATUS_CORRUPTED = 2;
+
     /**
      * @Flow\Inject
      * @var SubscriberRepository
@@ -72,7 +76,10 @@ class BackendController extends AbstractModuleController
     {
         try {
             $this->subscriberRepository->update($subscriber);
-            $this->addFlashMessage('The subscriber "%s" has been updated.', 'Remove Tag', Message::SEVERITY_OK, [$subscriber->getName()]);
+            $this->addFlashMessage(
+                $this->translator->translateById('flash.subscriber.updated', ["s" => $subscriber->getName()], null, null, 'Main', 'Psmb.Newsletter'),
+                'Update Subscriber'
+            );
         } catch (IllegalObjectTypeException $e) {
             $this->addFlashMessage('An Error occurred: %s', 'Error', Message::SEVERITY_ERROR, [$e->getMessage()]);
         }
@@ -88,7 +95,10 @@ class BackendController extends AbstractModuleController
     {
         try {
             $this->subscriberRepository->remove($subscriber);
-            $this->addFlashMessage('The subscriber "%s" has been removed.', 'Remove Tag', Message::SEVERITY_OK, [$subscriber->getName()]);
+            $this->addFlashMessage(
+                $this->translator->translateById('flash.subscriber.removed', ["s" => $subscriber->getName()], null, null, 'Main', 'Psmb.Newsletter'),
+                'Remove Subscriber'
+            );
         } catch (IllegalObjectTypeException $e) {
             $this->addFlashMessage('An Error occurred: %s', 'Error', Message::SEVERITY_ERROR, [$e->getMessage()]);
         }
@@ -113,39 +123,79 @@ class BackendController extends AbstractModuleController
     public function importSubscribersAction($file)
     {
         if ($file->getMediaType() != 'text/csv') {
-            $this->addFlashMessage('Only csv is allowed.', 'Wrong file ending', Message::SEVERITY_WARNING);
+            $this->addFlashMessage(
+                $this->translator->translateById('flash.csv', [], null, null, 'Main', 'Psmb.Newsletter'),
+                'Wrong file ending',
+                MESSAGE::SEVERITY_WARNING
+            );
             $this->redirect('index');
         }
 
         $filename = $_FILES['moduleArguments']['tmp_name']['file']['resource'];
 
         if (!is_readable($filename)) {
-            $this->addFlashMessage('Sorry, but the file "%s" is not readable or does not exist...', 'File does not exist', Message::SEVERITY_WARNING, [$filename]);
+            $this->addFlashMessage(
+                $this->translator->translateById('flash.file.error', [], null, null, 'Main', 'Psmb.Newsletter'),
+                'File error',
+                MESSAGE::SEVERITY_ERROR
+            );
             $this->redirect('index');
         }
-        $handle = fopen($filename, "r");
-        while (($line = fgetcsv($handle)) !== false) {
+        $csv = Reader::createFromPath($filename);
+        $status[self::STATUS_CREATED] = 0;
+        $status[self::STATUS_UPDATED] = 0;
+        $status[self::STATUS_CORRUPTED] = 0;
+        foreach ($line = $csv->fetchAll() as $line) {
             if (count($line) === 3) {
                 $email = $line[0];
                 $name = $line[1] ?: "";
                 $subscriptions = explode("|", $line[2]);
 
                 if ($this->subscriberRepository->countByEmail($email) > 0) {
-                    $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
-                    $this->addFlashMessage('%s: ' . $message, null, Message::SEVERITY_WARNING, [$email]);
+                    /** @var Subscriber $subscriber */
+                    $subscriber = $this->subscriberRepository->findByEmail($email)->getFirst();
+                    $subscriber->setSubscriptions($subscriptions);
+                    $subscriber->setName($name);
+                    $this->subscriberRepository->update($subscriber);
+                    $status[self::STATUS_UPDATED]++;
                 } else {
                     $subscriber = new Subscriber();
                     $subscriber->setEmail($email);
                     $subscriber->setName($name);
                     $subscriber->setSubscriptions($subscriptions);
                     $this->subscriberRepository->add($subscriber);
+                    $status[self::STATUS_CREATED]++;
                 }
+            } else {
+                $status[self::STATUS_CORRUPTED]++;
             }
         }
-        fclose($handle);
 
-        $this->addFlashMessage('Subscribers have been added.', null, Message::SEVERITY_OK);
+        $this->addFlashMessage(
+            $this->translator->translateById('flash.file.error', $status, null, null, 'Main', 'Psmb.Newsletter'),
+            'Remove Subscriber'
+        );
         $this->redirect('index');
+    }
+
+    /**
+     * @return void
+     */
+    public function exportSubscribersAction()
+    {
+        $csv = Writer::createFromFileObject(new \SplTempFileObject());
+
+        /** @var Subscriber $subscriber */
+        foreach ($this->subscriberRepository->findAll() as $subscriber) {
+            $csv->insertOne([
+                $subscriber->getEmail(),
+                $subscriber->getName(),
+                implode('|', $subscriber->getSubscriptions())
+            ]);
+        }
+
+        $csv->output('subscriberlist.csv');
+        die();
     }
 
     /**
@@ -160,7 +210,10 @@ class BackendController extends AbstractModuleController
         } else {
             try {
                 $this->subscriberRepository->add($subscriber);
-                $this->addFlashMessage('The subscriber "%s" has been added.', 'Remove Tag', Message::SEVERITY_OK, [$subscriber->getName()]);
+                $this->addFlashMessage(
+                    $this->translator->translateById('flash.subscriber.added', ['s' => $subscriber->getName()], null, null, 'Main', 'Psmb.Newsletter'),
+                    'Add successful'
+                );
             } catch (IllegalObjectTypeException $e) {
                 $this->addFlashMessage('An Error occurred: %s', 'Error', Message::SEVERITY_ERROR, [$e->getMessage()]);
             }

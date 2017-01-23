@@ -9,17 +9,17 @@
         <fieldset class="neos-span5">
             <legend>Edit subscription</legend>
             <div class="neos-control-group">
-                <label class="neos-control-label">Name</label>
+                <label class="neos-control-label"><f:translate id="backend.name">Name</f:translate></label>
                 <f:form.textfield property="name" class="neos-span12" />
             </div>
 
             <div class="neos-control-group">
-                <label class="neos-control-label">E-Mail</label>
+                <label class="neos-control-label"><f:translate id="backend.email">E-Mail</f:translate></label>
                 <f:form.textfield property="email" disabled="TRUE" class="neos-span12 neos-uneditable-input"/>
             </div>
 
             <div class="neos-control-group">
-                <label class="neos-control-label">Subscriptions</label>
+                <label class="neos-control-label"><f:translate id="backend.subscriptions">Subscriptions</f:translate></label>
                 <f:for each="{subscriptions}" as="subscription" iteration="subscriptionIteration">
                     <div class="neos-controls">
                         <label for="subscriptions-{subscriptionIteration.cycle}" class="neos-checkbox"
@@ -41,5 +41,5 @@
     <f:link.action class="neos-button" title="Back to list" action="index" controller="Backend">
         Cancel
     </f:link.action>
-    <f:form.submit class="neos-button neos-button-primary" title="Back to list" value="Save subscriber" />
+    <f:form.submit class="neos-button neos-button-primary" title="Back to list" value="{f:translate(id:'backend.subscriber.update')}" />
 </f:section>

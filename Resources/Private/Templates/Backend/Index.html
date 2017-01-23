@@ -5,16 +5,16 @@
 <f:layout name="Default"/>
 
 <f:section name="Content">
-    <legend>Subscriptions</legend>
+    <legend><f:translate id="backend.subscribers">Newsletter Subscribers</f:translate></legend>
 
     <f:widget.paginate objects="{subscribers}" as="paginatedSubscribers"
                        configuration="{itemsPerPage: settings.module.itemsPerPage, insertAbove: FALSE, insertBelow: true, maximumNumberOfLinks: 10}">
         <table class="neos-table">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>E-Mail</th>
-                <th>Subscriptions</th>
+                <th><f:translate id="backend.name">Name</f:translate></th>
+                <th><f:translate id="backend.email">E-Mail</f:translate></th>
+                <th><f:translate id="backend.subscriptions">Subscriptions</f:translate></th>
                 <th class="neos-action">
                     <div class="neos-pull-right">
                         <f:link.action action="index" class="neos-button{f:if(condition:filter,then:' neos-button-primary')}"
@@ -63,14 +63,17 @@
 </f:section>
 
 <f:section name="Footer">
-        <label class="neos-button neos-button-primary" for="resource">
-            <span>Upload CSV</span>
-            <f:form method="post" action="importSubscribers" object="{file}" objectName="file" enctype="multipart/form-data">
-                <f:form.upload class="neos-hide" id="resource" property="resource" additionalAttributes="{required: 'required', onchange: 'form.submit();'}" />
-            </f:form>
-        </label>
+    <f:link.action action="exportSubscribers" class="neos-button" title="Export subscriber as CSV">
+        <f:translate id="backend.subscribers.export">Export subscribers</f:translate>
+    </f:link.action>
+    <label class="neos-button neos-button-primary" for="resource">
+        <span><f:translate id="backend.csv.upload">Upload CSV</f:translate></span>
+        <f:form method="post" action="importSubscribers" object="{file}" objectName="file" enctype="multipart/form-data">
+            <f:form.upload class="neos-hide" id="resource" property="resource" additionalAttributes="{required: 'required', onchange: 'form.submit();'}" />
+        </f:form>
+    </label>
     <f:link.action action="newSubscriber" class="neos-button neos-button-success" title="Add Subscriber">
-        Add subscriber
+        <f:translate id="backend.subscriber.add">Add subscriber</f:translate>
     </f:link.action>
 </f:section>
 
@@ -81,13 +84,17 @@
                 <div class="neos-modal-header">
                     <button type="button" class="neos-close neos-button" data-dismiss="modal"></button>
                     <div class="neos-header">
-                        Do you really want to delete the subscriber "{subscriber.name}"?
+                        <f:translate id="backend.modal.delete.header" arguments="{subscriber: subscriber.name}">
+                            Do you really want to delete the subscriber "{subscriber.name}"?
+                        </f:translate>
+
                     </div>
                     <div>
                         <div class="neos-subheader">
                             <p>
-                                This will delete the subscriber. <br/>
-                                No E-Mail will be sent out!
+                                <f:translate id="backend.modal.delete.content">
+                                    This will delete the subscriber. No E-Mail will be sent out!
+                                </f:translate>
                             </p>
                         </div>
                     </div>
@@ -98,7 +105,9 @@
                     <f:form action="deleteSubscriber" arguments="{subscriber: subscriber}" class="neos-inline"
                             method="DELETE">
                         <button type="submit" class="neos-button neos-button-danger" title="Delete subscriber">
-                            Yes, delete subscriber
+                            <f:translate id="backend.modal.delete.button">
+                                Yes, delete subscriber
+                            </f:translate>
                         </button>
                     </f:form>
                 </div>
@@ -116,23 +125,23 @@
                     <div class="neos-modal-header">
                         <button type="button" class="neos-close neos-button" data-dismiss="modal"></button>
                         <div class="neos-header">
-                            Filter Options:
+                            <f:translate id="backend.filter">Filter Options:</f:translate>
                         </div>
                         <div class="neos-subheader">
                             <div class="neos-content neos-container-fluid">
                                 <fieldset class="neos-span6">
                                     <div class="neos-control-group">
-                                        <label class="neos-control-label">Name</label>
+                                        <label class="neos-control-label"><f:translate id="backend.name">Name</f:translate></label>
                                         <f:form.textfield property="name" class="neos-span12"/>
                                     </div>
 
                                     <div class="neos-control-group">
-                                        <label class="neos-control-label">E-Mail</label>
+                                        <label class="neos-control-label"><f:translate id="backend.email">E-Mail</f:translate></label>
                                         <f:form.textfield property="email" class="neos-span12"/>
                                     </div>
                                 </fieldset>
                                 <fieldset class="neos-span6">
-                                    <label class="neos-control-label">Subscriptions</label>
+                                    <label class="neos-control-label"><f:translate id="backend.subscriptions">Subscriptions</f:translate></label>
                                     <div class="neos-control-group">
                                         <f:for each="{subscriptions}" as="subscription"
                                                iteration="subscriptionIteration">
@@ -160,7 +169,11 @@
                         <a href="#" class="neos-button" data-dismiss="modal">
                             {neos:backend.translate(id: 'cancel', value: 'Cancel')}
                         </a>
-                        <button type="submit" class="neos-button neos-button-primary">Filter subscribers</button>
+                        <button type="submit" class="neos-button neos-button-primary">
+                            <f:translate id="backend.modal.filter.button">
+                                Filter subscribers
+                            </f:translate>
+                        </button>
                     </div>
                 </f:form>
             </div>

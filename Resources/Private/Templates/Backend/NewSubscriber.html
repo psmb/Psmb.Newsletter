@@ -9,20 +9,20 @@
         <fieldset class="neos-span5">
             <legend>Edit subscription</legend>
             <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.name', then: ' neos-error')}">
-                <label class="neos-control-label">Name</label>
+                <label class="neos-control-label"><f:translate id="backend.name">Name</f:translate></label>
                 <f:form.textfield property="name" class="neos-span12"/>
                 <f:render partial="Module/Shared/FieldValidationResults" arguments="{fieldname: 'subscriber.name'}"/>
             </div>
 
 
             <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.email', then: ' neos-error')}">
-                <label class="neos-control-label">E-Mail</label>
+                <label class="neos-control-label"><f:translate id="backend.email">E-Mail</f:translate></label>
                 <f:form.textfield errorClass="neos-error" property="email" class="neos-span12"/>
                 <f:render partial="Module/Shared/FieldValidationResults" arguments="{fieldname: 'subscriber.email'}"/>
             </div>
 
             <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.subscriptions', then: ' neos-error')}">
-                <label class="neos-control-label">Subscriptions</label>
+                <label class="neos-control-label"><f:translate id="backend.subscriptions">Subscriptions</f:translate></label>
                 <f:for each="{subscriptions}" as="subscription" iteration="subscriptionIteration">
                     <div class="neos-controls">
                         <label for="subscriptions-{subscriptionIteration.cycle}" class="neos-checkbox"
@@ -45,5 +45,5 @@
     <f:link.action class="neos-button" title="Back to list" action="index" controller="Backend">
         Cancel
     </f:link.action>
-    <f:form.submit class="neos-button neos-button-primary" title="Back to list" value="Create subscriber" />
+    <f:form.submit class="neos-button neos-button-primary" title="Back to list" value="{f:translate(id:'backend.subscriber.create')}" />
 </f:section>
