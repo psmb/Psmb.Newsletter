@@ -9,7 +9,6 @@ use TYPO3\Flow\I18n\Service as I18nService;
 use TYPO3\Flow\I18n\Translator;
 use TYPO3\Flow\Mvc\Controller\ActionController;
 use TYPO3\Flow\Annotations as Flow;
-use function TYPO3\Flow\var_dump;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 class NewsletterController extends ActionController
@@ -105,7 +104,7 @@ class NewsletterController extends ActionController
         $subscriber->setEmail($email);
         $subscriber->setName('Test User');
 
-        $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscriptions[0], $node);
+        $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, reset($subscriptions), $node);
         $this->fusionMailService->sendLetter($letter);
 
         $this->view->assign('value', ['status' => 'success']);

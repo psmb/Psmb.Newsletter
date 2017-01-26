@@ -20,6 +20,15 @@ TYPO3:
       requireJsPathMapping:
         'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
 
+Flowpack:
+  JobQueue:
+    Common:
+      queues:
+        'psmb-newsletter':
+          className: 'Flowpack\JobQueue\Common\Queue\FakeQueue'
+          options:
+            async: true
+
 #Psmb:
 #  Newsletter:
 #    globalSettings:
