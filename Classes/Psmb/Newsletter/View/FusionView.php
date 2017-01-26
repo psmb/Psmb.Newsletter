@@ -60,7 +60,7 @@ class FusionView extends AbstractView
 	/**
 	 * Renders the view
 	 *
-	 * @return string The rendered view
+	 * @return mixed The rendered view
 	 * @throws \Exception if no node is given
 	 * @api
 	 */

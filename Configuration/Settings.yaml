@@ -1,8 +1,25 @@
 TYPO3:
+  Flow:
+    security:
+      authentication:
+        providers:
+          Typo3BackendProvider:
+            requestPatterns:
+              'Psmb.Newsletter:Backend':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
   Neos:
     typoScript:
       autoInclude:
         'Psmb.Newsletter': TRUE
+    userInterface:
+      translation:
+        autoInclude:
+          'Psmb.Newsletter': ['Main', 'NodeTypes/*']
+      requireJsPathMapping:
+        'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+
 #Psmb:
 #  Newsletter:
 #    globalSettings:

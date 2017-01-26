@@ -26,6 +26,43 @@
             <trans-unit id="flash.updated" xml:space="preserve">
                 <source>You have successfully changed the parameters of your subscription</source>
             </trans-unit>
+            <trans-unit id="js.send" xml:space="preserve">
+                <source>Send</source>
+            </trans-unit>
+            <trans-unit id="js.sending" xml:space="preserve">
+                <source>Sending...</source>
+            </trans-unit>
+            <trans-unit id="js.sent" xml:space="preserve">
+                <source>Newsletter sent</source>
+            </trans-unit>
+            <trans-unit id="js.test" xml:space="preserve">
+                <source>Test</source>
+            </trans-unit>
+            <trans-unit id="js.error" xml:space="preserve">
+                <source>Error</source>
+            </trans-unit>
+            <trans-unit id="js.selectSubscription" xml:space="preserve">
+                <source>Please select a subscription</source>
+            </trans-unit>
+            <trans-unit id="js.sendTo" xml:space="preserve">
+                <source>Send newsletter to: </source>
+            </trans-unit>
+            <trans-unit id="js.loading" xml:space="preserve">
+                <source>Loading...</source>
+            </trans-unit>
+
+            <trans-unit id="js.confirmationTitle" xml:space="preserve">
+                <source>Send Newsletter</source>
+            </trans-unit>
+            <trans-unit id="js.confirmationDescription" xml:space="preserve">
+                <source>This will send the letter to all subscribers. Check that all your changes are published to live workspace and hit "Send".</source>
+            </trans-unit>
+            <trans-unit id="js.testConfirmationTitle" xml:space="preserve">
+                <source>Send Test Newsletter</source>
+            </trans-unit>
+            <trans-unit id="js.testEmailLabel" xml:space="preserve">
+                <source>Enter test email:</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

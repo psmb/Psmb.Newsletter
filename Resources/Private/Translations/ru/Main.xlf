@@ -34,6 +34,55 @@
                 <source>You have successfully changed the parameters of your subscription</source>
                 <target>Параметры вашей подписки изменены</target>
             </trans-unit>
+            <trans-unit id="js.send" xml:space="preserve">
+                <source>Send</source>
+                <target>Отправить</target>
+            </trans-unit>
+            <trans-unit id="js.test" xml:space="preserve">
+                <source>Test</source>
+                <target>Тест</target>
+            </trans-unit>
+            <trans-unit id="js.sending" xml:space="preserve">
+                <source>Sending...</source>
+                <target>Отправляю...</target>
+            </trans-unit>
+            <trans-unit id="js.sent" xml:space="preserve">
+                <source>Newsletter sent</source>
+                <target>Рассылка отправлена</target>
+            </trans-unit>
+            <trans-unit id="js.error" xml:space="preserve">
+                <source>Error</source>
+                <target>Ошибка</target>
+            </trans-unit>
+            <trans-unit id="js.selectSubscription" xml:space="preserve">
+                <source>Please select a subscription</source>
+                <target>Выбирите подписку</target>
+            </trans-unit>
+            <trans-unit id="js.sendTo" xml:space="preserve">
+                <source>Send newsletter to: </source>
+                <target>Отправить рассылку группе: </target>
+            </trans-unit>
+            <trans-unit id="js.loading" xml:space="preserve">
+                <source>Loading...</source>
+                <target>Загрузка...</target>
+            </trans-unit>
+
+            <trans-unit id="js.confirmationTitle" xml:space="preserve">
+                <source>Send newsletter</source>
+                <target>Отправить рассылку</target>
+            </trans-unit>
+            <trans-unit id="js.confirmationDescription" xml:space="preserve">
+                <source>This will send the letter to all subscribers. Check that all your changes are published to live workspace and hit "Send".</source>
+                <target>Вы отправляете письмо всем подписчикам! Проверьте, что все изменения опубликованы и нажмите "Отправить".</target>
+            </trans-unit>
+            <trans-unit id="js.testConfirmationTitle" xml:space="preserve">
+                <source>Send test newsletter</source>
+                <target>Отправить тестовое письмо</target>
+            </trans-unit>
+            <trans-unit id="js.testEmailLabel" xml:space="preserve">
+                <source>Enter test email:</source>
+                <target>Введите тестовый email:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

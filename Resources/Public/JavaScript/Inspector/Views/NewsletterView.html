@@ -1,0 +1,36 @@
+<div class="neos-inspector-field">
+	<div>
+		{{#if view.doneLoading}}
+			{{#if view.selectContent}}
+				{{view view.select}}
+			{{else}}
+				<div style="padding: 12px 0">
+                    {{translate id='Psmb.Newsletter:Main:js.sendTo' fallback='Send newsletter to: '}} {{view.subscription.label}}
+				</div>
+			{{/if}}
+
+            <div>
+                <button class="neos-button-danger" {{action "finalSend" target="view"}}>
+                    {{translate id='Psmb.Newsletter:Main:js.send' fallback='Send'}}
+                </button>
+
+                <button {{action "testSend" target="view"}}>
+                    {{translate id='Psmb.Newsletter:Main:js.test' fallback='Test'}}
+                </button>
+            </div>
+		{{else}}
+            {{translate id='Psmb.Newsletter:Main:js.loading' fallback='Loading...'}}
+		{{/if}}
+        {{#if view.notificationMessageId}}
+        <div style="padding: 12px 0">
+            {{view.notificationMessage}}
+        </div>
+        {{/if}}
+		{{#if view.errorMessageId}}
+			<div style="color: #ff460d; padding: 12px 0">
+				<i class="icon-warning-sign"></i>
+				{{view.errorMessage}}
+			</div>
+		{{/if}}
+	</div>
+</div>
