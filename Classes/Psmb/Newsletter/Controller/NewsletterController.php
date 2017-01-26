@@ -87,6 +87,31 @@ class NewsletterController extends ActionController
     }
 
     /**
+     * Sends a test letter for subscription
+     *
+     * @param string $subscription Subscription id to send newsletter to
+     * @param NodeInterface $node Node of the current newsletter item
+     * @param string $email Test email address
+     * @return void
+     */
+    public function testSendAction($subscription, NodeInterface $node, $email)
+    {
+        $this->fusionMailService->setupObject($this->getControllerContext(), $this->request);
+        $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
+            return $item['identifier'] == $subscription;
+        });
+
+        $subscriber = new Subscriber();
+        $subscriber->setEmail($email);
+        $subscriber->setName('Test User');
+
+        $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscriptions[0], $node);
+        $this->fusionMailService->sendLetter($letter);
+
+        $this->view->assign('value', ['status' => 'success']);
+    }
+
+    /**
      * Generate a letter for each subscriber in the subscription
      *
      * @param array $subscription

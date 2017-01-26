@@ -62,6 +62,23 @@
                 <source>Loading...</source>
                 <target>Загрузка...</target>
             </trans-unit>
+
+            <trans-unit id="js.confirmationTitle" xml:space="preserve">
+                <source>Send newsletter</source>
+                <target>Отправить рассылку</target>
+            </trans-unit>
+            <trans-unit id="js.confirmationDescription" xml:space="preserve">
+                <source>This will send the letter to all subscribers. Check that all your changes are published to live workspace and hit "Send".</source>
+                <target>Вы отправляете письмо всем подписчикам! Проверьте, что все изменения опубликованы и нажмите "Отправить".</target>
+            </trans-unit>
+            <trans-unit id="js.testConfirmationTitle" xml:space="preserve">
+                <source>Send test newsletter</source>
+                <target>Отправить тестовое письмо</target>
+            </trans-unit>
+            <trans-unit id="js.testEmailLabel" xml:space="preserve">
+                <source>Enter test email:</source>
+                <target>Введите тестовый email:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

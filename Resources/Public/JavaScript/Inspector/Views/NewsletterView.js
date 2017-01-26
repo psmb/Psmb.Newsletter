@@ -2,15 +2,23 @@ define([
         'emberjs',
         'text!./NewsletterView.html',
         'Shared/I18n',
-        'Shared/HttpClient'
+        'Shared/HttpClient',
+        './Confirmation',
+        './TestConfirmation'
     ],
     function (Ember,
               template,
               I18n,
-              HttpClient) {
+              HttpClient,
+              Confirmation,
+              TestConfirmation) {
         return Ember.View.extend({
             template: Ember.Handlebars.compile(template),
-            _select: Ember.Select.extend({
+
+            subscription: null,
+            doneLoading: false,
+
+            select: Ember.Select.extend({
                 content: function () {
                     return this.get('parentView.selectContent');
                 }.property('parentView.selectContent'),
@@ -19,29 +27,31 @@ define([
                 prompt: I18n.translate('Psmb.Newsletter:Main:js.selectSubscription', 'Please select a subscription'),
                 valueDidChange: function() {
                     this.set('parentView.subscription', this.get('value'));
-                    this.set('parentView.buttonLabel', 'js.send');
+                    this.set('parentView.buttonLabelId', 'js.send');
                 }.observes('value')
             }),
             selectContent: null,
-            subscription: null,
-            errorMessage: null,
-            doneLoading: false,
-            _errorMessage: function () {
-                return I18n.translate('Psmb.Newsletter:Main:' + this.get('errorMessage'), '');
-            }.property('errorMessage'),
-            buttonLabel: 'js.send',
-            _buttonLabel: function () {
-                return I18n.translate('Psmb.Newsletter:Main:' + this.get('buttonLabel'), 'Send');
-            }.property('buttonLabel'),
-            sendingDisabled: function () {
-                return this.get('buttonLabel') !== 'js.send';
-            }.property('buttonLabel'),
-            _sendTo: function () {
-                return I18n.translate('Psmb.Newsletter:Main:js.sendTo', 'Send newsletter to: ');
-            }.property(),
-            _loadingLabel: function () {
-                return I18n.translate('Psmb.Newsletter:Main:js.loading', 'Loading...');
-            }.property(),
+
+            notificationMessageId: null,
+            notificationMessage: function () {
+                return I18n.translate('Psmb.Newsletter:Main:' + this.get('notificationMessageId'), '');
+            }.property('notificationMessageId'),
+
+            errorMessageId: null,
+            errorMessage: function () {
+                return I18n.translate('Psmb.Newsletter:Main:' + this.get('errorMessageId'), '');
+            }.property('errorMessageId'),
+
+            buttonLabelId: 'js.send',
+            buttonLabel: function () {
+                return I18n.translate('Psmb.Newsletter:Main:' + this.get('buttonLabelId'), 'Send');
+            }.property('buttonLabelId'),
+
+            testButtonLabelId: 'js.send',
+            testButtonLabel: function () {
+                return I18n.translate('Psmb.Newsletter:Main:' + this.get('testButtonLabelId'), 'Send');
+            }.property('testButtonLabelId'),
+
             init: function () {
                 var subscriptionsEndpoint = '/newsletter/getSubscriptions';
 
@@ -53,36 +63,67 @@ define([
                         this.set('selectContent', response);
                         this.set('doneLoading', true);
                     } else {
-                        this.set('errorMessage', 'js.error');
+                        this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
                 HttpClient.getResource(subscriptionsEndpoint).then(callback);
 
                 return this._super();
             },
-            send: function () {
+            finalSend: function () {
                 var subscription = this.get('subscription');
                 if (!subscription) {
-                    this.set('errorMessage', 'js.selectSubscription');
+                    this.set('errorMessageId', 'js.selectSubscription');
                     return;
                 }
-                this.set('errorMessage', null);
+                this.set('errorMessageId', null);
 
-                var sendEndpointUrl = '/newsletter/send';
+                Confirmation.create({
+                    sendRequest: this.sendRequest.bind(this),
+                    sendNewsletter: function () {
+                        this.sendRequest();
+                        this.cancel();
+                    }
+                });
+            },
+            testSend: function () {
+                var subscription = this.get('subscription');
+                if (!subscription) {
+                    this.set('errorMessageId', 'js.selectSubscription');
+                    return;
+                }
+                this.set('errorMessageId', null);
+
+                TestConfirmation.create({
+                    sendRequest: this.sendRequest.bind(this),
+                    sendNewsletter: function () {
+                        var testEmail = this.get('testEmail');
+                        if (testEmail) {
+                            this.sendRequest(testEmail);
+                        }
+                        this.cancel();
+                    }
+                });
+            },
+            sendRequest: function (testEmail) {
+                var sendEndpointUrl = testEmail ? '/newsletter/testSend' : '/newsletter/send';
 
                 var callback = function (response) {
                     if (response.status == 'success') {
-                        this.set('buttonLabel', 'js.sent');
+                        this.set('notificationMessageId', 'js.sent');
                     } else {
-                        this.set('errorMessage', 'js.error');
+                        this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
                 var data = {
-                    subscription: subscription,
+                    subscription: this.get('subscription'),
                     node: this.get('controller.nodeProperties._path')
                 };
+                if (testEmail) {
+                    data.email = testEmail;
+                }
                 HttpClient.createResource(sendEndpointUrl, {data: data}).then(callback);
-                this.set('buttonLabel', 'js.sending');
+                this.set('notificationMessageId', 'js.sending');
             }
         });
     });

@@ -1,0 +1,20 @@
+<div class="neos-modal sandstorm-newsletter-confirmation">
+    <div class="neos-modal-header">
+        <button class="neos-close neos-button" title="{{translate id='close' fallback='Close'}}" {{action "cancel" target="view"}}></button>
+        <div class="neos-header">{{translate id='Psmb.Newsletter:Main:js.testConfirmationTitle' fallback='Send test newsletter'}}</div>
+    </div>
+    <div>
+        <div class="neos-subheader">
+            <p style="padding-bottom: 6px">{{translate id='Psmb.Newsletter:Main:js.testEmailLabel' fallback='Enter test email:'}}</p>
+            <p>{{view Ember.TextField type="email" name="testEmail" valueBinding="view.testEmail"}}</p>
+        </div>
+    </div>
+    <div class="neos-modal-footer">
+        <button class="neos-button" title="{{translate id='cancel' fallback='Cancel'}}" {{action "cancel" target="view"}}>{{translate id="cancel" fallback="Cancel"}}</button>
+
+        <button class="neos-button neos-button-danger" title="Send" {{action "sendNewsletter" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
+            {{translate id='Psmb.Newsletter:Main:js.send' fallback='Send'}}
+        </button>
+    </div>
+</div>
+<div class="neos-modal-backdrop neos-in"></div>

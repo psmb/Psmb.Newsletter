@@ -2,22 +2,34 @@
 	<div>
 		{{#if view.doneLoading}}
 			{{#if view.selectContent}}
-				{{view view._select}}
+				{{view view.select}}
 			{{else}}
 				<div style="padding: 12px 0">
-					{{view._sendTo}} {{view.subscription.label}}
+                    {{translate id='Psmb.Newsletter:Main:js.sendTo' fallback='Send newsletter to: '}} {{view.subscription.label}}
 				</div>
 			{{/if}}
-			<button {{action "send" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
-				{{view._buttonLabel}}
-			</button>
+
+            <div>
+                <button class="neos-button-danger" {{action "finalSend" target="view"}}>
+                    {{translate id='Psmb.Newsletter:Main:js.send' fallback='Send'}}
+                </button>
+
+                <button {{action "testSend" target="view"}}>
+                    {{translate id='Psmb.Newsletter:Main:js.test' fallback='Test'}}
+                </button>
+            </div>
 		{{else}}
-			{{view._loadingLabel}}
+            {{translate id='Psmb.Newsletter:Main:js.loading' fallback='Loading...'}}
 		{{/if}}
-		{{#if view.errorMessage}}
+        {{#if view.notificationMessageId}}
+        <div style="padding: 12px 0">
+            {{view.notificationMessage}}
+        </div>
+        {{/if}}
+		{{#if view.errorMessageId}}
 			<div style="color: #ff460d; padding: 12px 0">
 				<i class="icon-warning-sign"></i>
-				{{view._errorMessage}}
+				{{view.errorMessage}}
 			</div>
 		{{/if}}
 	</div>

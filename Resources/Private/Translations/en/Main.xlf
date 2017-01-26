@@ -47,6 +47,19 @@
             <trans-unit id="js.loading" xml:space="preserve">
                 <source>Loading...</source>
             </trans-unit>
+
+            <trans-unit id="js.confirmationTitle" xml:space="preserve">
+                <source>Send Newsletter</source>
+            </trans-unit>
+            <trans-unit id="js.confirmationDescription" xml:space="preserve">
+                <source>This will send the letter to all subscribers. Check that all your changes are published to live workspace and hit "Send".</source>
+            </trans-unit>
+            <trans-unit id="js.testConfirmationTitle" xml:space="preserve">
+                <source>Send Test Newsletter</source>
+            </trans-unit>
+            <trans-unit id="js.testEmailLabel" xml:space="preserve">
+                <source>Enter test email:</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
