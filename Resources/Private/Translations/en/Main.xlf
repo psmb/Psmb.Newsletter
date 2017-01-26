@@ -41,6 +41,9 @@
             <trans-unit id="js.selectSubscription" xml:space="preserve">
                 <source>Please select a subscription</source>
             </trans-unit>
+            <trans-unit id="js.sendTo" xml:space="preserve">
+                <source>Send newsletter to: </source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

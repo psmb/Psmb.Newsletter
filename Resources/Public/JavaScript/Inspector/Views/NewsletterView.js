@@ -1,11 +1,13 @@
 define([
         'emberjs',
         'text!./NewsletterView.html',
-        'Shared/I18n'
+        'Shared/I18n',
+        'Shared/HttpClient'
     ],
     function (Ember,
               template,
-              I18n) {
+              I18n,
+              HttpClient) {
         return Ember.View.extend({
             template: Ember.Handlebars.compile(template),
             _select: Ember.Select.extend({
@@ -18,9 +20,9 @@ define([
                 valueDidChange: function() {
                     this.set('parentView.subscription', this.get('value'));
                     this.set('parentView.buttonLabel', 'js.send');
-                }.observes('value'),
+                }.observes('value')
             }),
-            selectContent: [],
+            selectContent: null,
             subscription: null,
             errorMessage: null,
             _errorMessage: function () {
@@ -33,25 +35,21 @@ define([
             sendingDisabled: function () {
                 return this.get('buttonLabel') !== 'js.send';
             }.property('buttonLabel'),
+            _sendTo: function () {
+                return I18n.translate('Psmb.Newsletter:Main:js.sendTo', 'Send newsletter to: ');
+            }.property(),
             init: function () {
                 var subscriptionsEndpoint = '/newsletter/getSubscriptions';
-                var request = new XMLHttpRequest();
-                request.withCredentials = true;
-                request.open('GET', subscriptionsEndpoint, true);
 
-                request.onload = function () {
-                    if (request.status >= 200 && request.status < 400) {
-                        var response = JSON.parse(request.responseText);
-                        this.set('selectContent', response);
+                var callback = function (response) {
+                    if (response.length === 1) {
+                        this.set('subscription', response[0]);
                     } else {
-                        this.set('errorMessage', 'js.error');
+                        this.set('selectContent', response);
                     }
                 }.bind(this);
+                HttpClient.getResource(subscriptionsEndpoint).then(callback);
 
-                request.onerror = function () {
-                    this.set('errorMessage', 'js.error');
-                }.bind(this);
-                request.send();
                 return this._super();
             },
             send: function () {
@@ -64,31 +62,15 @@ define([
 
                 var sendEndpointUrl = '/newsletter/send';
 
-                var request = new XMLHttpRequest();
-                request.withCredentials = true;
-                request.open('POST', sendEndpointUrl, true);
-                request.onload = function () {
-                    if (request.status >= 200 && request.status < 400) {
-                        var response = JSON.parse(request.responseText);
-                        if (response.status == 'success') {
-                            this.set('buttonLabel', 'js.sent');
-                        } else {
-                            this.set('errorMessage', 'js.error');
-                        }
+                var callback = function (response) {
+                    if (response.status == 'success') {
+                        this.set('buttonLabel', 'js.sent');
                     } else {
                         this.set('errorMessage', 'js.error');
                     }
                 }.bind(this);
-
-                request.onerror = function () {
-                    this.set('errorMessage', 'js.error');
-                }.bind(this);
-
-                var formData = new FormData();
-                formData.append('subscription', subscription);
-                formData.append('node', this.get('controller.nodeProperties._path'));
-                request.send(formData);
-
+                debugger;
+                HttpClient.createResource(sendEndpointUrl, {data: {subscription: subscription.value, node: this.get('controller.nodeProperties._path')}}).then(callback);
                 this.set('buttonLabel', 'js.sending');
             }
         });

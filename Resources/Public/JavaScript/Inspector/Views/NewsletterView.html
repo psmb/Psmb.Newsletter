@@ -1,6 +1,12 @@
 <div class="neos-inspector-field">
 	<div>
-		{{view view._select}}
+		{{#if view.selectContent}}
+			{{view view._select}}
+		{{else}}
+			<div style="padding: 12px 0">
+				{{view._sendTo}} {{view.subscription.label}}
+			</div>
+		{{/if}}
 		<button {{action "send" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
 			{{view._buttonLabel}}
 		</button>

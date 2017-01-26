@@ -54,6 +54,10 @@
                 <source>Please select a subscription</source>
                 <target>Выбирите подписку</target>
             </trans-unit>
+            <trans-unit id="js.sendTo" xml:space="preserve">
+                <source>Send newsletter to: </source>
+                <target>Отправить рассылку группе: </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
