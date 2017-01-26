@@ -25,6 +25,7 @@ define([
             selectContent: null,
             subscription: null,
             errorMessage: null,
+            doneLoading: false,
             _errorMessage: function () {
                 return I18n.translate('Psmb.Newsletter:Main:' + this.get('errorMessage'), '');
             }.property('errorMessage'),
@@ -46,9 +47,11 @@ define([
 
                 var callback = function (response) {
                     if (response.length === 1) {
-                        this.set('subscription', response[0]);
+                        this.set('subscription', response[0].value);
+                        this.set('doneLoading', true);
                     } else if (response.length > 1){
                         this.set('selectContent', response);
+                        this.set('doneLoading', true);
                     } else {
                         this.set('errorMessage', 'js.error');
                     }
@@ -75,7 +78,7 @@ define([
                     }
                 }.bind(this);
                 var data = {
-                    subscription: subscription.value,
+                    subscription: subscription,
                     node: this.get('controller.nodeProperties._path')
                 };
                 HttpClient.createResource(sendEndpointUrl, {data: data}).then(callback);
