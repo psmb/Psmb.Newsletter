@@ -1,4 +1,14 @@
 TYPO3:
+  Flow:
+    security:
+      authentication:
+        providers:
+          Typo3BackendProvider:
+            requestPatterns:
+              'Psmb.Newsletter:Backend':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
   Neos:
     typoScript:
       autoInclude:
