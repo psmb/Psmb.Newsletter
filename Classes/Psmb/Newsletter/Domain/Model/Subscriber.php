@@ -16,6 +16,7 @@ class Subscriber {
      * @ORM\Column(length=80)
      * @Flow\Identity
      * @Flow\Validate(type="EmailAddress")
+     * @Flow\Validate(type="NotEmpty")
      * @Flow\Validate(type="StringLength", options={"minimum"=1, "maximum"=80})
      */
     protected $email;
@@ -30,6 +31,7 @@ class Subscriber {
 
 	/**
 	 * @var array
+     * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $subscriptions;
 

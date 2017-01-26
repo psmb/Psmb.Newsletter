@@ -162,7 +162,9 @@ class NewsletterCommandController extends CommandController
             $baseUri = new Uri($this->baseUri);
             $httpRequest->setBaseUri($baseUri);
         }
-        return new ActionRequest($httpRequest);
+        $actionRequest = new ActionRequest($httpRequest);
+        $actionRequest->setFormat('html');
+        return $actionRequest;
     }
 
     /**

@@ -1,0 +1,49 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:neos="http://typo3.org/ns/TYPO3/Neos/ViewHelpers"
+      xmlns:media="http://typo3.org/ns/TYPO3/Media/ViewHelpers">
+
+<f:layout name="NewSubscriber"/>
+
+<f:section name="Content">
+    <div class="neos-row-fluid neos-module-container">
+        <fieldset class="neos-span5">
+            <legend>Edit subscription</legend>
+            <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.name', then: ' neos-error')}">
+                <label class="neos-control-label"><f:translate id="backend.name">Name</f:translate></label>
+                <f:form.textfield property="name" class="neos-span12"/>
+                <f:render partial="Module/Shared/FieldValidationResults" arguments="{fieldname: 'subscriber.name'}"/>
+            </div>
+
+
+            <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.email', then: ' neos-error')}">
+                <label class="neos-control-label"><f:translate id="backend.email">E-Mail</f:translate></label>
+                <f:form.textfield errorClass="neos-error" property="email" class="neos-span12"/>
+                <f:render partial="Module/Shared/FieldValidationResults" arguments="{fieldname: 'subscriber.email'}"/>
+            </div>
+
+            <div class="neos-control-group{f:validation.ifHasErrors(for: 'subscriber.subscriptions', then: ' neos-error')}">
+                <label class="neos-control-label"><f:translate id="backend.subscriptions">Subscriptions</f:translate></label>
+                <f:for each="{subscriptions}" as="subscription" iteration="subscriptionIteration">
+                    <div class="neos-controls">
+                        <label for="subscriptions-{subscriptionIteration.cycle}" class="neos-checkbox"
+                               title="{subscription}"
+                               data-neos-toggle="tooltip" data-placement="right">
+                            <f:form.checkbox property="subscriptions" multiple="true" value="{subscription}"
+                                             id="subscriptions-{subscriptionIteration.cycle}"/>
+                            <span></span>
+                            {subscription}
+                        </label>
+                    </div>
+                </f:for>
+                <f:render partial="Module/Shared/FieldValidationResults" arguments="{fieldname: 'subscriber.subscriptions'}"/>
+            </div>
+        </fieldset>
+    </div>
+</f:section>
+
+<f:section name="Footer">
+    <f:link.action class="neos-button" title="Back to list" action="index" controller="Backend">
+        Cancel
+    </f:link.action>
+    <f:form.submit class="neos-button neos-button-primary" title="Back to list" value="{f:translate(id:'backend.subscriber.create')}" />
+</f:section>

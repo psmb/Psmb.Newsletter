@@ -19,9 +19,19 @@ TYPO3:
           'Psmb.Newsletter': ['Main', 'NodeTypes/*']
       requireJsPathMapping:
         'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
-
-#Psmb:
-#  Newsletter:
+    modules:
+      management:
+        submodules:
+          newsletter:
+            label: 'Newsletter'
+            controller: 'Psmb\Newsletter\Controller\BackendController'
+            description: 'Manage all subscriber lists for your Newsletter. You can edit/delete/update each subscription individually. Keep in mind that all subscribers are detached from Neos users.'
+            icon: 'icon-envelope'
+            privilegeTarget: 'Psmb.Newsletter:BackendModule'
+Psmb:
+  Newsletter:
+    module:
+      itemsPerPage: 10
 #    globalSettings:
 #      senderAddress: 'robot@server.com'
 #      senderName: 'Your robot'

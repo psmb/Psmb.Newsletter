@@ -1,0 +1,6 @@
+-
+  requestFilter: 'isPackage("Psmb.Newsletter") && isFormat("html") && isController("Backend")'
+  options:
+    partialRootPaths:
+      'Psmb.Newsletter': 'resource://Psmb.Newsletter/Private/Partials'
+      'TYPO3.Neos': 'resource://TYPO3.Neos/Private/Partials/'
