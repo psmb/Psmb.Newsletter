@@ -47,8 +47,10 @@ define([
                 var callback = function (response) {
                     if (response.length === 1) {
                         this.set('subscription', response[0]);
-                    } else {
+                    } else if (response.length > 1){
                         this.set('selectContent', response);
+                    } else {
+                        this.set('errorMessage', 'js.error');
                     }
                 }.bind(this);
                 HttpClient.getResource(subscriptionsEndpoint).then(callback);
@@ -72,8 +74,11 @@ define([
                         this.set('errorMessage', 'js.error');
                     }
                 }.bind(this);
-                debugger;
-                HttpClient.createResource(sendEndpointUrl, {data: {subscription: subscription.value, node: this.get('controller.nodeProperties._path')}}).then(callback);
+                var data = {
+                    subscription: subscription.value,
+                    node: this.get('controller.nodeProperties._path')
+                };
+                HttpClient.createResource(sendEndpointUrl, {data: data}).then(callback);
                 this.set('buttonLabel', 'js.sending');
             }
         });

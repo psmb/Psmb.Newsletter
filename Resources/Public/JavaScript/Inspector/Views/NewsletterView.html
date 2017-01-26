@@ -11,14 +11,14 @@
 			<button {{action "send" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
 				{{view._buttonLabel}}
 			</button>
-			{{#if view.errorMessage}}
-				<div style="color: #ff460d; padding: 12px 0">
-					<i class="icon-warning-sign"></i>
-					{{view._errorMessage}}
-				</div>
-			{{/if}}
 		{{else}}
 			{{view._loadingLabel}}
+		{{/if}}
+		{{#if view.errorMessage}}
+			<div style="color: #ff460d; padding: 12px 0">
+				<i class="icon-warning-sign"></i>
+				{{view._errorMessage}}
+			</div>
 		{{/if}}
 	</div>
 </div>
