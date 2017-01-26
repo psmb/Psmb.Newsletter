@@ -1,20 +1,24 @@
 <div class="neos-inspector-field">
 	<div>
-		{{#if view.selectContent}}
-			{{view view._select}}
+		{{#if view.subscription}}
+			{{#if view.selectContent}}
+				{{view view._select}}
+			{{else}}
+				<div style="padding: 12px 0">
+					{{view._sendTo}} {{view.subscription.label}}
+				</div>
+			{{/if}}
+			<button {{action "send" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
+				{{view._buttonLabel}}
+			</button>
+			{{#if view.errorMessage}}
+				<div style="color: #ff460d; padding: 12px 0">
+					<i class="icon-warning-sign"></i>
+					{{view._errorMessage}}
+				</div>
+			{{/if}}
 		{{else}}
-			<div style="padding: 12px 0">
-				{{view._sendTo}} {{view.subscription.label}}
-			</div>
-		{{/if}}
-		<button {{action "send" target="view"}} {{bindAttr disabled="view.sendingDisabled"}}>
-			{{view._buttonLabel}}
-		</button>
-		{{#if view.errorMessage}}
-			<div style="color: #ff460d; padding: 12px 0">
-				<i class="icon-warning-sign"></i>
-				{{view._errorMessage}}
-			</div>
+			{{view._loadingLabel}}
 		{{/if}}
 	</div>
 </div>

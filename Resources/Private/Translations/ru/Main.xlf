@@ -58,6 +58,10 @@
                 <source>Send newsletter to: </source>
                 <target>Отправить рассылку группе: </target>
             </trans-unit>
+            <trans-unit id="js.loading" xml:space="preserve">
+                <source>Loading...</source>
+                <target>Загрузка...</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -38,6 +38,9 @@ define([
             _sendTo: function () {
                 return I18n.translate('Psmb.Newsletter:Main:js.sendTo', 'Send newsletter to: ');
             }.property(),
+            _loadingLabel: function () {
+                return I18n.translate('Psmb.Newsletter:Main:js.loading', 'Loading...');
+            }.property(),
             init: function () {
                 var subscriptionsEndpoint = '/newsletter/getSubscriptions';
 
