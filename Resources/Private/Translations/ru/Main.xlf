@@ -38,13 +38,17 @@
                 <source>Send</source>
                 <target>Отправить</target>
             </trans-unit>
+            <trans-unit id="js.test" xml:space="preserve">
+                <source>Test</source>
+                <target>Тест</target>
+            </trans-unit>
             <trans-unit id="js.sending" xml:space="preserve">
                 <source>Sending...</source>
                 <target>Отправляю...</target>
             </trans-unit>
             <trans-unit id="js.sent" xml:space="preserve">
-                <source>Sent</source>
-                <target>Письмо отправлено</target>
+                <source>Newsletter sent</source>
+                <target>Рассылка отправлена</target>
             </trans-unit>
             <trans-unit id="js.error" xml:space="preserve">
                 <source>Error</source>

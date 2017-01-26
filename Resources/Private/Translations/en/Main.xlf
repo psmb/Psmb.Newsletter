@@ -33,7 +33,10 @@
                 <source>Sending...</source>
             </trans-unit>
             <trans-unit id="js.sent" xml:space="preserve">
-                <source>Sent</source>
+                <source>Newsletter sent</source>
+            </trans-unit>
+            <trans-unit id="js.test" xml:space="preserve">
+                <source>Test</source>
             </trans-unit>
             <trans-unit id="js.error" xml:space="preserve">
                 <source>Error</source>
