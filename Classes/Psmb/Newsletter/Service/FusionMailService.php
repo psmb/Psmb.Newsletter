@@ -11,6 +11,7 @@ use TYPO3\Neos\Domain\Service\ContentDimensionPresetSourceInterface;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
+use Flowpack\JobQueue\Common\Annotations as Job;
 
 /**
  * @Flow\Scope("singleton")
@@ -51,6 +52,8 @@ class FusionMailService {
     }
 
     /**
+     * @Job\Defer(queueName="psmb-newsletter")
+     *
      * @param array $letter
      * @throws \Exception
      */
