@@ -2,16 +2,22 @@
 namespace Psmb\Newsletter\Service;
 
 use TYPO3\Flow\Annotations as Flow;
+use Flowpack\JobQueue\Common\Annotations as Job;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\View\FusionView;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
-use TYPO3\Neos\Domain\Service\ContentDimensionPresetSourceInterface;
+use TYPO3\SwiftMailer\Message;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
-use Flowpack\JobQueue\Common\Annotations as Job;
+use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
+use TYPO3\Flow\Http\Request;
+use TYPO3\Flow\Http\Response;
+use TYPO3\Flow\Http\Uri;
+use TYPO3\Flow\Mvc\Controller\Arguments;
+
 
 /**
  * @Flow\Scope("singleton")
@@ -43,16 +49,69 @@ class FusionMailService {
     protected $globalSettings;
 
     /**
-     * @param ControllerContext $controllerContext
-     * @param ActionRequest $request
+     * @Flow\Inject
+     * @var SubscriberRepository
      */
-    public function setupObject(ControllerContext $controllerContext, ActionRequest $request) {
+    protected $subscriberRepository;
+
+    /**
+     * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
+     * @var string
+     */
+    protected $baseUri;
+
+    /**
+     * @Flow\InjectConfiguration(path="subscriptions")
+     * @var array
+     */
+    protected $subscriptions;
+
+    /**
+     * We can't do this in constructor as we need configuration to be injected
+     */
+    public function initializeObject() {
+        $request = $this->createRequest();
+        $controllerContext = $this->createControllerContext($request);
         $this->view->setControllerContext($controllerContext);
         $this->uriBuilder->setRequest($request);
     }
 
     /**
-     * @Job\Defer(queueName="psmb-newsletter")
+     * @return ActionRequest
+     */
+    protected function createRequest() {
+        $_SERVER['FLOW_REWRITEURLS'] = 1;
+        $httpRequest = Request::createFromEnvironment();
+        if ($this->baseUri) {
+            $baseUri = new Uri($this->baseUri);
+            $httpRequest->setBaseUri($baseUri);
+        }
+        $request = new ActionRequest($httpRequest);
+        $request->setFormat('html');
+        return $request;
+    }
+
+    /**
+     * Creates a controller content context for live dimension
+     *
+     * @param ActionRequest $request
+     * @return ControllerContext
+     */
+    protected function createControllerContext($request)
+    {
+        $uriBuilder = new UriBuilder();
+        $uriBuilder->setRequest($request);
+        $controllerContext = new ControllerContext(
+            $request,
+            new Response(),
+            new Arguments([]),
+            $uriBuilder
+        );
+        return $controllerContext;
+    }
+
+    /**
+     * Just a simple wrapper over SwiftMailer
      *
      * @param array $letter
      * @throws \Exception
@@ -80,7 +139,7 @@ class FusionMailService {
             throw new \Exception('"senderAddress" must be set.', 1327060211);
         }
 
-        $mail = new \TYPO3\SwiftMailer\Message();
+        $mail = new Message();
         $mail
             ->setFrom(array($senderAddress => $senderName))
             ->setTo(array($recipientAddress => $recipientName))
@@ -158,6 +217,23 @@ class FusionMailService {
     }
 
     /**
+     * Generate a letter for given subscriber and subscription and sends it. Async.
+     *
+     * @Job\Defer(queueName="psmb-newsletter")
+     * @param Subscriber $subscriber
+     * @param array $subscription
+     * @param null|NodeInterface $node
+     * @return void
+     */
+    public function generateSubscriptionLetterAndSend(Subscriber $subscriber, $subscription, $node = NULL)
+    {
+        $letter = $this->generateSubscriptionLetter($subscriber, $subscription, $node);
+        if ($letter) {
+            $this->sendLetter($letter);
+        }
+    }
+
+    /**
      * @param array $dimensions
      * @return Node
      */
@@ -172,4 +248,5 @@ class FusionMailService {
         $context = $this->contextFactory->create($contextProperties);
         return $context->getCurrentSiteNode();
     }
+
 }

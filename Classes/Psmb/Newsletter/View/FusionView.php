@@ -115,7 +115,7 @@ class FusionView extends AbstractView
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return FusionView
+	 * @return AbstractView
 	 */
 	public function assign($key, $value)
 	{

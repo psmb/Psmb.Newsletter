@@ -167,8 +167,8 @@ Create a CSV file with your subscribers data and put it somewhere on your server
 The file should have the following format:
 
 ```
-"user@email.com","User Name","subscriptionId1|sibscriptionId2"
-"user1@email.com","User1 Name","sibscriptionId2"
+"user@email.com","User Name","subscriptionId1|subscriptionId2"
+"user1@email.com","User1 Name","subscriptionId2"
 ```
 
 Then run (file path is relative to installation root):

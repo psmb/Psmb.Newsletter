@@ -179,10 +179,9 @@ class SubscriptionController extends ActionController
      *
      * @param Subscriber $subscriber
      * @param string $hash
-     * @return int
+     * @return void
      */
     protected function sendActivationLetter(Subscriber $subscriber, $hash) {
-        $this->fusionMailService->setupObject($this->controllerContext, $this->request);
         $activationLetter = $this->fusionMailService->generateActivationLetter($subscriber, $hash);
         $this->fusionMailService->sendLetter($activationLetter);
     }
