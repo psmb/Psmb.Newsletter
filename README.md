@@ -31,6 +31,11 @@ Psmb:
         interval: P1W
         dimensions:
           language: ['ru']
+      -
+        identifier: handcrafted
+        renderer: 'Your.NameSpace:HandcraftedDigestRenderer'
+        label: 'Manually crafted newsletter'
+        interval: manual
 ```
 
 Define as many subscription types under Psmb.Newsletter.subscriptions as you need. 
@@ -39,7 +44,7 @@ Define as many subscription types under Psmb.Newsletter.subscriptions as you nee
 | --- | --- |
 |`identifier`| Identifier of the subscription|
 |`renderer`| Fusion object that would be used for rendering emails sent to this subscription. Defaults to `Psmb.Newsletter:MailRenderer`. Must inherit from it.|
-|`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Optional.|
+|`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Those marked as `manual` would appear as options when sending from the UI. Optional.|
 |`senderName`, `senderAddress`| Override options from `globalSettings`.|
 |`dimensions`| Array of dimensions in form of "dimensionName: ['dimensionValues']". Falls back to default dimension values.|
 
