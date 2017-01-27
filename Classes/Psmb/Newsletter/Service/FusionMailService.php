@@ -8,6 +8,7 @@ use Psmb\Newsletter\View\FusionView;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
+use TYPO3\Neos\Service\LinkingService;
 use TYPO3\SwiftMailer\Message;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
@@ -23,6 +24,10 @@ use TYPO3\Flow\Mvc\Controller\Arguments;
  * @Flow\Scope("singleton")
  */
 class FusionMailService {
+    /**
+     * @var ControllerContext
+     */
+    protected $controllerContext;
 
     /**
      * @Flow\Inject
@@ -41,6 +46,12 @@ class FusionMailService {
      * @var FusionView
      */
     protected $view;
+
+    /**
+     * @Flow\Inject
+     * @var LinkingService
+     */
+    protected $linkingService;
 
     /**
      * @Flow\InjectConfiguration(path="globalSettings")
@@ -65,8 +76,8 @@ class FusionMailService {
      */
     public function initializeObject() {
         $request = $this->createRequest();
-        $controllerContext = $this->createControllerContext($request);
-        $this->view->setControllerContext($controllerContext);
+        $this->controllerContext = $this->createControllerContext($request);
+        $this->view->setControllerContext($this->controllerContext);
         $this->uriBuilder->setRequest($request);
     }
 
@@ -75,11 +86,9 @@ class FusionMailService {
      */
     protected function createRequest() {
         $_SERVER['FLOW_REWRITEURLS'] = 1;
-        $httpRequest = Request::createFromEnvironment();
-        if ($this->baseUri) {
-            $baseUri = new Uri($this->baseUri);
-            $httpRequest->setBaseUri($baseUri);
-        }
+        $baseUri = new Uri($this->baseUri);
+        $httpRequest = Request::create($baseUri);
+        $httpRequest->setBaseUri($baseUri);
         $request = new ActionRequest($httpRequest);
         $request->setFormat('html');
         return $request;
@@ -165,16 +174,21 @@ class FusionMailService {
      */
     public function sendActivationLetter(Subscriber $subscriber, $hash)
     {
-        $metadata = $subscriber->getMetadata();
-        $siteNode = $this->getSiteNode($metadata['registrationDimensions']);
-        $activationLink = $this->uriBuilder
-            ->setCreateAbsoluteUri(TRUE)
-            ->uriFor(
-                'confirm',
-                ['hash' => $hash],
-                'Subscription',
-                'Psmb.Newsletter'
-            );
+        $siteNode = $this->getSiteNode();
+        $arguments = ['--newsletter' => [
+            '@package' => 'Psmb.Newsletter',
+            '@controller' => 'Subscription',
+            '@action' => 'confirm',
+            'hash' => $hash
+        ]];
+        $activationLink = $this->linkingService->createNodeUri(
+            $this->controllerContext,
+            $siteNode,
+            $siteNode,
+            'html',
+            true,
+            $arguments
+        );
 
         $this->view->assign('value', [
             'site' => $siteNode,
