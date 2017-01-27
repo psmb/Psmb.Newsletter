@@ -160,6 +160,19 @@ There's a CLI command for it.
 
 `./flow newsletter:send --interval="P1H"` would find all subscriptions with interval equal to "P1H" and send out letters to them. This is useful for setting up cron tasks based on time interval.
 
+## Manual sending from the UI
+
+![image](https://cloud.githubusercontent.com/assets/837032/22371056/cccc522e-e4a5-11e6-929c-29f15d8b632c.png)
+
+If your nodetype inherits from `Psmb.Newsletter:NewsletterMixin` you would see a new inspector tab from which you would be able to send manual newsletters, based on the current document node.
+
+For this to work, one or more of your subscription presets must have `interval: manual`. Those presets would appear in the inspector view selectbox. Click send, and the newsletter would be send out to all subscribers of the chosen subscription group.
+Current document node would be available in the Fusion renderer as `documentNode` and `node`.
+
+## Improving reliabillity with job queue
+
+This package uses [flowpack/jobqueue](https://github.com/Flowpack/jobqueue-common) package to generate and deliver messages. Refer to its docs how to improve its reliabillity via proper job queue implementations.
+
 ## Importing subscribers from CSV
 
 Create a CSV file with your subscribers data and put it somewhere on your server.
@@ -184,5 +197,3 @@ SELECT email, name INTO OUTFILE '/path/test.csv' FIELDS TERMINATED BY ',' OPTION
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
-
-
