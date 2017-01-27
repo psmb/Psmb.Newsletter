@@ -109,7 +109,7 @@ define([
                 var sendEndpointUrl = testEmail ? '/newsletter/testSend' : '/newsletter/send';
 
                 var callback = function (response) {
-                    if (response.status == 'success') {
+                    if (response.status === 'success') {
                         this.set('notificationMessageId', 'js.sent');
                     } else {
                         this.set('errorMessageId', 'js.error');

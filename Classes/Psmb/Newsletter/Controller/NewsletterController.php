@@ -1,6 +1,7 @@
 <?php
 namespace Psmb\Newsletter\Controller;
 
+use TYPO3\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
@@ -8,7 +9,6 @@ use TYPO3\Flow\Mvc\View\JsonView;
 use TYPO3\Flow\I18n\Service as I18nService;
 use TYPO3\Flow\I18n\Translator;
 use TYPO3\Flow\Mvc\Controller\ActionController;
-use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 class NewsletterController extends ActionController
@@ -49,6 +49,11 @@ class NewsletterController extends ActionController
         'json' => JsonView::class
     );
 
+    /**
+     * Get manual subscriptions for AJAX sending
+     *
+     * @return void
+     */
     public function getSubscriptionsAction() {
         $manualSubscriptions = array_filter($this->subscriptions, function ($item) {
             return $item['interval'] == 'manual';
@@ -68,20 +73,12 @@ class NewsletterController extends ActionController
      */
     public function sendAction($subscription, NodeInterface $node)
     {
-        $this->fusionMailService->setupObject($this->getControllerContext(), $this->request);
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
-        $nestedLetters = array_map(function ($subscription) use ($node) {
-            return $this->generateLettersForSubscription($subscription, $node);
-        }, $subscriptions);
-        $letters = array_reduce($nestedLetters, function ($acc, $item) {
-            return array_merge($acc, $item);
-        }, []);
-
-        array_map(function($letter) {
-            $this->fusionMailService->sendLetter($letter);
-        }, $letters);
+        array_walk($subscriptions, function ($subscription) use ($node) {
+            $this->sendLettersForSubscription($subscription, $node);
+        });
         $this->view->assign('value', ['status' => 'success']);
     }
 
@@ -95,17 +92,16 @@ class NewsletterController extends ActionController
      */
     public function testSendAction($subscription, NodeInterface $node, $email)
     {
-        $this->fusionMailService->setupObject($this->getControllerContext(), $this->request);
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
+        $subscription = reset($subscriptions);
 
         $subscriber = new Subscriber();
         $subscriber->setEmail($email);
         $subscriber->setName('Test User');
 
-        $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, reset($subscriptions), $node);
-        $this->fusionMailService->sendLetter($letter);
+        $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
 
         $this->view->assign('value', ['status' => 'success']);
     }
@@ -115,16 +111,15 @@ class NewsletterController extends ActionController
      *
      * @param array $subscription
      * @param NodeInterface $node Node of the current newsletter item
-     * @return array Array of letters
+     * @return void
      */
-    protected function generateLettersForSubscription($subscription, $node)
+    protected function sendLettersForSubscription($subscription, $node)
     {
         $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
 
-        $letters = array_map(function ($subscriber) use ($subscription, $node) {
-            return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription, $node);
-        }, $subscribers);
-        return array_filter($letters);
+        array_walk($subscribers, function ($subscriber) use ($subscription, $node) {
+            $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
+        });
     }
 
 }
