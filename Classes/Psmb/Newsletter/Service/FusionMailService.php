@@ -49,12 +49,6 @@ class FusionMailService {
     protected $globalSettings;
 
     /**
-     * @Flow\Inject
-     * @var SubscriberRepository
-     */
-    protected $subscriberRepository;
-
-    /**
      * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
      * @var string
      */
@@ -162,13 +156,14 @@ class FusionMailService {
     }
 
     /**
-     * Generate activation letter to confirm the new subscriber
+     * Send activation letter to confirm the new subscriber
      *
+     * @Job\Defer(queueName="psmb-newsletter")
      * @param Subscriber $subscriber
      * @param string $hash
-     * @return array
+     * @return void
      */
-    public function generateActivationLetter(Subscriber $subscriber, $hash)
+    public function sendActivationLetter(Subscriber $subscriber, $hash)
     {
         $metadata = $subscriber->getMetadata();
         $siteNode = $this->getSiteNode($metadata['registrationDimensions']);
@@ -189,7 +184,8 @@ class FusionMailService {
             'globalSettings' => $this->globalSettings,
             'activationLink' => $activationLink
         ]);
-        return $this->view->render();
+        $letter = $this->view->render();
+        $this->sendLetter($letter);
     }
 
     /**

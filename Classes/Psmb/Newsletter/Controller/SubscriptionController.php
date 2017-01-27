@@ -68,7 +68,6 @@ class SubscriptionController extends ActionController
      */
     public function registerAction(Subscriber $subscriber)
     {
-
         $email = $subscriber->getEmail();
         if (!$email) {
             $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
@@ -97,7 +96,7 @@ class SubscriptionController extends ActionController
                 );
                 $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
                 $this->addFlashMessage($message);
-                $this->sendActivationLetter($subscriber, $hash);
+                $this->fusionMailService->sendActivationLetter($subscriber, $hash);
                 $this->redirect('feedback');
             }
         }
@@ -172,18 +171,6 @@ class SubscriptionController extends ActionController
      */
     public function feedbackAction()
     {
-    }
-
-    /**
-     * Sends an activation mail
-     *
-     * @param Subscriber $subscriber
-     * @param string $hash
-     * @return void
-     */
-    protected function sendActivationLetter(Subscriber $subscriber, $hash) {
-        $activationLetter = $this->fusionMailService->generateActivationLetter($subscriber, $hash);
-        $this->fusionMailService->sendLetter($activationLetter);
     }
 
 }
