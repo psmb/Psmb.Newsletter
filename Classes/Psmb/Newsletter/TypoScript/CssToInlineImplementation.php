@@ -2,14 +2,14 @@
 namespace Psmb\Newsletter\TypoScript;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Fusion\TypoScriptObjects\AbstractTypoScriptObject;
+use Neos\Fusion\FusionObjects\AbstractFusionObject;
 # use Pelago\Emogrifier;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 /**
  * A TypoScript Object that inlines styles
  */
-class CssToInlineImplementation extends AbstractTypoScriptObject {
+class CssToInlineImplementation extends AbstractFusionObject {
     /**
      * `value` should contain html to be processed
      * `cssPath` should contain a path to CSS file, e.g. `cssPath = 'resource://Psmb.Newsletter/Public/styles.css'`
