@@ -18,6 +18,9 @@
     "extra": {
         "neos": {
             "package-key": "Psmb.Newsletter"
-        }
+        },
+        "applied-flow-migrations": [
+            "TYPO3.FLOW3-201201261636"
+        ]
     }
 }
