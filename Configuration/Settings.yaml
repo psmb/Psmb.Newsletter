@@ -1,4 +1,26 @@
+
 TYPO3:
+  Neos:
+    typoScript:
+      autoInclude:
+        Psmb.Newsletter: true
+    userInterface:
+      translation:
+        autoInclude:
+          Psmb.Newsletter:
+            - Main
+            - 'NodeTypes/*'
+      requireJsPathMapping:
+        Psmb.Newsletter/Views: 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+Flowpack:
+  JobQueue:
+    Common:
+      queues:
+        psmb-newsletter:
+          className: Flowpack\JobQueue\Common\Queue\FakeQueue
+          options:
+            async: true
+Neos:
   Flow:
     security:
       authentication:
@@ -6,39 +28,6 @@ TYPO3:
           Typo3BackendProvider:
             requestPatterns:
               'Psmb.Newsletter:Backend':
-                pattern: 'ControllerObjectName'
+                pattern: ControllerObjectName
                 patternOptions:
                   controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
-  Neos:
-    typoScript:
-      autoInclude:
-        'Psmb.Newsletter': TRUE
-    userInterface:
-      translation:
-        autoInclude:
-          'Psmb.Newsletter': ['Main', 'NodeTypes/*']
-      requireJsPathMapping:
-        'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
-
-Flowpack:
-  JobQueue:
-    Common:
-      queues:
-        'psmb-newsletter':
-          className: 'Flowpack\JobQueue\Common\Queue\FakeQueue'
-          options:
-            async: true
-
-#Psmb:
-#  Newsletter:
-#    globalSettings:
-#      senderAddress: 'robot@server.com'
-#      senderName: 'Your robot'
-#    subscriptions:
-#      -
-#        identifier: 'daily'
-#        renderer: 'Your:LetterRenderer'
-#        label: 'Our daily newsletter'
-#        interval: P1D
-#        dimensions:
-#          language: ['dimensionValues']
