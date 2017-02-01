@@ -1,17 +1,4 @@
 
-TYPO3:
-  Neos:
-    typoScript:
-      autoInclude:
-        Psmb.Newsletter: true
-    userInterface:
-      translation:
-        autoInclude:
-          Psmb.Newsletter:
-            - Main
-            - 'NodeTypes/*'
-      requireJsPathMapping:
-        Psmb.Newsletter/Views: 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
 Flowpack:
   JobQueue:
     Common:
@@ -31,3 +18,15 @@ Neos:
                 pattern: ControllerObjectName
                 patternOptions:
                   controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
+  Neos:
+    typoScript:
+      autoInclude:
+        Psmb.Newsletter: true
+    userInterface:
+      translation:
+        autoInclude:
+          Psmb.Newsletter:
+            - Main
+            - 'NodeTypes/*'
+      requireJsPathMapping:
+        Psmb.Newsletter/Views: 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'

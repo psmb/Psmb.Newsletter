@@ -11,7 +11,7 @@ roles:
       -
         privilegeTarget: 'Psmb.Newsletter:Subscription'
         permission: GRANT
-  'TYPO3.Neos:Editor':
+  'Neos.Neos:Editor':
     privileges:
       -
         privilegeTarget: 'Psmb.Newsletter:Backend'
