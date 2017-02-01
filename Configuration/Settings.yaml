@@ -1,33 +1,35 @@
-TYPO3:
-  Flow:
-    security:
-      authentication:
-        providers:
-          Typo3BackendProvider:
-            requestPatterns:
-              'Psmb.Newsletter:Backend':
-                pattern: 'ControllerObjectName'
-                patternOptions:
-                  controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
-  Neos:
-    typoScript:
-      autoInclude:
-        'Psmb.Newsletter': TRUE
-    userInterface:
-      translation:
-        autoInclude:
-          'Psmb.Newsletter': ['Main', 'NodeTypes/*']
-      requireJsPathMapping:
-        'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
 
 Flowpack:
   JobQueue:
     Common:
       queues:
-        'psmb-newsletter':
-          className: 'Flowpack\JobQueue\Common\Queue\FakeQueue'
+        psmb-newsletter:
+          className: Flowpack\JobQueue\Common\Queue\FakeQueue
           options:
             async: true
+Neos:
+  Flow:
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'Psmb.Newsletter:Backend':
+                pattern: ControllerObjectName
+                patternOptions:
+                  controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
+  Neos:
+    userInterface:
+      translation:
+        autoInclude:
+          Psmb.Newsletter:
+            - Main
+            - 'NodeTypes/*'
+      requireJsPathMapping:
+        Psmb.Newsletter/Views: 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+    fusion:
+      autoInclude:
+        Psmb.Newsletter: true
 
 #Psmb:
 #  Newsletter:

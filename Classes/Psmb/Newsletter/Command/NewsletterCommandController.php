@@ -1,11 +1,11 @@
 <?php
 namespace Psmb\Newsletter\Command;
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
-use TYPO3\Flow\Cli\CommandController;
+use Neos\Flow\Cli\CommandController;
 
 /**
  * @Flow\Scope("singleton")
@@ -25,7 +25,7 @@ class NewsletterCommandController extends CommandController
     protected $subscriberRepository;
 
     /**
-     * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
+     * @Flow\InjectConfiguration(package="Neos.Flow", path="http.baseUri")
      * @var string
      */
     protected $baseUri;

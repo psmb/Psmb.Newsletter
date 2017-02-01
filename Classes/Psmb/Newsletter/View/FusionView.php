@@ -1,17 +1,17 @@
 <?php
 namespace Psmb\Newsletter\View;
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\I18n\Locale;
-use TYPO3\Flow\I18n\Service;
-use TYPO3\Flow\Mvc\View\AbstractView;
-use TYPO3\Neos\Domain\Service\TypoScriptService;
-use TYPO3\Neos\Exception;
-use TYPO3\TYPO3CR\Domain\Model\Node;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TypoScript\Core\Runtime;
-use TYPO3\TypoScript\Exception\RuntimeException;
-use TYPO3\Flow\Security\Context;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Locale;
+use Neos\Flow\I18n\Service;
+use Neos\Flow\Mvc\View\AbstractView;
+use Neos\Neos\Domain\Service\FusionService;
+use Neos\Neos\Exception;
+use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\Fusion\Core\Runtime;
+use Neos\Fusion\Exception\RuntimeException;
+use Neos\Flow\Security\Context;
 
 /**
  * A TypoScript view
@@ -35,16 +35,16 @@ class FusionView extends AbstractView
 
 	/**
 	 * @Flow\Inject
-	 * @var TypoScriptService
+	 * @var FusionService
 	 */
-	protected $typoScriptService;
+	protected $fusionService;
 
 	/**
 	 * The TypoScript path to use for rendering the node given in "value", defaults to "page".
 	 *
 	 * @var string
 	 */
-	protected $typoScriptPath = 'newsletter';
+	protected $fusionPath = 'newsletter';
 
 	/**
 	 * @var Runtime
@@ -68,11 +68,11 @@ class FusionView extends AbstractView
 	{
 		$contextVars = $this->variables['value'];
 		if (!is_array($contextVars)) {
-			throw new Exception('TypoScriptView needs an array for variable \'value\'.', 1329736457);
+			throw new Exception('FusionView needs an array for variable \'value\'.', 1329736457);
 		}
 		$siteNode = $contextVars['site'];
 		if (!$siteNode instanceof Node) {
-			throw new Exception('TypoScriptView needs a site node to be set in context variables passed to \'value\'.', 1329736457);
+			throw new Exception('FusionView needs a site node to be set in context variables passed to \'value\'.', 1329736457);
 		}
 		$typoScriptRuntime = $this->getTypoScriptRuntime($siteNode);
 
@@ -85,7 +85,7 @@ class FusionView extends AbstractView
 
 		$typoScriptRuntime->pushContextArray($contextVars);
 		try {
-			$output = $typoScriptRuntime->render($this->typoScriptPath);
+			$output = $typoScriptRuntime->render($this->fusionPath);
 		} catch (RuntimeException $exception) {
 			throw $exception->getPrevious();
 		}
@@ -96,12 +96,12 @@ class FusionView extends AbstractView
 
 	/**
 	 * @param NodeInterface $siteNode
-	 * @return \TYPO3\TypoScript\Core\Runtime
+	 * @return \Neos\Fusion\Core\Runtime
 	 */
 	protected function getTypoScriptRuntime(NodeInterface $siteNode)
 	{
 		if ($this->typoScriptRuntime === null) {
-			$this->typoScriptRuntime = $this->typoScriptService->createRuntime($siteNode, $this->controllerContext);
+			$this->typoScriptRuntime = $this->fusionService->createRuntime($siteNode, $this->controllerContext);
 
 			if (isset($this->options['enableContentCache']) && $this->options['enableContentCache'] !== null) {
 				$this->typoScriptRuntime->setEnableContentCache($this->options['enableContentCache']);

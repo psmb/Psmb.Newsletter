@@ -1,11 +1,11 @@
 # Put this plugin wherever you want to insert the subscription form
-prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(TYPO3.Neos:Plugin) {
+prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(Neos.Neos:Plugin) {
 	package = 'Psmb.Newsletter'
 	controller = 'Subscription'
 	argumentNamespace = 'newsletter'
 }
 
-prototype(TYPO3.TypoScript:GlobalCacheIdentifiers) {
+prototype(Neos.Fusion:GlobalCacheIdentifiers) {
 	newsletterAction = ${request.pluginArguments['newsletter']['@action']}
 }
 
@@ -19,7 +19,7 @@ prototype(Psmb.Newsletter:CssToInline) {
 	cssPath = 'to-be-set'
 }
 
-prototype(Psmb.Newsletter:MailRenderer) < prototype(TYPO3.TypoScript:RawArray) {
+prototype(Psmb.Newsletter:MailRenderer) < prototype(Neos.Fusion:RawArray) {
 	subject = ''
 	body = ''
 	#body.@cache.mode = 'cached'
@@ -35,14 +35,14 @@ prototype(Psmb.Newsletter:MailRenderer) < prototype(TYPO3.TypoScript:RawArray) {
 
 prototype(Psmb.Newsletter:ConfirmationMailRenderer) < prototype(Psmb.Newsletter:MailRenderer) {
 	subject = 'Activate your subscription'
-	body = TYPO3.TypoScript:Tag {
+	body = Neos.Fusion:Tag {
 		tagName = 'a'
 		attributes.href = ${activationLink}
 		content = 'Click to confirm your subscription'
 	}
 }
 
-prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
+prototype(Psmb.Newsletter:SubscriptionCase) < prototype(Neos.Fusion:Case) {
 	# We need this to work around Fusion's cache limitations, i.e. to allow
 	# subscriber never to be cached within other cache records.
 	# To reliably get subscriber data within cached aread use `${Registry.get('subscriber')}`
@@ -65,7 +65,7 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(TYPO3.TypoScript:Case) {
 prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
 	node = ${documentNode}
 	additionalParams {
-		--newsletter = TYPO3.TypoScript:RawArray {
+		--newsletter = Neos.Fusion:RawArray {
 			'@package' = 'Psmb.Newsletter'
 			'@controller' = 'Subscription'
 			'@action' = 'Edit'
@@ -84,7 +84,7 @@ prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
 prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
 	node = ${documentNode}
 	additionalParams {
-		--newsletter = TYPO3.TypoScript:RawArray {
+		--newsletter = Neos.Fusion:RawArray {
 			'@package' = 'Psmb.Newsletter'
 			'@controller' = 'Subscription'
 			'@action' = 'Unsubscribe'

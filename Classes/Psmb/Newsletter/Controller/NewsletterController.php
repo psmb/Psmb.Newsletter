@@ -1,15 +1,15 @@
 <?php
 namespace Psmb\Newsletter\Controller;
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
-use TYPO3\Flow\Mvc\View\JsonView;
-use TYPO3\Flow\I18n\Service as I18nService;
-use TYPO3\Flow\I18n\Translator;
-use TYPO3\Flow\Mvc\Controller\ActionController;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use Neos\Flow\Mvc\View\JsonView;
+use Neos\Flow\I18n\Service as I18nService;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 class NewsletterController extends ActionController
 {
