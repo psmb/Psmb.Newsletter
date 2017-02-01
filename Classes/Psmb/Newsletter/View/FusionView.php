@@ -9,8 +9,8 @@ use Neos\Neos\Domain\Service\TypoScriptService;
 use Neos\Neos\Exception;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
-use TYPO3\TypoScript\Core\Runtime;
-use TYPO3\TypoScript\Exception\RuntimeException;
+use Neos\Fusion\Core\Runtime;
+use Neos\Fusion\Exception\RuntimeException;
 use Neos\Flow\Security\Context;
 
 /**
@@ -96,7 +96,7 @@ class FusionView extends AbstractView
 
 	/**
 	 * @param NodeInterface $siteNode
-	 * @return \TYPO3\TypoScript\Core\Runtime
+	 * @return \Neos\Fusion\Core\Runtime
 	 */
 	protected function getTypoScriptRuntime(NodeInterface $siteNode)
 	{

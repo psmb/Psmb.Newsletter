@@ -2,7 +2,7 @@
 namespace Psmb\Newsletter\TypoScript;
 
 use Neos\Flow\Annotations as Flow;
-use TYPO3\TypoScript\TypoScriptObjects\AbstractTypoScriptObject;
+use Neos\Fusion\TypoScriptObjects\AbstractTypoScriptObject;
 # use Pelago\Emogrifier;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
