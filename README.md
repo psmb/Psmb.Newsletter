@@ -38,7 +38,7 @@ Psmb:
         interval: manual
 ```
 
-Define as many subscription types under Psmb.Newsletter.subscriptions as you need. 
+Define as many subscription types under Psmb.Newsletter.subscriptions as you need.
 
 | setting key | description |
 | --- | --- |
@@ -62,7 +62,7 @@ Then define a Fusion object like this for each renderer:
 prototype(Your.NameSpace:WeeklyLetterRenderer) < prototype(Psmb.Newsletter:MailRenderer) {
 	subject = 'Our weekly digest'
 	body = 'Generate message body. Use your imagination.'
-  
+
   # You may automatically inline all css styles.
 	# body.@process.cssToInline = Psmb.Newsletter:CssToInline {
 	#	  cssPath = 'resource://Your.Package/Public/Path/To/Your/Styles.css'
@@ -95,7 +95,7 @@ prototype(Sfi.Site:DigestMail) < prototype(Psmb.Newsletter:MailRenderer) {
     @context.nodes = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('type', 'ourNews').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP").sortDesc('date').execute()}
     @if.notEmpty = ${q(nodes).count() > 0}
     subject = ${Translation.translate('newsletter.digestSubject', null, [], null, 'Sfi.Site')}
-    body = TYPO3.TypoScript:Collection {
+    body = Neos.Fusion:Collection {
         collection = ${nodes}
         itemName = 'node'
         itemRenderer = Sfi.Site:DigestArticle
@@ -105,7 +105,7 @@ prototype(Sfi.Site:DigestMail) < prototype(Psmb.Newsletter:MailRenderer) {
     }
 }
 
-prototype(Sfi.Site:DigestArticle) < prototype(TYPO3.TypoScript:Tag) {
+prototype(Sfi.Site:DigestArticle) < prototype(Neos.Fusion:Tag) {
     tagName = 'a'
     attributes.href = NodeUri {
         node = ${node}
@@ -124,7 +124,7 @@ prototype(Sfi.Site:DigestArticle) < prototype(TYPO3.TypoScript:Tag) {
 |`Psmb.Newsletter:UnsubscribeLink`|Generated a link to unsubscribe action of the plugin|
 |`Psmb.Newsletter:CssToInline`|Processor to automatically inline CSS styles|
 |`Psmb.Newsletter:SubscriptionCase`|Rendering entry point. Usually no need to touch this one|
-|`Psmb.Newsletter:SubscriptionPlugin`|Configured `TYPO3.Neos:Plugin` instance that insert Flow signup plugin.|
+|`Psmb.Newsletter:SubscriptionPlugin`|Configured `Neos.Neos:Plugin` instance that insert Flow signup plugin.|
 
 To customize the confirmation mail, override `Psmb.Newsletter:ConfirmationMailRenderer`.
 
@@ -153,7 +153,7 @@ Create a `Views.yaml` file in Configuration:
       - 'resource://Psmb.Newsletter/Private/Partials/'
     layoutRootPaths:
       - 'resource://Sfi.Site/Private/Newsletter/Layouts/'
-      
+
 ```
 
 ## Sending things out
