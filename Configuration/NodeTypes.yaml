@@ -1,11 +1,10 @@
+
 'Psmb.Newsletter:SubscriptionPlugin':
   superTypes:
-    'TYPO3.Neos:Content': true
+    'TYPO3.Neos:Content': '1'
   ui:
     label: 'Newsletter sign up form'
-    icon: 'icon-envelope'
-
-
+    icon: icon-envelope
 'Psmb.Newsletter:NewsletterMixin':
   abstract: true
   ui:
@@ -14,13 +13,13 @@
         newsletter:
           label: i18n
           position: 100
-          icon: 'icon-send'
+          icon: icon-send
       groups:
         newsletter:
           label: i18n
-          tab: 'newsletter'
+          tab: newsletter
       views:
         newsletter:
           label: 'Newsletter view'
-          group: 'newsletter'
-          view: 'Psmb.Newsletter/Views/NewsletterView'
+          group: newsletter
+          view: Psmb.Newsletter/Views/NewsletterView
