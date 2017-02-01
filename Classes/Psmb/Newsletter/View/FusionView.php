@@ -44,7 +44,7 @@ class FusionView extends AbstractView
 	 *
 	 * @var string
 	 */
-	protected $typoScriptPath = 'newsletter';
+	protected $fusionPath = 'newsletter';
 
 	/**
 	 * @var Runtime
@@ -68,11 +68,11 @@ class FusionView extends AbstractView
 	{
 		$contextVars = $this->variables['value'];
 		if (!is_array($contextVars)) {
-			throw new Exception('TypoScriptView needs an array for variable \'value\'.', 1329736457);
+			throw new Exception('FusionView needs an array for variable \'value\'.', 1329736457);
 		}
 		$siteNode = $contextVars['site'];
 		if (!$siteNode instanceof Node) {
-			throw new Exception('TypoScriptView needs a site node to be set in context variables passed to \'value\'.', 1329736457);
+			throw new Exception('FusionView needs a site node to be set in context variables passed to \'value\'.', 1329736457);
 		}
 		$typoScriptRuntime = $this->getTypoScriptRuntime($siteNode);
 
@@ -85,7 +85,7 @@ class FusionView extends AbstractView
 
 		$typoScriptRuntime->pushContextArray($contextVars);
 		try {
-			$output = $typoScriptRuntime->render($this->typoScriptPath);
+			$output = $typoScriptRuntime->render($this->fusionPath);
 		} catch (RuntimeException $exception) {
 			throw $exception->getPrevious();
 		}
