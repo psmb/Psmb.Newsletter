@@ -18,6 +18,10 @@ Neos:
                 pattern: ControllerObjectName
                 patternOptions:
                   controllerObjectNamePattern: 'Psmb\Newsletter\Controller\.*'
+    mvc:
+      routes:
+        'Psmb.Newsletter':
+          position: 'before Neos.Neos'
   Neos:
     userInterface:
       translation:
