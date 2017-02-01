@@ -8,7 +8,7 @@
         "psmb/registry": "*",
         "typo3/swiftmailer": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
-        "flowpack/jobqueue-common": "^1.0"
+        "flowpack/jobqueue-common": "*"
     },
     "autoload": {
         "psr-0": {
