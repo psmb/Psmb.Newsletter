@@ -33,7 +33,7 @@ class SubscriptionController extends ActionController
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Cache\Frontend\VariableFrontend
+     * @var \Neos\Cache\Frontend\VariableFrontend
      */
     protected $tokenCache;
 
