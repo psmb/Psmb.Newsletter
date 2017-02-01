@@ -1,5 +1,5 @@
 # Put this plugin wherever you want to insert the subscription form
-prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(TYPO3.Neos:Plugin) {
+prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(Neos.Neos:Plugin) {
 	package = 'Psmb.Newsletter'
 	controller = 'Subscription'
 	argumentNamespace = 'newsletter'
