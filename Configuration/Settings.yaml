@@ -30,3 +30,17 @@ Neos:
     fusion:
       autoInclude:
         Psmb.Newsletter: true
+
+#Psmb:
+#  Newsletter:
+#    globalSettings:
+#      senderAddress: 'robot@server.com'
+#      senderName: 'Your robot'
+#    subscriptions:
+#      -
+#        identifier: 'daily'
+#        renderer: 'Your:LetterRenderer'
+#        label: 'Our daily newsletter'
+#        interval: P1D
+#        dimensions:
+#          language: ['dimensionValues']
