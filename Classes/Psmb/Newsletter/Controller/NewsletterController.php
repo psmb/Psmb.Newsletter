@@ -9,7 +9,7 @@ use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\I18n\Service as I18nService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Controller\ActionController;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 class NewsletterController extends ActionController
 {
