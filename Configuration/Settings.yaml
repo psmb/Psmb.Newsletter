@@ -5,8 +5,6 @@ Flowpack:
       queues:
         psmb-newsletter:
           className: Flowpack\JobQueue\Common\Queue\FakeQueue
-          options:
-            async: true
 Neos:
   Flow:
     security:
