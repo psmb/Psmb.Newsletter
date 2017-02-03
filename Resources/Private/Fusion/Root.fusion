@@ -63,7 +63,7 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(Neos.Fusion:Case) {
 }
 
 prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
-	node = ${documentNode}
+	node = ${site}
 	additionalParams {
 		--newsletter = Neos.Fusion:RawArray {
 			'@package' = 'Psmb.Newsletter'
@@ -76,13 +76,14 @@ prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
 	@cache {
 		mode = 'uncached'
 		context {
-			1 = 'documentNode'
+			1 = 'site'
+			2 = 'documentNode'
 		}
 	}
 }
 
 prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
-	node = ${documentNode}
+	node = ${site}
 	additionalParams {
 		--newsletter = Neos.Fusion:RawArray {
 			'@package' = 'Psmb.Newsletter'
@@ -95,7 +96,8 @@ prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
 	@cache {
 		mode = 'uncached'
 		context {
-			1 = 'documentNode'
+			1 = 'site'
+			2 = 'documentNode'
 		}
 	}
 }
