@@ -1,6 +1,7 @@
 <?php
 namespace Psmb\Newsletter\Controller;
 
+use Flowpack\JobQueue\Common\Annotations as Job;
 use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
@@ -109,11 +110,12 @@ class NewsletterController extends ActionController
     /**
      * Generate a letter for each subscriber in the subscription
      *
+     * @Job\Defer(queueName="psmb-newsletter-web")
      * @param array $subscription
      * @param NodeInterface $node Node of the current newsletter item
      * @return void
      */
-    protected function sendLettersForSubscription($subscription, $node)
+    public function sendLettersForSubscription($subscription, $node)
     {
         $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
 
