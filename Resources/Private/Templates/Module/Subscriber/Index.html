@@ -1,0 +1,53 @@
+<f:layout name="Default" />
+
+<f:section name="Title">
+</f:section>
+<f:section name="Content">
+	<f:flashMessages />
+	<fieldset>
+		<div class="neos-row-fluid">
+			<fieldset class="neos-span8 neos-offset2">
+				<legend>
+					Newsletter subscribers
+					<f:link.action style="float: right;" action="new" class="neos-button neos-button-primary" title="Click to edit">
+						<i class="icon-plus icon-white"></i>
+					</f:link.action>
+				</legend>
+				<table class="neos-table">
+					<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Newsletters</th>
+						<th width="140"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<f:for each="{subscribers}" as="subscriber" key="number">
+						<tr>
+							<td>{number}</td>
+							<td>{subscriber.name}</td>
+							<td>{subscriber.email}</td>
+							<td>
+								<f:for each="{subscriber.subscriptions}" as="subscription">
+									<span class="neos-label">{subscription}</span>
+								</f:for>
+							</td>
+							<td>
+								<f:link.action action="edit" arguments="{subscriber: subscriber}" class="neos-button neos-button-primary" title="Click to edit">
+									<i class="icon-pencil icon-white"></i>
+								</f:link.action>
+
+								<f:link.action action="delete" arguments="{subscriber: subscriber}" class="neos-button neos-button-danger" title="Click to edit">
+									<i class="icon-trash icon-white"></i>
+								</f:link.action>
+							</td>
+						</tr>
+					</f:for>
+					</tbody>
+				</table>
+			</fieldset>
+		</div>
+	</fieldset>
+</f:section>

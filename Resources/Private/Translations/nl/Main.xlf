@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="" product-name="Psmb.Newsletter" source-language="en" target-language="nl" datatype="plaintext">
+        <body>
+            <trans-unit id="flash.confirm" xml:space="preserve">
+                <source>All that remains is to confirm your subscription. Open your email and follow the link in the message.</source>
+                <target>Het enige wat u nog moet doen is uw inschrijving bevestigen. Open uw email en volg de link in de toegezonden mail.</target>
+            </trans-unit>
+            <trans-unit id="flash.noEmail" xml:space="preserve">
+                <source>You haven’t shown your email address</source>
+                <target>U heeft geen email adres ingevoerd</target>
+            </trans-unit>
+            <trans-unit id="flash.wrongEmail" xml:space="preserve">
+                <source>You have shown an incorrect email address</source>
+                <target>U gebruikt een foutief email adres</target>
+            </trans-unit>
+            <trans-unit id="flash.alreadyRegistered" xml:space="preserve">
+                <source>You are already subscribed to our mailing list</source>
+                <target>U bent reeds ingeschreven</target>
+            </trans-unit>
+            <trans-unit id="flash.confirmed" xml:space="preserve">
+                <source>Your subscription has been registered! You will now receive mailings from us.</source>
+                <target>U heeft u ingeschreven! U zult de geselecterde nieuwsbrieven van ons ontvangen.</target>
+            </trans-unit>
+            <trans-unit id="flash.noToken" xml:space="preserve">
+                <source>Something has gone wrong. Perhaps you have already activated your subscription?</source>
+                <target>Oops er ging wat fout. Waarschijnlijk heb u al een actieve abonnement?</target>
+            </trans-unit>
+            <trans-unit id="flash.unsubscribed" xml:space="preserve">
+                <source>You have successfully unsubscribed from our mailing list</source>
+                <target>U heeft u uitgeschreven bij onze nieuwsbrief lijst</target>
+            </trans-unit>
+            <trans-unit id="flash.updated" xml:space="preserve">
+                <source>You have successfully changed the parameters of your subscription</source>
+                <target>U heeft de wijzigingen doorgevoerd op uw subscriptie</target>
+            </trans-unit>
+            <trans-unit id="js.send" xml:space="preserve">
+                <source>Send</source>
+                <target>Verstuur</target>
+            </trans-unit>
+            <trans-unit id="js.test" xml:space="preserve">
+                <source>Test</source>
+                <target>Test</target>
+            </trans-unit>
+            <trans-unit id="js.sending" xml:space="preserve">
+                <source>Sending...</source>
+                <target>Aan het versturen...</target>
+            </trans-unit>
+            <trans-unit id="js.sent" xml:space="preserve">
+                <source>Newsletter sent</source>
+                <target>Nieuwsbrief verstuurd</target>
+            </trans-unit>
+            <trans-unit id="js.error" xml:space="preserve">
+                <source>Error</source>
+                <target>Fout</target>
+            </trans-unit>
+            <trans-unit id="js.selectSubscription" xml:space="preserve">
+                <source>Please select a subscription</source>
+                <target>Selecteer een abonnee</target>
+            </trans-unit>
+            <trans-unit id="js.sendTo" xml:space="preserve">
+                <source>Send newsletter to: </source>
+                <target>Verstuur nieuwsbrief naar: </target>
+            </trans-unit>
+            <trans-unit id="js.loading" xml:space="preserve">
+                <source>Loading...</source>
+                <target>Laden...</target>
+            </trans-unit>
+            <trans-unit id="js.confirmationTitle" xml:space="preserve">
+                <source>Send newsletter</source>
+                <target>Verstuur nieuwsbrief</target>
+            </trans-unit>
+            <trans-unit id="js.confirmationDescription" xml:space="preserve">
+                <source>This will send the letter to all subscribers. Check that all your changes are published to live workspace and hit "Send".</source>
+                <target>Deze actie zal de nieuwsbrief naar alle abonnees versturen. Controleer dat al uw wijzigingen gepubliseerd zijn voor u "verstuurd".</target>
+            </trans-unit>
+            <trans-unit id="js.testConfirmationTitle" xml:space="preserve">
+                <source>Send test newsletter</source>
+                <target>Test nieuwsbrief verstuurd</target>
+            </trans-unit>
+            <trans-unit id="js.testEmailLabel" xml:space="preserve">
+                <source>Enter test email:</source>
+                <target>Voer test email in:</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

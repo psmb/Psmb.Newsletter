@@ -1,0 +1,11 @@
+<f:layout name="Default" />
+
+<f:section name="Title">
+	<h2>Edit Subscriber {subscriber.name}</h2>
+</f:section>
+
+<f:section name="Content">
+	<f:form action="update" name="subscriber" object="{subscriber}">
+		<f:render partial="Module/SubscriberForm" arguments="{subscriber: subscriber, subscriptions: subscriptions}" />
+	</f:form>
+</f:section>

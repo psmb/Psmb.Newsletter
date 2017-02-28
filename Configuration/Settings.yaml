@@ -19,6 +19,18 @@ TYPO3:
           'Psmb.Newsletter': ['Main', 'NodeTypes/*']
       requireJsPathMapping:
         'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+    modules:
+      management:
+        submodules:
+          subscribers:
+            label: Subscribers Editor
+            controller: \Psmb\Newsletter\Controller\Module\SubscriberController
+            description: 'Manage your subscribers'
+            icon: icon-envelope
+            actions:
+              index:
+                label: 'Manage newsletter subscribers'
+                title: 'Manage newsletter subscribers'
 
 Flowpack:
   JobQueue:
