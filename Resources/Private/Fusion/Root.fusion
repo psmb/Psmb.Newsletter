@@ -3,6 +3,7 @@ prototype(Psmb.Newsletter:SubscriptionPlugin) < prototype(Neos.Neos:Plugin) {
 	package = 'Psmb.Newsletter'
 	controller = 'Subscription'
 	argumentNamespace = 'newsletter'
+	additionalData = Neos.Fusion:RawArray
 }
 
 prototype(Neos.Fusion:GlobalCacheIdentifiers) {

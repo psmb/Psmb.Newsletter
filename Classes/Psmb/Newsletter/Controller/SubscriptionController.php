@@ -56,6 +56,8 @@ class SubscriptionController extends ActionController
      */
     public function indexAction()
     {
+        $additionalData = $this->request->getInternalArgument('__additionalData');
+        $this->view->assign('additionalData', $additionalData);
         $this->view->assign('subscriptions', $this->subscriptions);
         $this->view->assign('currentLocale', $this->i18nService->getConfiguration()->getCurrentLocale());
     }
