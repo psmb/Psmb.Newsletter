@@ -53,15 +53,24 @@ class NewsletterController extends ActionController
     /**
      * Get manual subscriptions for AJAX sending
      *
+     * @param string $nodeType
      * @return void
      */
-    public function getSubscriptionsAction() {
-        $manualSubscriptions = array_filter($this->subscriptions, function ($item) {
-            return $item['interval'] == 'manual';
+    public function getSubscriptionsAction($nodeType) {
+        $subscriptions = array_filter($this->subscriptions, function ($item) use ($nodeType) {
+            if (isset($item['sendFromUiNodeType'])) {
+                return $item['sendFromUiNodeType'] == $nodeType;
+            }
+            return false;
         });
+        if(!count($subscriptions)) {
+            $subscriptions = array_filter($this->subscriptions, function ($item) {
+                return $item['interval'] == 'manual';
+            });
+        }
         $subscriptionsJsonArray = array_map(function ($item) {
             return ['label' => $item['label'], 'value' => $item['identifier']];
-        }, $manualSubscriptions);
+        }, $subscriptions);
         $this->view->assign('value', array_values($subscriptionsJsonArray));
     }
 
@@ -78,6 +87,7 @@ class NewsletterController extends ActionController
             return $item['identifier'] == $subscription;
         });
         array_walk($subscriptions, function ($subscription) use ($node) {
+            $subscription['isSendFromUi'] = true;
             $this->sendLettersForSubscription($subscription, $node);
         });
         $this->view->assign('value', ['status' => 'success']);
@@ -97,6 +107,7 @@ class NewsletterController extends ActionController
             return $item['identifier'] == $subscription;
         });
         $subscription = reset($subscriptions);
+        $subscription['isSendFromUi'] = true;
 
         $subscriber = new Subscriber();
         $subscriber->setEmail($email);

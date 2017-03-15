@@ -34,6 +34,7 @@ Psmb:
       -
         identifier: handcrafted
         renderer: 'Your.NameSpace:HandcraftedDigestRenderer'
+        sendFromUiNodeType: 'Your.NameSpace:HandcraftedDigest'
         label: 'Manually crafted newsletter'
         interval: manual
 ```
@@ -44,6 +45,7 @@ Define as many subscription types under Psmb.Newsletter.subscriptions as you nee
 | --- | --- |
 |`identifier`| Identifier of the subscription|
 |`renderer`| Fusion object that would be used for rendering emails sent to this subscription. Defaults to `Psmb.Newsletter:MailRenderer`. Must inherit from it.|
+|`sendFromUiNodeType`| Show this subscription for the nodes of given nodetype when sending from UI. |
 |`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Those marked as `manual` would appear as options when sending from the UI. Optional.|
 |`senderName`, `senderAddress`| Override options from `globalSettings`.|
 |`dimensions`| Array of dimensions in form of "dimensionName: ['dimensionValues']". Falls back to default dimension values.|

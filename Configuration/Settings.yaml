@@ -46,6 +46,7 @@ Neos:
 #      -
 #        identifier: 'daily'
 #        renderer: 'Your:LetterRenderer'
+#        sendFromUiNodeType: 'Your:NodeType'
 #        label: 'Our daily newsletter'
 #        interval: P1D
 #        dimensions:

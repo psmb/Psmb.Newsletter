@@ -52,7 +52,7 @@ define([
                 return I18n.translate('Psmb.Newsletter:Main:' + this.get('testButtonLabelId'), 'Send');
             }.property('testButtonLabelId'),
 
-            init: function () {
+            didInsertElement: function () {
                 var subscriptionsEndpoint = '/newsletter/getSubscriptions';
 
                 var callback = function (response) {
@@ -66,7 +66,8 @@ define([
                         this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
-                HttpClient.getResource(subscriptionsEndpoint).then(callback);
+                var data = {nodeType: this.get('controller.nodeProperties._nodeType')};
+                HttpClient.getResource(subscriptionsEndpoint, {data: data}).then(callback);
 
                 return this._super();
             },
