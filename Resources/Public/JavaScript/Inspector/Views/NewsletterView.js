@@ -116,10 +116,17 @@ define([
                         this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
+
+                // TODO: can we do it cleaner?
+                var siteContextPath = document.getElementById('neos-document-metadata').dataset.neosSiteNodeContextPath;
+                var context = siteContextPath.split('@')[1] || '';
+                var dimensions = (';' + context.split(';')[1]) || '';
+                var nodeContextPath = this.get('controller.nodeProperties._path') + '@live' + dimensions;
                 var data = {
                     subscription: this.get('subscription'),
-                    node: this.get('controller.nodeProperties._path')
+                    node: nodeContextPath
                 };
+
                 if (testEmail) {
                     data.email = testEmail;
                 }
