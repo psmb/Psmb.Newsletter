@@ -5,6 +5,7 @@
   ui:
     label: 'Newsletter sign up form'
     icon: icon-envelope
+    group: plugins
 'Psmb.Newsletter:NewsletterMixin':
   abstract: true
   ui:
