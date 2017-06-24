@@ -3,7 +3,6 @@ namespace Psmb\Newsletter\TypoScript;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-# use Pelago\Emogrifier;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 /**
