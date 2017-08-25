@@ -251,10 +251,14 @@ class FusionMailService {
     {
         $contextProperties = array(
             'workspaceName' => 'live',
-            'dimensions' => $dimensions,
             'invisibleContentShown' => false,
             'inaccessibleContentShown' => false
         );
+
+        if ($dimensions) {
+            $contextProperties['dimensions'] = $dimensions;
+        }
+
         $context = $this->contextFactory->create($contextProperties);
         return $context->getCurrentSiteNode();
     }

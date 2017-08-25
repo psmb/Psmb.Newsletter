@@ -9,15 +9,24 @@ use TYPO3\Flow\Persistence\Repository;
  */
 class SubscriberRepository extends Repository
 {
+
     /**
-     * @param $subscriptionId
+     * @var array
+     */
+    protected $defaultOrderings = array(
+        'name' => \TYPO3\Flow\Persistence\QueryInterface::ORDER_ASCENDING
+    );
+
+    /**
+     * @param string $filter
      * @return \TYPO3\Flow\Persistence\QueryResultInterface
      */
-    public function findBySubscriptionId($subscriptionId)
+    public function findAllByFilter($filter)
     {
         $query = $this->createQuery();
+
         return $query->matching(
-            $query->like('subscriptions', '%"' . $subscriptionId . '"%')
+            $query->like('subscriptions', '%"' . $filter . '"%')
         )->execute();
     }
 }

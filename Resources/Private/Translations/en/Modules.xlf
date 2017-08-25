@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" product-name="Psmb.Newsletter" source-language="en" datatype="plaintext">
+		<body>
+			<trans-unit id="newsletter.label" xml:space="preserve">
+				<source>Newsletter Subscribers</source>
+			</trans-unit>
+			<trans-unit id="newsletter.description" xml:space="preserve">
+				<source>Management panel for your newsletters subscribers</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
