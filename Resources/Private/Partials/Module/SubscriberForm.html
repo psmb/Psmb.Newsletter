@@ -1,7 +1,7 @@
 <div class=" neos-module-container">
     <fieldset class="neos-row-fluid">
         <div class="neos-span12">
-            <legend>Subscriber Details</legend>
+            <legend><f:translate id="module.header.subscriberDetails"/></legend>
             <br>
             <div class="neos-row-fluid">
                 <div class="neos-span6">
@@ -9,7 +9,7 @@
                         <div class="neos-span12">
                             <div class="neos-control-group neos-row-fluid">
                                 <div class="neos-span10">
-                                    <label class="neos-control-label" for="name">Name</label>
+                                    <label class="neos-control-label" for="name"><f:translate id="module.subscriberName"/></label>
                                     <div class="neos-controls">
                                         <f:form.textfield property="name" id="name" class="neos-span16" />
                                     </div>
@@ -21,7 +21,7 @@
                         <div class="neos-span12">
                             <div class="neos-control-group neos-row-fluid">
                                 <div class="neos-span10">
-                                    <label class="neos-control-label" for="name">E-mail</label>
+                                    <label class="neos-control-label" for="name"><f:translate id="module.subscriberEmail"/></label>
                                     <div class="neos-controls">
                                         <f:form.textfield property="email" id="email" class="neos-span12" />
                                     </div>
@@ -35,13 +35,13 @@
                         <div class="neos-span12">
                             <div class="neos-control-group neos-row-fluid">
                                 <div class="neos-span10">
-                                    <label class="neos-control-label" for="name">Subscriptions</label>
+                                    <label class="neos-control-label" for="name"><f:translate id="module.subscriberSubscriptions"/></label>
                                     <div class="neos-controls">
                                         <f:for each="{subscriptions}" as="subscription" key="identifier" iteration="subscriptionIteration">
                                             <div class="neos-controls">
                                                 <label for="subscription-{subscriptionIteration.cycle}" class="neos-checkbox">
                                                     <f:form.checkbox property="subscriptions" value="{subscription.identifier}" multiple="true" id="subscription-{subscriptionIteration.cycle}" /><span></span>
-                                                    <span>{subscription.label} <span class="neos-help-inline">({subscription.description})</span></span>
+                                                    <span>{subscription.label} <f:if condition="{subscription.description}"><span class="neos-help-inline">({subscription.description})</span></f:if></span>
                                                 </label>
                                             </div>
                                         </f:for>
@@ -58,7 +58,7 @@
                             <div class="widget-header">
                                 <i class="icon-globe neos-pull-left"></i>
                                 <h3>
-                                    Subscriber Meta Information
+                                    <f:translate id="module.subscriberMetaInformation"/>
                                 </h3>
                             </div>
 
@@ -77,6 +77,6 @@
     </fieldset>
 </div>
 <div class="neos-footer">
-    <f:link.action action="index" class="neos-button">Cancel</f:link.action>
-    <f:form.submit value="Save" class="neos-button neos-button-primary" />
+    <f:link.action action="index" class="neos-button"><f:translate id="module.actions.cancel"/></f:link.action>
+    <f:form.submit value="{f:translate(id: 'module.actions.save')}" class="neos-button neos-button-primary" />
 </div>

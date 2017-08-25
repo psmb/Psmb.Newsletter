@@ -63,6 +63,42 @@
             <trans-unit id="js.testEmailLabel" xml:space="preserve">
                 <source>Enter test email:</source>
             </trans-unit>
+
+            <trans-unit id="module.search" xml:space="preserve">
+                <source>Search</source>
+            </trans-unit>
+
+            <trans-unit id="module.header.newSubscriber" xml:space="preserve">
+                <source>New Subscriber</source>
+            </trans-unit>
+            <trans-unit id="module.header.subscriberDetails" xml:space="preserve">
+                <source>Subscriber Details</source>
+            </trans-unit>
+            <trans-unit id="module.header.subscriberEdit" xml:space="preserve">
+                <source>Edit Subscriber</source>
+            </trans-unit>
+            <trans-unit id="module.subscriberName" xml:space="preserve">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="module.subscriberEmail" xml:space="preserve">
+                <source>Email</source>
+            </trans-unit>
+            <trans-unit id="module.subscriberSubscriptions" xml:space="preserve">
+                <source>Subscriptions</source>
+            </trans-unit>
+            <trans-unit id="module.subscriberMetaInformation" xml:space="preserve">
+                <source>Meta Information</source>
+            </trans-unit>
+
+            <trans-unit id="module.actions.cancel" xml:space="preserve">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="module.actions.save" xml:space="preserve">
+                <source>Save</source>
+            </trans-unit>
+            <trans-unit id="module.actions.all" xml:space="preserve">
+                <source>Show All</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

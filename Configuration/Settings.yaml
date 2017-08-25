@@ -16,16 +16,16 @@ TYPO3:
     userInterface:
       translation:
         autoInclude:
-          'Psmb.Newsletter': ['Main', 'NodeTypes/*']
+          'Psmb.Newsletter': ['Main', 'Modules', 'NodeTypes/*']
       requireJsPathMapping:
         'Psmb.Newsletter/Views': 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
     modules:
       management:
         submodules:
           subscribers:
-            label: Subscribers Editor
+            label: 'Psmb.Newsletter:Modules:newsletter.label'
             controller: \Psmb\Newsletter\Controller\Module\SubscriberController
-            description: 'Manage your subscribers'
+            description: 'Psmb.Newsletter:Modules:newsletter.description'
             icon: icon-envelope
             actions:
               index:
@@ -40,6 +40,11 @@ Flowpack:
           className: 'Flowpack\JobQueue\Common\Queue\FakeQueue'
           options:
             async: true
+
+Psmb:
+  Newsletter:
+    module:
+      itemsPerPage: 18
 
 #Psmb:
 #  Newsletter:

@@ -14,7 +14,7 @@ use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 
 /**
  * Class SubscriberController
- * @package RFY\BKWI\Controller\Module
+ * @package Psmb\Newsletter\Controller\Module
  */
 class SubscriberController extends AbstractModuleController
 {
@@ -50,16 +50,15 @@ class SubscriberController extends AbstractModuleController
     protected $subscriptions;
 
     /**
-     * An edit view for the global Piwik settings and
-     * Management Module for Piwik Sites through Piwik API
-     *
-     * @return void
+     * @param string $filter
      */
-    public function indexAction()
+    public function indexAction($filter = '')
     {
-        $subscribers = $this->subscriberRepository->findAll();
+        $subscribers = $filter ? $this->subscriberRepository->findAllByFilter($filter) : $this->subscriberRepository->findAll();
 
+        $this->view->assign('filter', $filter);
         $this->view->assign('subscribers', $subscribers);
+        $this->view->assign('subscriptions', $this->subscriptions);
     }
 
     /**
@@ -72,6 +71,9 @@ class SubscriberController extends AbstractModuleController
         $this->view->assign('subscriptions', $this->subscriptions);
     }
 
+    /**
+     * @param Subscriber $subscriber
+     */
     public function createAction(Subscriber $subscriber)
     {
         $this->subscriberRepository->add($subscriber);
