@@ -36,7 +36,11 @@ Neos:
     fusion:
       autoInclude:
         Psmb.Newsletter: true
-
+    Ui:
+      resources:
+        javascript:
+          'Psmb.Newsletter:NewsletterView':
+            resource: resource://Psmb.Newsletter/Public/JavaScript/NewsletterView/Plugin.js
 #Psmb:
 #  Newsletter:
 #    globalSettings:
