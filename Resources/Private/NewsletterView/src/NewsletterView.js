@@ -1,26 +1,27 @@
 import React, {PropTypes, Component} from 'react';
-import {SelectBox, Button, Dialog, TextInput} from '@neos-project/react-ui-components';
+import {SelectBox, Button} from '@neos-project/react-ui-components';
 import {connect} from 'react-redux';
 import {selectors} from '@neos-project/neos-ui-redux-store';
 import {neos} from '@neos-project/neos-ui-decorators';
 import {$get} from 'plow-js';
 import TestConfirmationDialog from './TestConfirmationDialog';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const fetchSubscriptions = nodeType => fetch(`/newsletter/getSubscriptions?nodeType=${nodeType}`, {
     credentials: 'include'
 }).then(response => response.json());
 
-const sendNewsletter = (isTest, email) => {
+const sendNewsletter = (focusedNodeContextPath, subscription, isTest, email) => {
     const sendEndpointUrl = isTest ? '/newsletter/testSend' : '/newsletter/send';
     const csrfToken = document.getElementById('appContainer').dataset.csrfToken;
     const data = new URLSearchParams();
-    data.set('node', this.props.focusedNodeContextPath.replace(/user-.+\;/, 'live;'));
-    data.set('subscription', this.state.selectedSubscription);
+    data.set('node', focusedNodeContextPath.replace(/user-.+\;/, 'live;'));
+    data.set('subscription', subscription);
     data.set('__csrfToken', csrfToken);
     if (isTest && email) {
         data.set('email', email);
     }
-    fetch(sendEndpointUrl, {
+    return fetch(sendEndpointUrl, {
             credentials: 'include',
             method: 'POST',
             body: data
@@ -48,11 +49,14 @@ export default class NewsletterView extends Component {
             subscriptions: [],
             selectedSubscription: null,
             confirmationDialogIsOpen: false,
+            testConfirmationDialogIsOpen: false,
             isError: null,
             isSent: null
         };
         this.selectSubscription = this.selectSubscription.bind(this);
+        this.sendNewsletter = this.sendNewsletter.bind(this);
         this.sendTestNewsletter = this.sendTestNewsletter.bind(this);
+        this.toggleConfirmationDialog = this.toggleConfirmationDialog.bind(this);
         this.toggleTestConfirmationDialog = this.toggleTestConfirmationDialog.bind(this);
     }
 
@@ -64,17 +68,37 @@ export default class NewsletterView extends Component {
         }
     }
 
-    toggleTestConfirmationDialog(isOpen) {
+    toggleConfirmationDialog(isOpen) {
         this.setState({confirmationDialogIsOpen: isOpen})
+    }
+
+    toggleTestConfirmationDialog(isOpen) {
+        this.setState({testConfirmationDialogIsOpen: isOpen})
     }
 
     selectSubscription(value) {
         this.setState({selectedSubscription: value});
     }
 
+    sendNewsletter() {
+        const isTest = false;
+        sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest)
+            .then(json => {
+                console.log('asdf', json);
+                return json.status === 'success' ? this.setState({isSent: true}) : this.setState({isError: true});
+            })
+            .catch(() => this.setState({isError: true}));
+        this.toggleConfirmationDialog(false);
+    }
+
     sendTestNewsletter(email) {
         const isTest = true;
-        sendNewsletter(isTest, email).then(json => json.status === 'success' ? this.setState({isSent: true}) : this.setState({isError: true}));
+        sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest, email)
+            .then(json => {
+                console.log('asdf1', json);
+                return json.status === 'success' ? this.setState({isSent: true}) : this.setState({isError: true})
+            })
+            .catch(() => this.setState({isError: true}));
         this.toggleTestConfirmationDialog(false);
     }
 
@@ -86,14 +110,23 @@ export default class NewsletterView extends Component {
                     options={this.state.subscriptions}
                     onValueChange={this.selectSubscription}
                     />
-                <Button style="brand" onClick={() => this.toggleTestConfirmationDialog(true)}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.send')}</Button>
-                <Button style="clean" onClick={() => this.toggleTestConfirmationDialog(true)}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.test')}</Button>
+                <Button disabled={!this.state.selectedSubscription} style="brand" onClick={() => this.toggleConfirmationDialog(true)}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.send')}</Button>
+                <Button disabled={!this.state.selectedSubscription} style="clean" onClick={() => this.toggleTestConfirmationDialog(true)}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.test')}</Button>
+
+                {this.state.isError ? <div style={{marginTop: '16px', color: 'red'}}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.error')}</div> : ''}
+                {this.state.isSent ? <div style={{marginTop: '16px', color: 'green'}}>{this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.sent')}</div> : ''}
 
                 <TestConfirmationDialog
+                    isOpen={this.state.testConfirmationDialogIsOpen}
+                    translate={this.props.i18nRegistry.translate.bind(this.props.i18nRegistry)}
+                    close={() => this.toggleTestConfirmationDialog(false)}
+                    send={this.sendTestNewsletter}
+                    />
+                <ConfirmationDialog
                     isOpen={this.state.confirmationDialogIsOpen}
                     translate={this.props.i18nRegistry.translate.bind(this.props.i18nRegistry)}
-                    close={() => toggleTestConfirmationDialog(false)}
-                    send={this.sendTestNewsletter}
+                    close={() => this.toggleConfirmationDialog(false)}
+                    send={this.sendNewsletter}
                     />
             </div>
         );

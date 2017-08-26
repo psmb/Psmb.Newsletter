@@ -26,14 +26,16 @@ export default class TestConfirmationDialog extends Component {
                 onRequestClose={close}
                 actions={[
                     <Button onClick={close} style="clean">{translate('Neos.Neos:Main:cancel')}</Button>,
-                    <Button onClick={() => send(this.state.email)} style="brand">{translate('Psmb.Newsletter:Main:js.send')}</Button>
+                    <Button disabled={!this.state.email.includes('@')} onClick={() => send(this.state.email)} style="brand">{translate('Psmb.Newsletter:Main:js.send')}</Button>
                 ]}
                 >
-                {translate('Psmb.Newsletter:Main:js.testEmailLabel')}
-                <TextInput
-                    onChange={email => this.setState({email})}
-                    value={this.state.email}
-                    />
+                <div style={{padding: '16px'}}>
+                    {translate('Psmb.Newsletter:Main:js.testEmailLabel')}
+                    <TextInput
+                        onChange={email => this.setState({email})}
+                        value={this.state.email}
+                        />
+                </div>
             </Dialog>
         );
     }

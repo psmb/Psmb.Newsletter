@@ -262,9 +262,13 @@
 	
 	var _plowJs = __webpack_require__(13);
 	
-	var _TestConfirmationDialog = __webpack_require__(15);
+	var _TestConfirmationDialog = __webpack_require__(14);
 	
 	var _TestConfirmationDialog2 = _interopRequireDefault(_TestConfirmationDialog);
+	
+	var _ConfirmationDialog = __webpack_require__(15);
+	
+	var _ConfirmationDialog2 = _interopRequireDefault(_ConfirmationDialog);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -282,17 +286,17 @@
 	    });
 	};
 	
-	var sendNewsletter = function sendNewsletter(isTest, email) {
+	var _sendNewsletter = function _sendNewsletter(focusedNodeContextPath, subscription, isTest, email) {
 	    var sendEndpointUrl = isTest ? '/newsletter/testSend' : '/newsletter/send';
 	    var csrfToken = document.getElementById('appContainer').dataset.csrfToken;
 	    var data = new URLSearchParams();
-	    data.set('node', undefined.props.focusedNodeContextPath.replace(/user-.+\;/, 'live;'));
-	    data.set('subscription', undefined.state.selectedSubscription);
+	    data.set('node', focusedNodeContextPath.replace(/user-.+\;/, 'live;'));
+	    data.set('subscription', subscription);
 	    data.set('__csrfToken', csrfToken);
 	    if (isTest && email) {
 	        data.set('email', email);
 	    }
-	    fetch(sendEndpointUrl, {
+	    return fetch(sendEndpointUrl, {
 	        credentials: 'include',
 	        method: 'POST',
 	        body: data
@@ -322,11 +326,14 @@
 	            subscriptions: [],
 	            selectedSubscription: null,
 	            confirmationDialogIsOpen: false,
+	            testConfirmationDialogIsOpen: false,
 	            isError: null,
 	            isSent: null
 	        };
 	        _this.selectSubscription = _this.selectSubscription.bind(_this);
+	        _this.sendNewsletter = _this.sendNewsletter.bind(_this);
 	        _this.sendTestNewsletter = _this.sendTestNewsletter.bind(_this);
+	        _this.toggleConfirmationDialog = _this.toggleConfirmationDialog.bind(_this);
 	        _this.toggleTestConfirmationDialog = _this.toggleTestConfirmationDialog.bind(_this);
 	        return _this;
 	    }
@@ -345,9 +352,14 @@
 	            }
 	        }
 	    }, {
+	        key: 'toggleConfirmationDialog',
+	        value: function toggleConfirmationDialog(isOpen) {
+	            this.setState({ confirmationDialogIsOpen: isOpen });
+	        }
+	    }, {
 	        key: 'toggleTestConfirmationDialog',
 	        value: function toggleTestConfirmationDialog(isOpen) {
-	            this.setState({ confirmationDialogIsOpen: isOpen });
+	            this.setState({ testConfirmationDialogIsOpen: isOpen });
 	        }
 	    }, {
 	        key: 'selectSubscription',
@@ -355,20 +367,37 @@
 	            this.setState({ selectedSubscription: value });
 	        }
 	    }, {
-	        key: 'sendTestNewsletter',
-	        value: function sendTestNewsletter(email) {
+	        key: 'sendNewsletter',
+	        value: function sendNewsletter() {
 	            var _this3 = this;
 	
-	            var isTest = true;
-	            sendNewsletter(isTest, email).then(function (json) {
+	            var isTest = false;
+	            _sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest).then(function (json) {
+	                console.log('asdf', json);
 	                return json.status === 'success' ? _this3.setState({ isSent: true }) : _this3.setState({ isError: true });
+	            }).catch(function () {
+	                return _this3.setState({ isError: true });
+	            });
+	            this.toggleConfirmationDialog(false);
+	        }
+	    }, {
+	        key: 'sendTestNewsletter',
+	        value: function sendTestNewsletter(email) {
+	            var _this4 = this;
+	
+	            var isTest = true;
+	            _sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest, email).then(function (json) {
+	                console.log('asdf1', json);
+	                return json.status === 'success' ? _this4.setState({ isSent: true }) : _this4.setState({ isError: true });
+	            }).catch(function () {
+	                return _this4.setState({ isError: true });
 	            });
 	            this.toggleTestConfirmationDialog(false);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this4 = this;
+	            var _this5 = this;
 	
 	            return _react2.default.createElement(
 	                'div',
@@ -380,25 +409,43 @@
 	                }),
 	                _react2.default.createElement(
 	                    _reactUiComponents.Button,
-	                    { style: 'brand', onClick: function onClick() {
-	                            return _this4.toggleTestConfirmationDialog(true);
+	                    { disabled: !this.state.selectedSubscription, style: 'brand', onClick: function onClick() {
+	                            return _this5.toggleConfirmationDialog(true);
 	                        } },
 	                    this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.send')
 	                ),
 	                _react2.default.createElement(
 	                    _reactUiComponents.Button,
-	                    { style: 'clean', onClick: function onClick() {
-	                            return _this4.toggleTestConfirmationDialog(true);
+	                    { disabled: !this.state.selectedSubscription, style: 'clean', onClick: function onClick() {
+	                            return _this5.toggleTestConfirmationDialog(true);
 	                        } },
 	                    this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.test')
 	                ),
+	                this.state.isError ? _react2.default.createElement(
+	                    'div',
+	                    { style: { marginTop: '16px', color: 'red' } },
+	                    this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.error')
+	                ) : '',
+	                this.state.isSent ? _react2.default.createElement(
+	                    'div',
+	                    { style: { marginTop: '16px', color: 'green' } },
+	                    this.props.i18nRegistry.translate('Psmb.Newsletter:Main:js.sent')
+	                ) : '',
 	                _react2.default.createElement(_TestConfirmationDialog2.default, {
+	                    isOpen: this.state.testConfirmationDialogIsOpen,
+	                    translate: this.props.i18nRegistry.translate.bind(this.props.i18nRegistry),
+	                    close: function close() {
+	                        return _this5.toggleTestConfirmationDialog(false);
+	                    },
+	                    send: this.sendTestNewsletter
+	                }),
+	                _react2.default.createElement(_ConfirmationDialog2.default, {
 	                    isOpen: this.state.confirmationDialogIsOpen,
 	                    translate: this.props.i18nRegistry.translate.bind(this.props.i18nRegistry),
 	                    close: function close() {
-	                        return toggleTestConfirmationDialog(false);
+	                        return _this5.toggleConfirmationDialog(false);
 	                    },
-	                    send: this.sendTestNewsletter
+	                    send: this.sendNewsletter
 	                })
 	            );
 	        }
@@ -496,8 +543,7 @@
 	module.exports = (0, _readFromConsumerApi2.default)('vendor')().plow;
 
 /***/ }),
-/* 14 */,
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -562,19 +608,23 @@
 	                        translate('Neos.Neos:Main:cancel')
 	                    ), _react2.default.createElement(
 	                        _reactUiComponents.Button,
-	                        { onClick: function onClick() {
+	                        { disabled: !this.state.email.includes('@'), onClick: function onClick() {
 	                                return send(_this2.state.email);
 	                            }, style: 'brand' },
 	                        translate('Psmb.Newsletter:Main:js.send')
 	                    )]
 	                },
-	                translate('Psmb.Newsletter:Main:js.testEmailLabel'),
-	                _react2.default.createElement(_reactUiComponents.TextInput, {
-	                    onChange: function onChange(email) {
-	                        return _this2.setState({ email: email });
-	                    },
-	                    value: this.state.email
-	                })
+	                _react2.default.createElement(
+	                    'div',
+	                    { style: { padding: '16px' } },
+	                    translate('Psmb.Newsletter:Main:js.testEmailLabel'),
+	                    _react2.default.createElement(_reactUiComponents.TextInput, {
+	                        onChange: function onChange(email) {
+	                            return _this2.setState({ email: email });
+	                        },
+	                        value: this.state.email
+	                    })
+	                )
 	            );
 	        }
 	    }]);
@@ -587,6 +637,62 @@
 	    send: _react.PropTypes.func.isRequired
 	}, _temp);
 	exports.default = TestConfirmationDialog;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _react = __webpack_require__(8);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactUiComponents = __webpack_require__(9);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ConfirmationDialog = function ConfirmationDialog(_ref) {
+	    var isOpen = _ref.isOpen,
+	        translate = _ref.translate,
+	        close = _ref.close,
+	        send = _ref.send;
+	
+	    return _react2.default.createElement(
+	        _reactUiComponents.Dialog,
+	        {
+	            isOpen: isOpen,
+	            title: translate('Psmb.Newsletter:Main:js.testConfirmationTitle'),
+	            onRequestClose: close,
+	            actions: [_react2.default.createElement(
+	                _reactUiComponents.Button,
+	                { onClick: close, style: 'clean' },
+	                translate('Neos.Neos:Main:cancel')
+	            ), _react2.default.createElement(
+	                _reactUiComponents.Button,
+	                { onClick: send, style: 'brand' },
+	                translate('Psmb.Newsletter:Main:js.send')
+	            )]
+	        },
+	        _react2.default.createElement(
+	            'div',
+	            { style: { padding: '16px' } },
+	            translate('Psmb.Newsletter:Main:js.confirmationDescription')
+	        )
+	    );
+	};
+	ConfirmationDialog.propTypes = {
+	    isOpen: _react.PropTypes.bool,
+	    translate: _react.PropTypes.func.isRequired,
+	    close: _react.PropTypes.func.isRequired,
+	    send: _react.PropTypes.func.isRequired
+	};
+	
+	exports.default = ConfirmationDialog;
 
 /***/ })
 /******/ ]);
