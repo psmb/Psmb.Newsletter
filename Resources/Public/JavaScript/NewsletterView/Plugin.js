@@ -67,7 +67,7 @@
 	(0, _neosUiExtensibility2.default)('Psmb.Newsletter:NewsletterView', {}, function (globalRegistry) {
 	    var viewsRegistry = globalRegistry.get('inspector').get('views');
 	
-	    viewsRegistry.add('Psmb.Newsletter/Views/NewsletterView', {
+	    viewsRegistry.set('Psmb.Newsletter/Views/NewsletterView', {
 	        component: _NewsletterView2.default
 	    });
 	});
@@ -141,54 +141,7 @@
 /* 4 */
 /***/ (function(module, exports) {
 
-	module.exports = {
-		"name": "@neos-project/neos-ui-extensibility",
-		"version": "1.0.0-beta3",
-		"description": "Extensibility mechanisms for the Neos CMS UI",
-		"main": "./src/index.js",
-		"scripts": {
-			"prebuild": "check-dependencies && yarn clean",
-			"test": "yarn jest",
-			"test:watch": "yarn jest -- --watch",
-			"build": "exit 0",
-			"build:watch": "exit 0",
-			"clean": "rimraf ./lib ./dist",
-			"lint": "eslint src",
-			"jest": "PWD=$(pwd) NODE_ENV=test jest -w 1 --coverage"
-		},
-		"dependencies": {
-			"@neos-project/build-essentials": "1.0.0-beta3",
-			"babel-core": "^6.13.2",
-			"babel-eslint": "^7.1.1",
-			"babel-loader": "^6.2.4",
-			"babel-plugin-transform-decorators-legacy": "^1.3.4",
-			"babel-plugin-transform-object-rest-spread": "^6.20.1",
-			"babel-plugin-webpack-alias": "^2.1.1",
-			"babel-preset-es2015": "^6.13.2",
-			"babel-preset-react": "^6.3.13",
-			"babel-preset-stage-0": "^6.3.13",
-			"chalk": "^1.1.3",
-			"css-loader": "^0.26.0",
-			"file-loader": "^0.10.0",
-			"json-loader": "^0.5.4",
-			"postcss-loader": "^1.0.0",
-			"react-dev-utils": "^0.5.0",
-			"style-loader": "^0.13.1"
-		},
-		"bin": {
-			"neos-react-scripts": "./bin/neos-react-scripts.js"
-		},
-		"jest": {
-			"transformIgnorePatterns": [],
-			"setupFiles": [
-				"./node_modules/@neos-project/build-essentials/src/setup-browser-env.js"
-			],
-			"transform": {
-				"neos-ui-extensibility/src/.+\\.jsx?$": "./node_modules/.bin/babel-jest",
-				"node_modules/@neos-project/.+\\.jsx?$": "./node_modules/.bin/babel-jest"
-			}
-		}
-	};
+	module.exports = {"name":"@neos-project/neos-ui-extensibility","version":"1.0.0-beta4","description":"Extensibility mechanisms for the Neos CMS UI","main":"./src/index.js","scripts":{"prebuild":"check-dependencies && yarn clean","test":"yarn jest","test:watch":"yarn jest -- --watch","build":"exit 0","build:watch":"exit 0","clean":"rimraf ./lib ./dist","lint":"eslint src","jest":"PWD=$(pwd) NODE_ENV=test jest -w 1 --coverage"},"dependencies":{"@neos-project/build-essentials":"1.0.0-beta4","@neos-project/utils-helpers":"1.0.0-beta4","babel-core":"^6.13.2","babel-eslint":"^7.1.1","babel-loader":"^6.2.4","babel-plugin-transform-decorators-legacy":"^1.3.4","babel-plugin-transform-object-rest-spread":"^6.20.1","babel-plugin-webpack-alias":"^2.1.1","babel-preset-es2015":"^6.13.2","babel-preset-react":"^6.3.13","babel-preset-stage-0":"^6.3.13","chalk":"^1.1.3","css-loader":"^0.26.0","file-loader":"^0.10.0","json-loader":"^0.5.4","postcss-loader":"^1.0.0","react-dev-utils":"^0.5.0","style-loader":"^0.13.1"},"bin":{"neos-react-scripts":"./bin/neos-react-scripts.js"},"jest":{"transformIgnorePatterns":[],"setupFiles":["./node_modules/@neos-project/build-essentials/src/setup-browser-env.js"],"transform":{"neos-ui-extensibility/src/.+\\.jsx?$":"./node_modules/.bin/babel-jest","node_modules/@neos-project/.+\\.jsx?$":"./node_modules/.bin/babel-jest"}}}
 
 /***/ }),
 /* 5 */
