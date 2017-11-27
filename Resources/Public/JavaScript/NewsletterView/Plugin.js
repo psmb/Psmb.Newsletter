@@ -141,7 +141,7 @@
 /* 4 */
 /***/ (function(module, exports) {
 
-	module.exports = {"name":"@neos-project/neos-ui-extensibility","version":"1.0.0-beta4","description":"Extensibility mechanisms for the Neos CMS UI","main":"./src/index.js","scripts":{"prebuild":"check-dependencies && yarn clean","test":"yarn jest","test:watch":"yarn jest -- --watch","build":"exit 0","build:watch":"exit 0","clean":"rimraf ./lib ./dist","lint":"eslint src","jest":"PWD=$(pwd) NODE_ENV=test jest -w 1 --coverage"},"dependencies":{"@neos-project/build-essentials":"1.0.0-beta4","@neos-project/utils-helpers":"1.0.0-beta4","babel-core":"^6.13.2","babel-eslint":"^7.1.1","babel-loader":"^6.2.4","babel-plugin-transform-decorators-legacy":"^1.3.4","babel-plugin-transform-object-rest-spread":"^6.20.1","babel-plugin-webpack-alias":"^2.1.1","babel-preset-es2015":"^6.13.2","babel-preset-react":"^6.3.13","babel-preset-stage-0":"^6.3.13","chalk":"^1.1.3","css-loader":"^0.26.0","file-loader":"^0.10.0","json-loader":"^0.5.4","postcss-loader":"^1.0.0","react-dev-utils":"^0.5.0","style-loader":"^0.13.1"},"bin":{"neos-react-scripts":"./bin/neos-react-scripts.js"},"jest":{"transformIgnorePatterns":[],"setupFiles":["./node_modules/@neos-project/build-essentials/src/setup-browser-env.js"],"transform":{"neos-ui-extensibility/src/.+\\.jsx?$":"./node_modules/.bin/babel-jest","node_modules/@neos-project/.+\\.jsx?$":"./node_modules/.bin/babel-jest"}}}
+	module.exports = {"name":"@neos-project/neos-ui-extensibility","version":"1.0.0-beta8","description":"Extensibility mechanisms for the Neos CMS UI","main":"./src/index.js","scripts":{"prebuild":"check-dependencies && yarn clean","test":"yarn jest","test:watch":"yarn jest -- --watch","build":"exit 0","build:watch":"exit 0","clean":"rimraf ./lib ./dist","lint":"eslint src","jest":"PWD=$(pwd) NODE_ENV=test jest -w 1 --coverage"},"dependencies":{"@neos-project/build-essentials":"1.0.0-beta8","@neos-project/positional-array-sorter":"1.0.0-beta8","babel-core":"^6.13.2","babel-eslint":"^7.1.1","babel-loader":"^6.2.4","babel-plugin-transform-decorators-legacy":"^1.3.4","babel-plugin-transform-object-rest-spread":"^6.20.1","babel-plugin-webpack-alias":"^2.1.1","babel-preset-es2015":"^6.13.2","babel-preset-react":"^6.3.13","babel-preset-stage-0":"^6.3.13","chalk":"^1.1.3","css-loader":"^0.26.0","file-loader":"^0.10.0","json-loader":"^0.5.4","postcss-loader":"^1.0.0","react-dev-utils":"^0.5.0","style-loader":"^0.13.1"},"bin":{"neos-react-scripts":"./bin/neos-react-scripts.js"},"jest":{"transformIgnorePatterns":[],"setupFiles":["./node_modules/@neos-project/build-essentials/src/setup-browser-env.js","./node_modules/@neos-project/build-essentials/src/enzymeConfiguration.js"],"transform":{"neos-ui-extensibility/src/.+\\.jsx?$":"./node_modules/.bin/babel-jest","node_modules/@neos-project/.+\\.jsx?$":"./node_modules/.bin/babel-jest"}}}
 
 /***/ }),
 /* 5 */
@@ -205,21 +205,25 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactUiComponents = __webpack_require__(9);
+	var _propTypes = __webpack_require__(9);
 	
-	var _reactRedux = __webpack_require__(10);
+	var _propTypes2 = _interopRequireDefault(_propTypes);
 	
-	var _neosUiReduxStore = __webpack_require__(11);
+	var _reactUiComponents = __webpack_require__(10);
 	
-	var _neosUiDecorators = __webpack_require__(12);
+	var _reactRedux = __webpack_require__(11);
 	
-	var _plowJs = __webpack_require__(13);
+	var _neosUiReduxStore = __webpack_require__(12);
 	
-	var _TestConfirmationDialog = __webpack_require__(14);
+	var _neosUiDecorators = __webpack_require__(13);
+	
+	var _plowJs = __webpack_require__(14);
+	
+	var _TestConfirmationDialog = __webpack_require__(15);
 	
 	var _TestConfirmationDialog2 = _interopRequireDefault(_TestConfirmationDialog);
 	
-	var _ConfirmationDialog = __webpack_require__(15);
+	var _ConfirmationDialog = __webpack_require__(16);
 	
 	var _ConfirmationDialog2 = _interopRequireDefault(_ConfirmationDialog);
 	
@@ -406,8 +410,8 @@
 	
 	    return NewsletterView;
 	}(_react.Component), _class2.propTypes = {
-	    focusedNodeContextPath: _react.PropTypes.string,
-	    getNodeByContextPath: _react.PropTypes.func.isRequired
+	    focusedNodeContextPath: _propTypes2.default.string,
+	    getNodeByContextPath: _propTypes2.default.func.isRequired
 	}, _temp)) || _class) || _class);
 	exports.default = NewsletterView;
 
@@ -437,7 +441,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().ReactUiComponents;
+	module.exports = (0, _readFromConsumerApi2.default)('vendor')().PropTypes;
 
 /***/ }),
 /* 10 */
@@ -451,7 +455,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = (0, _readFromConsumerApi2.default)('vendor')().reactRedux;
+	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().ReactUiComponents;
 
 /***/ }),
 /* 11 */
@@ -465,7 +469,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiReduxStore;
+	module.exports = (0, _readFromConsumerApi2.default)('vendor')().reactRedux;
 
 /***/ }),
 /* 12 */
@@ -479,7 +483,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiDecorators;
+	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiReduxStore;
 
 /***/ }),
 /* 13 */
@@ -493,10 +497,24 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	module.exports = (0, _readFromConsumerApi2.default)('vendor')().plow;
+	module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiDecorators;
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _readFromConsumerApi = __webpack_require__(6);
+	
+	var _readFromConsumerApi2 = _interopRequireDefault(_readFromConsumerApi);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = (0, _readFromConsumerApi2.default)('vendor')().plow;
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -514,7 +532,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactUiComponents = __webpack_require__(9);
+	var _propTypes = __webpack_require__(9);
+	
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+	
+	var _reactUiComponents = __webpack_require__(10);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -584,15 +606,15 @@
 	
 	    return TestConfirmationDialog;
 	}(_react.Component), _class.propTypes = {
-	    isOpen: _react.PropTypes.bool,
-	    translate: _react.PropTypes.func.isRequired,
-	    close: _react.PropTypes.func.isRequired,
-	    send: _react.PropTypes.func.isRequired
+	    isOpen: _propTypes2.default.bool,
+	    translate: _propTypes2.default.func.isRequired,
+	    close: _propTypes2.default.func.isRequired,
+	    send: _propTypes2.default.func.isRequired
 	}, _temp);
 	exports.default = TestConfirmationDialog;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -605,7 +627,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactUiComponents = __webpack_require__(9);
+	var _propTypes = __webpack_require__(9);
+	
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+	
+	var _reactUiComponents = __webpack_require__(10);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -639,10 +665,10 @@
 	    );
 	};
 	ConfirmationDialog.propTypes = {
-	    isOpen: _react.PropTypes.bool,
-	    translate: _react.PropTypes.func.isRequired,
-	    close: _react.PropTypes.func.isRequired,
-	    send: _react.PropTypes.func.isRequired
+	    isOpen: _propTypes2.default.bool,
+	    translate: _propTypes2.default.func.isRequired,
+	    close: _propTypes2.default.func.isRequired,
+	    send: _propTypes2.default.func.isRequired
 	};
 	
 	exports.default = ConfirmationDialog;

@@ -7,7 +7,7 @@
     "watch": "neos-react-scripts watch"
   },
   "devDependencies": {
-    "@neos-project/neos-ui-extensibility": "@dev"
+    "@neos-project/neos-ui-extensibility": "1.0.0-beta8"
   },
   "neos": {
     "buildTargetDirectory": "../../Public/JavaScript/NewsletterView"

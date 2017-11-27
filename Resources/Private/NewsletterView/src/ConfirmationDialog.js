@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {Button, Dialog} from '@neos-project/react-ui-components';
 
 const ConfirmationDialog = ({isOpen, translate, close, send}) => {
