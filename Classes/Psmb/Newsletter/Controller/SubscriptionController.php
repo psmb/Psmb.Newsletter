@@ -68,38 +68,40 @@ class SubscriptionController extends ActionController
      * @param Subscriber $subscriber
      * @return void
      */
-    public function registerAction(Subscriber $subscriber)
+    public function registerAction(Subscriber $subscriber = null)
     {
-        $email = $subscriber->getEmail();
-        if (!$email) {
-            $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
-            $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
-            $this->redirect('index');
-        } else {
-            $emailValidator = new EmailAddressValidator();
-            $validationResult = $emailValidator->validate($email);
-            if ($validationResult->hasErrors()) {
-                $message = $validationResult->getFirstError()->getMessage();
-                $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
-                $this->redirect('index');
-            } elseif ($this->subscriberRepository->countByEmail($email) > 0) {
-                $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
+        if ($subscriber) {
+            $email = $subscriber->getEmail();
+            if (!$email) {
+                $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
                 $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
                 $this->redirect('index');
             } else {
-                $subscriber->setMetadata([
-                    'registrationDate' => new \DateTime(),
-                    'registrationDimensions' => $this->request->getInternalArgument('__node')->getContext()->getDimensions()
-                ]);
-                $hash = Algorithms::generateRandomToken(16);
-                $this->tokenCache->set(
-                    $hash,
-                    $subscriber
-                );
-                $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
-                $this->addFlashMessage($message);
-                $this->fusionMailService->sendActivationLetter($subscriber, $hash);
-                $this->redirect('feedback');
+                $emailValidator = new EmailAddressValidator();
+                $validationResult = $emailValidator->validate($email);
+                if ($validationResult->hasErrors()) {
+                    $message = $validationResult->getFirstError()->getMessage();
+                    $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+                    $this->redirect('index');
+                } elseif ($this->subscriberRepository->countByEmail($email) > 0) {
+                    $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
+                    $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+                    $this->redirect('index');
+                } else {
+                    $subscriber->setMetadata([
+                        'registrationDate' => new \DateTime(),
+                        'registrationDimensions' => $this->request->getInternalArgument('__node')->getContext()->getDimensions()
+                    ]);
+                    $hash = Algorithms::generateRandomToken(16);
+                    $this->tokenCache->set(
+                        $hash,
+                        $subscriber
+                    );
+                    $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
+                    $this->addFlashMessage($message);
+                    $this->fusionMailService->sendActivationLetter($subscriber, $hash);
+                    $this->redirect('feedback');
+                }
             }
         }
     }
