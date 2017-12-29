@@ -103,6 +103,9 @@ class SubscriptionController extends ActionController
                     $this->redirect('feedback');
                 }
             }
+        } else {
+            $this->addFlashMessage('No subscriber provided', null, Message::SEVERITY_WARNING);
+            $this->redirect('feedback');
         }
     }
 
