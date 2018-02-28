@@ -205,12 +205,12 @@ class FusionMailService {
     /**
      * Generate a letter for given subscriber and subscription
      *
-     * @param Subscriber $subscriber
+     * @param array|Subscriber $subscriber
      * @param array $subscription
      * @param null|NodeInterface $node
      * @return array
      */
-    public function generateSubscriptionLetter(Subscriber $subscriber, $subscription, $node = NULL)
+    public function generateSubscriptionLetter($subscriber, $subscription, $node = NULL)
     {
         $dimensions = isset($subscription['dimensions']) ? $subscription['dimensions'] : null;
         $siteNode = $this->getSiteNode($dimensions);
@@ -230,12 +230,12 @@ class FusionMailService {
      * Generate a letter for given subscriber and subscription and sends it. Async.
      *
      * @Job\Defer(queueName="psmb-newsletter")
-     * @param Subscriber $subscriber
+     * @param array|Subscriber $subscriber
      * @param array $subscription
      * @param null|NodeInterface $node
      * @return void
      */
-    public function generateSubscriptionLetterAndSend(Subscriber $subscriber, $subscription, $node = NULL)
+    public function generateSubscriptionLetterAndSend($subscriber, $subscription, $node = NULL)
     {
         $letter = $this->generateSubscriptionLetter($subscriber, $subscription, $node);
         if ($letter) {
