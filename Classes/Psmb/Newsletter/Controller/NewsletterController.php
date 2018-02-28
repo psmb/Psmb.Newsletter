@@ -4,8 +4,8 @@ namespace Psmb\Newsletter\Controller;
 use Flowpack\JobQueue\Common\Annotations as Job;
 use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
-use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
+use Psmb\Newsletter\Service\SubscribersService;
 use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\I18n\Service as I18nService;
 use Neos\Flow\I18n\Translator;
@@ -25,6 +25,7 @@ class NewsletterController extends ActionController
      * @var Translator
      */
     protected $translator;
+
     /**
      * @Flow\Inject
      * @var FusionMailService
@@ -33,9 +34,15 @@ class NewsletterController extends ActionController
 
     /**
      * @Flow\Inject
-     * @var SubscriberRepository
+     * @var SubscribersService
      */
-    protected $subscriberRepository;
+    protected $subscribersService;
+
+    /**
+     * @Flow\Inject
+     * @var \Neos\Flow\Log\SystemLoggerInterface
+     */
+    protected $systemLogger;
 
     /**
      * @Flow\InjectConfiguration(path="subscriptions")
@@ -128,11 +135,14 @@ class NewsletterController extends ActionController
      */
     public function sendLettersForSubscription($subscription, $node)
     {
-        $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        $subscribers = $this->subscribersService->getSubscribers($subscription);
 
         array_walk($subscribers, function ($subscriber) use ($subscription, $node) {
-            $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
+            try {
+                $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
+            } catch (\Exception $e) {
+                $this->systemLogger->log($e->getMessage(), \LOG_ERR);
+            }
         });
     }
-
 }

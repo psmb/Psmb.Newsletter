@@ -201,6 +201,24 @@ Here's a quick example how to create CSV exports from mysql:
 SELECT email, name INTO OUTFILE '/path/test.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n' FROM yourTable;
 ```
 
+## External Datasources
+
+The default datasource for fetching subscribers has an identifier `Repository`. It fetches all subscribers subscribed via the default subscription plugin.
+
+You may fetch subscribers from an external JSON source via the `Json` datasource. Here's an example:
+
+```
+Psmb:
+  Newsletter:
+    subscriptions:
+      -
+        dataSourceIdentifier: 'Json'
+        dataSourceOptions:
+          uri: 'http://some.host/some-url'
+```
+
+Alternatively you may provide your custom datasources. See implementation of JsonDataSource.php to see how to do that.
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
