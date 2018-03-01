@@ -29,7 +29,7 @@ prototype(Psmb.Newsletter:MailRenderer) < prototype(Neos.Fusion:RawArray) {
 	#}
 	recipientAddress = ${subscriber.email}
 	recipientName = ${subscriber.name}
-	replyToAddress = ${subscription.senderAddress || globalSettings.senderAddress}
+	replyToAddress = ${subscription.replyToAddress || globalSettings.replyToAddress || subscription.senderAddress || globalSettings.senderAddress}
 	senderAddress = ${subscription.senderAddress || globalSettings.senderAddress}
 	senderName = ${subscription.senderName || globalSettings.senderName}
 }
