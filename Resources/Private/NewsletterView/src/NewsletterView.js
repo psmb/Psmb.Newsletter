@@ -85,7 +85,6 @@ export default class NewsletterView extends Component {
         const isTest = false;
         sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest)
             .then(json => {
-                console.log('asdf', json);
                 return json.status === 'success' ? this.setState({isSent: true}) : this.setState({isError: true});
             })
             .catch(() => this.setState({isError: true}));
@@ -96,7 +95,6 @@ export default class NewsletterView extends Component {
         const isTest = true;
         sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest, email)
             .then(json => {
-                console.log('asdf1', json);
                 return json.status === 'success' ? this.setState({isSent: true}) : this.setState({isError: true})
             })
             .catch(() => this.setState({isError: true}));

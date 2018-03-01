@@ -330,7 +330,6 @@
 	
 	            var isTest = false;
 	            _sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest).then(function (json) {
-	                console.log('asdf', json);
 	                return json.status === 'success' ? _this3.setState({ isSent: true }) : _this3.setState({ isError: true });
 	            }).catch(function () {
 	                return _this3.setState({ isError: true });
@@ -344,7 +343,6 @@
 	
 	            var isTest = true;
 	            _sendNewsletter(this.props.focusedNodeContextPath, this.state.selectedSubscription, isTest, email).then(function (json) {
-	                console.log('asdf1', json);
 	                return json.status === 'success' ? _this4.setState({ isSent: true }) : _this4.setState({ isError: true });
 	            }).catch(function () {
 	                return _this4.setState({ isError: true });
