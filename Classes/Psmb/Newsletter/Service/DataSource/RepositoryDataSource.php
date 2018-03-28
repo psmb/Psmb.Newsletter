@@ -24,6 +24,6 @@ class RepositoryDataSource extends AbstractDataSource
      */
     public function getData(array $subscription)
     {
-        $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        return $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
     }
 }

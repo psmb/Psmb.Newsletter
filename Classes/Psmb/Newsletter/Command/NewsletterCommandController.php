@@ -5,6 +5,7 @@ use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
+use Psmb\Newsletter\Service\SubscribersService;
 use Neos\Flow\Cli\CommandController;
 
 /**
@@ -35,6 +36,12 @@ class NewsletterCommandController extends CommandController
      * @var array
      */
     protected $subscriptions;
+
+    /**
+     * @Flow\Inject
+     * @var SubscribersService
+     */
+    protected $subscribersService;
 
     /**
      * Import newsletter subscribers from CSV.
@@ -111,7 +118,7 @@ class NewsletterCommandController extends CommandController
      */
     protected function sendLettersForSubscription($subscription, $dryRun)
     {
-        $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        $subscribers = $this->subscribersService->getSubscribers($subscription);
 
         $this->outputLine('Sending letters for subscription %s (%s subscribers)', [$subscription['identifier'], count($subscribers)]);
         $this->outputLine('-------------------------------------------------------------------------------');
