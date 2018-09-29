@@ -5,7 +5,7 @@
     "license": "GPL-3.0+",
     "require": {
         "neos/neos": "^3.0 || ^4.0",
-        "psmb/registry": "^2.0",
+        "psmb/registry": "*",
         "neos/swiftmailer": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
         "flowpack/jobqueue-common": "*"
