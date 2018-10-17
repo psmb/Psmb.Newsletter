@@ -4,8 +4,8 @@
     "name": "psmb/newsletter",
     "license": "GPL-3.0+",
     "require": {
-        "neos/neos": "^3.0",
-        "psmb/registry": "^2.0",
+        "neos/neos": "^3.0 || ^4.0",
+        "psmb/registry": "*",
         "neos/swiftmailer": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
         "flowpack/jobqueue-common": "*"
@@ -89,7 +89,13 @@
             "Neos.Neos-20170115114620",
             "Neos.Fusion-20170120013047",
             "Neos.Flow-20170125103800",
-            "Neos.Flow-20170127183102"
+            "Neos.Flow-20170127183102",
+            "Neos.SwiftMailer-20161130105617",
+            "Neos.Seo-20170127154600",
+            "Neos.Fusion-20180211175500",
+            "Neos.Fusion-20180211184832",
+            "Neos.Flow-20180415105700",
+            "Neos.Neos-20180907103800"
         ]
     }
 }
