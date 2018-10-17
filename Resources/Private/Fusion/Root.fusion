@@ -63,7 +63,7 @@ prototype(Psmb.Newsletter:SubscriptionCase) < prototype(Neos.Fusion:Case) {
 	}
 }
 
-prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
+prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(Neos.Neos:NodeUri) {
 	node = ${site}
 	additionalParams {
 		--newsletter = Neos.Fusion:RawArray {
@@ -83,7 +83,7 @@ prototype(Psmb.Newsletter:EditSubscriptionLink) < prototype(NodeUri) {
 	}
 }
 
-prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(NodeUri) {
+prototype(Psmb.Newsletter:UnsubscribeLink) < prototype(Neos.Neos:NodeUri) {
 	node = ${site}
 	additionalParams {
 		--newsletter = Neos.Fusion:RawArray {
