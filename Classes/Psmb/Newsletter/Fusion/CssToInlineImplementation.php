@@ -5,9 +5,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-
-use Psr\Log\LoggerInterface;
-
 /**
  * A Fusion Object that inlines styles
  */
