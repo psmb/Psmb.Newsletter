@@ -15,7 +15,7 @@ prototype(Neos.Fusion:GlobalCacheIdentifiers) {
 # `cssPath` should contain a path to a CSS file, e.g. `cssPath = 'resource://Psmb.Newsletter/Public/styles.css'`
 #
 prototype(Psmb.Newsletter:CssToInline) {
-	@class = 'Psmb\\Newsletter\\TypoScript\\CssToInlineImplementation'
+	@class = 'Psmb\\Newsletter\\Fusion\\CssToInlineImplementation'
 	value = ${value}
 	cssPath = 'to-be-set'
 }

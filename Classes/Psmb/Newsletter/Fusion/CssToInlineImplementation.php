@@ -1,12 +1,12 @@
 <?php
-namespace Psmb\Newsletter\TypoScript;
+namespace Psmb\Newsletter\Fusion;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 /**
- * A TypoScript Object that inlines styles
+ * A Fusion Object that inlines styles
  */
 class CssToInlineImplementation extends AbstractFusionObject {
     /**
@@ -15,8 +15,8 @@ class CssToInlineImplementation extends AbstractFusionObject {
      * @return string
      */
     public function evaluate() {
-        $html = $this->tsValue('value');
-        $cssFile = $this->tsValue('cssPath');
+        $html = $this->fusionValue('value');
+        $cssFile = $this->fusionValue('cssPath');
         $css = file_get_contents($cssFile);
         $cssToInlineStyles = new CssToInlineStyles();
         return $cssToInlineStyles->convert(
