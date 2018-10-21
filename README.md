@@ -39,6 +39,15 @@ Psmb:
         interval: manual
 ```
 
+You also have to configure a baseUri in your Settings.yaml
+```
+Neos:
+  Flow:
+    http:
+      baseUri: 'http://yourdomain.tld/'
+```
+
+
 Define as many subscription types under Psmb.Newsletter.subscriptions as you need.
 
 | setting key | description |
