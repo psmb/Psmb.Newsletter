@@ -103,7 +103,7 @@ prototype(Your.NameSpace:WeeklyLetterRenderer) < prototype(Psmb.Newsletter:MailR
 ```
 prototype(Sfi.Site:DigestMail) < prototype(Psmb.Newsletter:MailRenderer) {
     # ElasticSearch used here, but could be a simple FlowQuery as well
-    @context.nodes = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('type', 'ourNews').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP").sortDesc('date').execute()}
+    @context.nodes = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('type', 'ourNews').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP")).sortDesc('date').execute()}
     @if.notEmpty = ${q(nodes).count() > 0}
     subject = ${Translation.translate('newsletter.digestSubject', null, [], null, 'Sfi.Site')}
     body = Neos.Fusion:Collection {
