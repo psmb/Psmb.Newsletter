@@ -116,8 +116,12 @@ class SubscriptionController extends ActionController
      */
     public function confirmAction($hash)
     {
+    	/** @var Subscriber  $subscriber */
         $subscriber = $this->tokenCache->get($hash);
         if ($subscriber) {
+        	$metaData = $subscriber->getMetadata();
+        	$metaData['confirmationDate'] = new \DateTime();
+        	$subscriber->setMetadata($metaData);
             $this->tokenCache->remove($hash);
             $this->subscriberRepository->add($subscriber);
             $this->persistenceManager->persistAll();
