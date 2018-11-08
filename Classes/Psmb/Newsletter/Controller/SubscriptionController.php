@@ -1,4 +1,5 @@
 <?php
+
 namespace Psmb\Newsletter\Controller;
 
 use Psmb\Newsletter\Domain\Model\Subscriber;
@@ -44,9 +45,9 @@ class SubscriptionController extends ActionController
     protected $subscriberRepository;
 
     /**
-    * @Flow\InjectConfiguration(path="subscriptions")
-    * @var string
-    */
+     * @Flow\InjectConfiguration(path="subscriptions")
+     * @var string
+     */
     protected $subscriptions;
 
     /**
@@ -116,7 +117,7 @@ class SubscriptionController extends ActionController
      */
     public function confirmAction($hash)
     {
-        /** @var Subscriber  $subscriber */
+        /** @var Subscriber $subscriber */
         $subscriber = $this->tokenCache->get($hash);
         if ($subscriber) {
             $metaData = $subscriber->getMetadata();
