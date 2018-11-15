@@ -10,13 +10,13 @@ use League\Csv\Writer;
 use Psmb\Newsletter\Domain\Model\Filter;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Message;
-use TYPO3\Flow\I18n\Translator;
-use TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException;
-use TYPO3\Flow\Persistence\QueryInterface;
-use TYPO3\Media\Domain\Model\Document;
-use TYPO3\Neos\Controller\Module\AbstractModuleController;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Error\Message;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\QueryInterface;
+use Neos\Media\Domain\Model\Document;
+use Neos\Neos\Controller\Module\AbstractModuleController;
 
 class BackendController extends AbstractModuleController
 {

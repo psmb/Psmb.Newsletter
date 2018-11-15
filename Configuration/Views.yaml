@@ -3,4 +3,4 @@
   options:
     partialRootPaths:
       'Psmb.Newsletter': 'resource://Psmb.Newsletter/Private/Partials'
-      'TYPO3.Neos': 'resource://TYPO3.Neos/Private/Partials/'
+      'Neos.Neos': 'resource://Neos.Neos/Private/Partials/'

@@ -2,7 +2,7 @@
 namespace Psmb\Newsletter\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * @Flow\Scope("singleton")
