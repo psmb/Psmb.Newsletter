@@ -145,7 +145,7 @@ class BackendController extends AbstractModuleController
         $status[self::STATUS_CREATED] = 0;
         $status[self::STATUS_UPDATED] = 0;
         $status[self::STATUS_CORRUPTED] = 0;
-        foreach ($line = $csv->fetchAll() as $line) {
+        foreach ($line = $csv->getRecords() as $line) {
             if (count($line) === 3) {
                 $email = $line[0];
                 $name = $line[1] ?: "";
