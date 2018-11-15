@@ -19,11 +19,11 @@
                     <div class="neos-pull-right">
                         <f:link.action action="index" class="neos-button{f:if(condition:filter,then:' neos-button-primary')}"
                                additionalAttributes="{data-original-title:'Reset filter options', data-neos-toggle:'tooltip'}">
-                            <i class="icon-undo icon-white"></i>
+                            <i class="fas fa-undo"></i>
                         </f:link.action>
                         <button class="neos-button" data-neos-toggle="tooltip"
                                 data-original-title="Filter options" href="#subscription-filter" data-toggle="modal">
-                            <i class="icon-filter icon-white"></i>
+                            <i class="fas fa-filter"></i>
                         </button>
                     </div>
                 </th>
@@ -45,11 +45,11 @@
                         <div class="neos-pull-right">
                             <f:link.action class="neos-button neos-button-primary" action="editSubscriber"
                                            arguments="{subscriber:subscriber}">
-                                <i class="icon-pencil icon-white"></i>
+                                <i class="fas fa-pencil-alt"></i>
                             </f:link.action>
                             <button class="neos-button neos-button-danger" title="Delete subscriber" data-toggle="modal"
                                     href="#subscriber-{subscriberIterator.index}" data-neos-toggle="tooltip">
-                                <i class="icon-trash icon-white"></i>
+                                <i class="fas fa-trash"></i>
                             </button>
                             <f:render section="ModalDelete" arguments="{_all}"/>
                         </div>
