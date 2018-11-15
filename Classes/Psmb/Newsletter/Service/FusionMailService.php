@@ -1,20 +1,33 @@
 <?php
 namespace Psmb\Newsletter\Service;
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
+use Flowpack\JobQueue\Common\Annotations as Job;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\View\FusionView;
-use TYPO3\Flow\Mvc\ActionRequest;
-use TYPO3\Flow\Mvc\Controller\ControllerContext;
-use TYPO3\Flow\Mvc\Routing\UriBuilder;
-use TYPO3\TYPO3CR\Domain\Model\Node;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Domain\Service\ContextFactoryInterface;
+use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\Controller\ControllerContext;
+use Neos\Flow\Mvc\Routing\UriBuilder;
+use Neos\Neos\Service\LinkingService;
+use Neos\SwiftMailer\Message;
+use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
+use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
+use Neos\Flow\Http\Request;
+use Neos\Flow\Http\Response;
+use Neos\Flow\Http\Uri;
+use Neos\Flow\Mvc\Controller\Arguments;
+
 
 /**
  * @Flow\Scope("singleton")
  */
 class FusionMailService {
+    /**
+     * @var ControllerContext
+     */
+    protected $controllerContext;
 
     /**
      * @Flow\Inject
@@ -35,21 +48,74 @@ class FusionMailService {
     protected $view;
 
     /**
+     * @Flow\Inject
+     * @var LinkingService
+     */
+    protected $linkingService;
+
+    /**
      * @Flow\InjectConfiguration(path="globalSettings")
      * @var string
      */
     protected $globalSettings;
 
     /**
-     * @param ControllerContext $controllerContext
-     * @param ActionRequest $request
+     * @Flow\InjectConfiguration(package="Neos.Flow", path="http.baseUri")
+     * @var string
      */
-    public function setupObject(ControllerContext $controllerContext, ActionRequest $request) {
-        $this->view->setControllerContext($controllerContext);
+    protected $baseUri;
+
+    /**
+     * @Flow\InjectConfiguration(path="subscriptions")
+     * @var array
+     */
+    protected $subscriptions;
+
+    /**
+     * We can't do this in constructor as we need configuration to be injected
+     */
+    public function initializeObject() {
+        $request = $this->createRequest();
+        $this->controllerContext = $this->createControllerContext($request);
+        $this->view->setControllerContext($this->controllerContext);
         $this->uriBuilder->setRequest($request);
     }
 
     /**
+     * @return ActionRequest
+     */
+    protected function createRequest() {
+        $_SERVER['FLOW_REWRITEURLS'] = 1;
+        $baseUri = new Uri($this->baseUri);
+        $httpRequest = Request::create($baseUri);
+        $httpRequest->setBaseUri($baseUri);
+        $request = new ActionRequest($httpRequest);
+        $request->setFormat('html');
+        return $request;
+    }
+
+    /**
+     * Creates a controller content context for live dimension
+     *
+     * @param ActionRequest $request
+     * @return ControllerContext
+     */
+    protected function createControllerContext($request)
+    {
+        $uriBuilder = new UriBuilder();
+        $uriBuilder->setRequest($request);
+        $controllerContext = new ControllerContext(
+            $request,
+            new Response(),
+            new Arguments([]),
+            $uriBuilder
+        );
+        return $controllerContext;
+    }
+
+    /**
+     * Just a simple wrapper over SwiftMailer
+     *
      * @param array $letter
      * @throws \Exception
      */
@@ -76,7 +142,7 @@ class FusionMailService {
             throw new \Exception('"senderAddress" must be set.', 1327060211);
         }
 
-        $mail = new \TYPO3\SwiftMailer\Message();
+        $mail = new Message();
         $mail
             ->setFrom(array($senderAddress => $senderName))
             ->setTo(array($recipientAddress => $recipientName))
@@ -99,24 +165,30 @@ class FusionMailService {
     }
 
     /**
-     * Generate activation letter to confirm the new subscriber
+     * Send activation letter to confirm the new subscriber
      *
+     * @Job\Defer(queueName="psmb-newsletter")
      * @param Subscriber $subscriber
      * @param string $hash
-     * @return array
+     * @return void
      */
-    public function generateActivationLetter(Subscriber $subscriber, $hash)
+    public function sendActivationLetter(Subscriber $subscriber, $hash)
     {
-        $metadata = $subscriber->getMetadata();
-        $siteNode = $this->getSiteNode($metadata['registrationDimensions']);
-        $activationLink = $this->uriBuilder
-            ->setCreateAbsoluteUri(TRUE)
-            ->uriFor(
-                'confirm',
-                ['hash' => $hash],
-                'Subscription',
-                'Psmb.Newsletter'
-            );
+        $siteNode = $this->getSiteNode();
+        $arguments = ['--newsletter' => [
+            '@package' => 'Psmb.Newsletter',
+            '@controller' => 'Subscription',
+            '@action' => 'confirm',
+            'hash' => $hash
+        ]];
+        $activationLink = $this->linkingService->createNodeUri(
+            $this->controllerContext,
+            $siteNode,
+            $siteNode,
+            'html',
+            true,
+            $arguments
+        );
 
         $this->view->assign('value', [
             'site' => $siteNode,
@@ -126,20 +198,21 @@ class FusionMailService {
             'globalSettings' => $this->globalSettings,
             'activationLink' => $activationLink
         ]);
-        return $this->view->render();
+        $letter = $this->view->render();
+        $this->sendLetter($letter);
     }
 
     /**
      * Generate a letter for given subscriber and subscription
      *
-     * @param Subscriber $subscriber
+     * @param array|Subscriber $subscriber
      * @param array $subscription
      * @param null|NodeInterface $node
      * @return array
      */
-    public function generateSubscriptionLetter(Subscriber $subscriber, $subscription, $node = NULL)
+    public function generateSubscriptionLetter($subscriber, $subscription, $node = NULL)
     {
-        $dimensions = isset($subscription['dimensions']) ? $subscription['dimensions'] : null;
+        $dimensions = isset($subscription['dimensions']) ? $subscription['dimensions'] : [];
         $siteNode = $this->getSiteNode($dimensions);
         $node = $node ?: $siteNode;
         $this->view->assign('value', [
@@ -151,6 +224,23 @@ class FusionMailService {
             'globalSettings' => $this->globalSettings
         ]);
         return $this->view->render();
+    }
+
+    /**
+     * Generate a letter for given subscriber and subscription and sends it. Async.
+     *
+     * @Job\Defer(queueName="psmb-newsletter")
+     * @param array|Subscriber $subscriber
+     * @param array $subscription
+     * @param null|NodeInterface $node
+     * @return void
+     */
+    public function generateSubscriptionLetterAndSend($subscriber, $subscription, $node = NULL)
+    {
+        $letter = $this->generateSubscriptionLetter($subscriber, $subscription, $node);
+        if ($letter) {
+            $this->sendLetter($letter);
+        }
     }
 
     /**

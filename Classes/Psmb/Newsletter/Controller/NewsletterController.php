@@ -1,16 +1,16 @@
 <?php
 namespace Psmb\Newsletter\Controller;
 
+use Flowpack\JobQueue\Common\Annotations as Job;
+use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
-use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
-use TYPO3\Flow\Mvc\View\JsonView;
-use TYPO3\Flow\I18n\Service as I18nService;
-use TYPO3\Flow\I18n\Translator;
-use TYPO3\Flow\Mvc\Controller\ActionController;
-use TYPO3\Flow\Annotations as Flow;
-use function TYPO3\Flow\var_dump;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use Psmb\Newsletter\Service\SubscribersService;
+use Neos\Flow\Mvc\View\JsonView;
+use Neos\Flow\I18n\Service as I18nService;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 class NewsletterController extends ActionController
 {
@@ -25,6 +25,7 @@ class NewsletterController extends ActionController
      * @var Translator
      */
     protected $translator;
+
     /**
      * @Flow\Inject
      * @var FusionMailService
@@ -33,9 +34,15 @@ class NewsletterController extends ActionController
 
     /**
      * @Flow\Inject
-     * @var SubscriberRepository
+     * @var SubscribersService
      */
-    protected $subscriberRepository;
+    protected $subscribersService;
+
+    /**
+     * @Flow\Inject
+     * @var \Neos\Flow\Log\SystemLoggerInterface
+     */
+    protected $systemLogger;
 
     /**
      * @Flow\InjectConfiguration(path="subscriptions")
@@ -50,13 +57,27 @@ class NewsletterController extends ActionController
         'json' => JsonView::class
     );
 
-    public function getSubscriptionsAction() {
-        $manualSubscriptions = array_filter($this->subscriptions, function ($item) {
-            return $item['interval'] == 'manual';
+    /**
+     * Get manual subscriptions for AJAX sending
+     *
+     * @param string $nodeType
+     * @return void
+     */
+    public function getSubscriptionsAction($nodeType) {
+        $subscriptions = array_filter($this->subscriptions, function ($item) use ($nodeType) {
+            if (isset($item['sendFromUiNodeType'])) {
+                return $item['sendFromUiNodeType'] == $nodeType;
+            }
+            return false;
         });
+        if(!count($subscriptions)) {
+            $subscriptions = array_filter($this->subscriptions, function ($item) {
+                return $item['interval'] == 'manual';
+            });
+        }
         $subscriptionsJsonArray = array_map(function ($item) {
             return ['label' => $item['label'], 'value' => $item['identifier']];
-        }, $manualSubscriptions);
+        }, $subscriptions);
         $this->view->assign('value', array_values($subscriptionsJsonArray));
     }
 
@@ -69,20 +90,13 @@ class NewsletterController extends ActionController
      */
     public function sendAction($subscription, NodeInterface $node)
     {
-        $this->fusionMailService->setupObject($this->getControllerContext(), $this->request);
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
-        $nestedLetters = array_map(function ($subscription) use ($node) {
-            return $this->generateLettersForSubscription($subscription, $node);
-        }, $subscriptions);
-        $letters = array_reduce($nestedLetters, function ($acc, $item) {
-            return array_merge($acc, $item);
-        }, []);
-
-        array_map(function($letter) {
-            $this->fusionMailService->sendLetter($letter);
-        }, $letters);
+        array_walk($subscriptions, function ($subscription) use ($node) {
+            $subscription['isSendFromUi'] = true;
+            $this->sendLettersForSubscription($subscription, $node);
+        });
         $this->view->assign('value', ['status' => 'success']);
     }
 
@@ -96,17 +110,17 @@ class NewsletterController extends ActionController
      */
     public function testSendAction($subscription, NodeInterface $node, $email)
     {
-        $this->fusionMailService->setupObject($this->getControllerContext(), $this->request);
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
+        $subscription = reset($subscriptions);
+        $subscription['isSendFromUi'] = true;
 
         $subscriber = new Subscriber();
         $subscriber->setEmail($email);
         $subscriber->setName('Test User');
 
-        $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscriptions[0], $node);
-        $this->fusionMailService->sendLetter($letter);
+        $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
 
         $this->view->assign('value', ['status' => 'success']);
     }
@@ -114,18 +128,21 @@ class NewsletterController extends ActionController
     /**
      * Generate a letter for each subscriber in the subscription
      *
+     * @Job\Defer(queueName="psmb-newsletter-web")
      * @param array $subscription
      * @param NodeInterface $node Node of the current newsletter item
-     * @return array Array of letters
+     * @return void
      */
-    protected function generateLettersForSubscription($subscription, $node)
+    public function sendLettersForSubscription($subscription, $node)
     {
-        $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        $subscribers = $this->subscribersService->getSubscribers($subscription);
 
-        $letters = array_map(function ($subscriber) use ($subscription, $node) {
-            return $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription, $node);
-        }, $subscribers);
-        return array_filter($letters);
+        array_walk($subscribers, function ($subscriber) use ($subscription, $node) {
+            try {
+                $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription, $node);
+            } catch (\Exception $e) {
+                $this->systemLogger->log($e->getMessage(), \LOG_ERR);
+            }
+        });
     }
-
 }

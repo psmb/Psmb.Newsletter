@@ -52,7 +52,7 @@ define([
                 return I18n.translate('Psmb.Newsletter:Main:' + this.get('testButtonLabelId'), 'Send');
             }.property('testButtonLabelId'),
 
-            init: function () {
+            didInsertElement: function () {
                 var subscriptionsEndpoint = '/newsletter/getSubscriptions';
 
                 var callback = function (response) {
@@ -66,7 +66,8 @@ define([
                         this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
-                HttpClient.getResource(subscriptionsEndpoint).then(callback);
+                var data = {nodeType: this.get('controller.nodeProperties._nodeType')};
+                HttpClient.getResource(subscriptionsEndpoint, {data: data}).then(callback);
 
                 return this._super();
             },
@@ -109,16 +110,23 @@ define([
                 var sendEndpointUrl = testEmail ? '/newsletter/testSend' : '/newsletter/send';
 
                 var callback = function (response) {
-                    if (response.status == 'success') {
+                    if (response.status === 'success') {
                         this.set('notificationMessageId', 'js.sent');
                     } else {
                         this.set('errorMessageId', 'js.error');
                     }
                 }.bind(this);
+
+                // TODO: can we do it cleaner?
+                var siteContextPath = document.getElementById('neos-document-metadata').dataset.neosSiteNodeContextPath;
+                var context = siteContextPath.split('@')[1] || '';
+                var dimensions = (';' + context.split(';')[1]) || '';
+                var nodeContextPath = this.get('controller.nodeProperties._path') + '@live' + dimensions;
                 var data = {
                     subscription: this.get('subscription'),
-                    node: this.get('controller.nodeProperties._path')
+                    node: nodeContextPath
                 };
+
                 if (testEmail) {
                     data.email = testEmail;
                 }

@@ -1,16 +1,17 @@
 <?php
+
 namespace Psmb\Newsletter\Controller;
 
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
-use TYPO3\Flow\Error\Message;
-use TYPO3\Flow\I18n\Service as I18nService;
-use TYPO3\Flow\I18n\Translator;
-use TYPO3\Flow\Mvc\Controller\ActionController;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Utility\Algorithms;
-use TYPO3\Flow\Validation\Validator\EmailAddressValidator;
+use Neos\Error\Messages\Message;
+use Neos\Flow\I18n\Service as I18nService;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Utility\Algorithms;
+use Neos\Flow\Validation\Validator\EmailAddressValidator;
 
 class SubscriptionController extends ActionController
 {
@@ -33,7 +34,7 @@ class SubscriptionController extends ActionController
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Cache\Frontend\VariableFrontend
+     * @var \Neos\Cache\Frontend\VariableFrontend
      */
     protected $tokenCache;
 
@@ -44,9 +45,9 @@ class SubscriptionController extends ActionController
     protected $subscriberRepository;
 
     /**
-    * @Flow\InjectConfiguration(path="subscriptions")
-    * @var string
-    */
+     * @Flow\InjectConfiguration(path="subscriptions")
+     * @var string
+     */
     protected $subscriptions;
 
     /**
@@ -56,6 +57,8 @@ class SubscriptionController extends ActionController
      */
     public function indexAction()
     {
+        $additionalData = $this->request->getInternalArgument('__additionalData');
+        $this->view->assign('additionalData', $additionalData);
         $this->view->assign('subscriptions', $this->subscriptions);
         $this->view->assign('currentLocale', $this->i18nService->getConfiguration()->getCurrentLocale());
     }
@@ -66,40 +69,44 @@ class SubscriptionController extends ActionController
      * @param Subscriber $subscriber
      * @return void
      */
-    public function registerAction(Subscriber $subscriber)
+    public function registerAction(Subscriber $subscriber = null)
     {
-
-        $email = $subscriber->getEmail();
-        if (!$email) {
-            $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
-            $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
-            $this->redirect('index');
-        } else {
-            $emailValidator = new EmailAddressValidator();
-            $validationResult = $emailValidator->validate($email);
-            if ($validationResult->hasErrors()) {
-                $message = $validationResult->getFirstError()->getMessage();
-                $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
-                $this->redirect('index');
-            } elseif ($this->subscriberRepository->countByEmail($email) > 0) {
-                $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
+        if ($subscriber) {
+            $email = $subscriber->getEmail();
+            if (!$email) {
+                $message = $this->translator->translateById('flash.noEmail', [], null, null, 'Main', 'Psmb.Newsletter');
                 $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
                 $this->redirect('index');
             } else {
-                $subscriber->setMetadata([
-                    'registrationDate' => new \DateTime(),
-                    'registrationDimensions' => $this->request->getInternalArgument('__node')->getContext()->getDimensions()
-                ]);
-                $hash = Algorithms::generateRandomToken(16);
-                $this->tokenCache->set(
-                    $hash,
-                    $subscriber
-                );
-                $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
-                $this->addFlashMessage($message);
-                $this->sendActivationLetter($subscriber, $hash);
-                $this->redirect('feedback');
+                $emailValidator = new EmailAddressValidator();
+                $validationResult = $emailValidator->validate($email);
+                if ($validationResult->hasErrors()) {
+                    $message = $validationResult->getFirstError()->getMessage();
+                    $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+                    $this->redirect('index');
+                } elseif ($this->subscriberRepository->countByEmail($email) > 0) {
+                    $message = $this->translator->translateById('flash.alreadyRegistered', [], null, null, 'Main', 'Psmb.Newsletter');
+                    $this->addFlashMessage($message, null, Message::SEVERITY_WARNING);
+                    $this->redirect('index');
+                } else {
+                    $subscriber->setMetadata([
+                        'registrationDate' => new \DateTime(),
+                        'registrationDimensions' => $this->request->getInternalArgument('__node')->getContext()->getDimensions()
+                    ]);
+                    $hash = Algorithms::generateRandomToken(16);
+                    $this->tokenCache->set(
+                        $hash,
+                        $subscriber
+                    );
+                    $message = $this->translator->translateById('flash.confirm', [], null, null, 'Main', 'Psmb.Newsletter');
+                    $this->addFlashMessage($message);
+                    $this->fusionMailService->sendActivationLetter($subscriber, $hash);
+                    $this->redirect('feedback');
+                }
             }
+        } else {
+            $this->addFlashMessage('No subscriber provided', null, Message::SEVERITY_WARNING);
+            $this->redirect('feedback');
         }
     }
 
@@ -110,8 +117,12 @@ class SubscriptionController extends ActionController
      */
     public function confirmAction($hash)
     {
+        /** @var Subscriber $subscriber */
         $subscriber = $this->tokenCache->get($hash);
         if ($subscriber) {
+            $metaData = $subscriber->getMetadata();
+            $metaData['confirmationDate'] = new \DateTime();
+            $subscriber->setMetadata($metaData);
             $this->tokenCache->remove($hash);
             $this->subscriberRepository->add($subscriber);
             $this->persistenceManager->persistAll();
@@ -172,19 +183,6 @@ class SubscriptionController extends ActionController
      */
     public function feedbackAction()
     {
-    }
-
-    /**
-     * Sends an activation mail
-     *
-     * @param Subscriber $subscriber
-     * @param string $hash
-     * @return int
-     */
-    protected function sendActivationLetter(Subscriber $subscriber, $hash) {
-        $this->fusionMailService->setupObject($this->controllerContext, $this->request);
-        $activationLetter = $this->fusionMailService->generateActivationLetter($subscriber, $hash);
-        $this->fusionMailService->sendLetter($activationLetter);
     }
 
 }

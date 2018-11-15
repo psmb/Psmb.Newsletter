@@ -1,5 +1,5 @@
 privilegeTargets:
-  TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+  Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
     'Psmb.Newsletter:Subscription':
       matcher: 'method(Psmb\Newsletter\Controller\SubscriptionController->(.*)Action())'
     'Psmb.Newsletter:Backend':
@@ -8,15 +8,12 @@ privilegeTargets:
       matcher: 'method(Psmb\Newsletter\Controller\BackendController->.*Action())'
 
 roles:
-  'TYPO3.Flow:Everybody':
+  'Neos.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'Psmb.Newsletter:Subscription'
         permission: GRANT
-      -
-        privilegeTarget: 'Psmb.Newsletter:Backend'
-        permission: GRANT
-  'TYPO3.Neos:Editor':
+  'Neos.Neos:Editor':
     privileges:
       -
         privilegeTarget: 'Psmb.Newsletter:Backend'

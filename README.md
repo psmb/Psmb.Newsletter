@@ -31,15 +31,31 @@ Psmb:
         interval: P1W
         dimensions:
           language: ['ru']
+      -
+        identifier: handcrafted
+        renderer: 'Your.NameSpace:HandcraftedDigestRenderer'
+        sendFromUiNodeType: 'Your.NameSpace:HandcraftedDigest'
+        label: 'Manually crafted newsletter'
+        interval: manual
 ```
 
-Define as many subscription types under Psmb.Newsletter.subscriptions as you need. 
+You also have to configure a baseUri in your Settings.yaml
+```
+Neos:
+  Flow:
+    http:
+      baseUri: 'http://yourdomain.tld/'
+```
+
+
+Define as many subscription types under Psmb.Newsletter.subscriptions as you need.
 
 | setting key | description |
 | --- | --- |
 |`identifier`| Identifier of the subscription|
 |`renderer`| Fusion object that would be used for rendering emails sent to this subscription. Defaults to `Psmb.Newsletter:MailRenderer`. Must inherit from it.|
-|`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Optional.|
+|`sendFromUiNodeType`| Show this subscription for the nodes of given nodetype when sending from UI. |
+|`interval`| Time interval identifier that would be used for selecting subscriptions. Can be used for cron jobs. Those marked as `manual` would appear as options when sending from the UI. Optional.|
 |`senderName`, `senderAddress`| Override options from `globalSettings`.|
 |`dimensions`| Array of dimensions in form of "dimensionName: ['dimensionValues']". Falls back to default dimension values.|
 
@@ -57,7 +73,7 @@ Then define a Fusion object like this for each renderer:
 prototype(Your.NameSpace:WeeklyLetterRenderer) < prototype(Psmb.Newsletter:MailRenderer) {
 	subject = 'Our weekly digest'
 	body = 'Generate message body. Use your imagination.'
-  
+
   # You may automatically inline all css styles.
 	# body.@process.cssToInline = Psmb.Newsletter:CssToInline {
 	#	  cssPath = 'resource://Your.Package/Public/Path/To/Your/Styles.css'
@@ -87,10 +103,10 @@ prototype(Your.NameSpace:WeeklyLetterRenderer) < prototype(Psmb.Newsletter:MailR
 ```
 prototype(Sfi.Site:DigestMail) < prototype(Psmb.Newsletter:MailRenderer) {
     # ElasticSearch used here, but could be a simple FlowQuery as well
-    @context.nodes = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('type', 'ourNews').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP").sortDesc('date').execute()}
+    @context.nodes = ${Search.query(site).nodeType('Sfi.Site:News').exactMatch('type', 'ourNews').greaterThan('date', Date.format(Date.subtract(Date.now(), subscription.interval), "Y-m-d\TH:i:sP")).sortDesc('date').execute()}
     @if.notEmpty = ${q(nodes).count() > 0}
     subject = ${Translation.translate('newsletter.digestSubject', null, [], null, 'Sfi.Site')}
-    body = TYPO3.TypoScript:Collection {
+    body = Neos.Fusion:Collection {
         collection = ${nodes}
         itemName = 'node'
         itemRenderer = Sfi.Site:DigestArticle
@@ -100,7 +116,7 @@ prototype(Sfi.Site:DigestMail) < prototype(Psmb.Newsletter:MailRenderer) {
     }
 }
 
-prototype(Sfi.Site:DigestArticle) < prototype(TYPO3.TypoScript:Tag) {
+prototype(Sfi.Site:DigestArticle) < prototype(Neos.Fusion:Tag) {
     tagName = 'a'
     attributes.href = NodeUri {
         node = ${node}
@@ -119,7 +135,7 @@ prototype(Sfi.Site:DigestArticle) < prototype(TYPO3.TypoScript:Tag) {
 |`Psmb.Newsletter:UnsubscribeLink`|Generated a link to unsubscribe action of the plugin|
 |`Psmb.Newsletter:CssToInline`|Processor to automatically inline CSS styles|
 |`Psmb.Newsletter:SubscriptionCase`|Rendering entry point. Usually no need to touch this one|
-|`Psmb.Newsletter:SubscriptionPlugin`|Configured `TYPO3.Neos:Plugin` instance that insert Flow signup plugin.|
+|`Psmb.Newsletter:SubscriptionPlugin`|Configured `Neos.Neos:Plugin` instance that insert Flow signup plugin.|
 
 To customize the confirmation mail, override `Psmb.Newsletter:ConfirmationMailRenderer`.
 
@@ -148,7 +164,7 @@ Create a `Views.yaml` file in Configuration:
       - 'resource://Psmb.Newsletter/Private/Partials/'
     layoutRootPaths:
       - 'resource://Sfi.Site/Private/Newsletter/Layouts/'
-      
+
 ```
 
 ## Sending things out
@@ -160,6 +176,19 @@ There's a CLI command for it.
 
 `./flow newsletter:send --interval="P1H"` would find all subscriptions with interval equal to "P1H" and send out letters to them. This is useful for setting up cron tasks based on time interval.
 
+## Manual sending from the UI
+
+![image](https://cloud.githubusercontent.com/assets/837032/22371056/cccc522e-e4a5-11e6-929c-29f15d8b632c.png)
+
+If your nodetype inherits from `Psmb.Newsletter:NewsletterMixin` you would see a new inspector tab from which you would be able to send manual newsletters, based on the current document node.
+
+For this to work, one or more of your subscription presets must have `interval: manual`. Those presets would appear in the inspector view selectbox. Click send, and the newsletter would be send out to all subscribers of the chosen subscription group.
+Current document node would be available in the Fusion renderer as `documentNode` and `node`.
+
+## Improving reliabillity with job queue
+
+This package uses [flowpack/jobqueue](https://github.com/Flowpack/jobqueue-common) package to generate and deliver messages. Refer to its docs how to improve its reliabillity via proper job queue implementations.
+
 ## Importing subscribers from CSV
 
 Create a CSV file with your subscribers data and put it somewhere on your server.
@@ -167,8 +196,8 @@ Create a CSV file with your subscribers data and put it somewhere on your server
 The file should have the following format:
 
 ```
-"user@email.com","User Name","subscriptionId1|sibscriptionId2"
-"user1@email.com","User1 Name","sibscriptionId2"
+"user@email.com","User Name","subscriptionId1|subscriptionId2"
+"user1@email.com","User1 Name","subscriptionId2"
 ```
 
 Then run (file path is relative to installation root):
@@ -181,8 +210,24 @@ Here's a quick example how to create CSV exports from mysql:
 SELECT email, name INTO OUTFILE '/path/test.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n' FROM yourTable;
 ```
 
+## External Datasources
+
+The default datasource for fetching subscribers has an identifier `Repository`. It fetches all subscribers subscribed via the default subscription plugin.
+
+You may fetch subscribers from an external JSON source via the `Json` datasource. Here's an example:
+
+```
+Psmb:
+  Newsletter:
+    subscriptions:
+      -
+        dataSourceIdentifier: 'Json'
+        dataSourceOptions:
+          uri: 'http://some.host/some-url'
+```
+
+Alternatively you may provide your custom datasources. See implementation of JsonDataSource.php to see how to do that.
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.
-
-

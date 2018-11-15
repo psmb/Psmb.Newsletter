@@ -1,19 +1,12 @@
 <?php
 namespace Psmb\Newsletter\Command;
 
+use Neos\Flow\Annotations as Flow;
 use Psmb\Newsletter\Domain\Model\Subscriber;
 use Psmb\Newsletter\Domain\Repository\SubscriberRepository;
 use Psmb\Newsletter\Service\FusionMailService;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Cli\CommandController;
-use TYPO3\Flow\Http\Request;
-use TYPO3\Flow\Http\Response;
-use TYPO3\Flow\Http\Uri;
-use TYPO3\Flow\Mvc\ActionRequest;
-use TYPO3\Flow\Mvc\Routing\UriBuilder;
-use TYPO3\Flow\Mvc\Controller\Arguments;
-use TYPO3\Flow\Mvc\Controller\ControllerContext;
-use TYPO3\Flow\Persistence\PersistenceManagerInterface;
+use Psmb\Newsletter\Service\SubscribersService;
+use Neos\Flow\Cli\CommandController;
 
 /**
  * @Flow\Scope("singleton")
@@ -33,7 +26,7 @@ class NewsletterCommandController extends CommandController
     protected $subscriberRepository;
 
     /**
-     * @Flow\InjectConfiguration(package="TYPO3.Flow", path="http.baseUri")
+     * @Flow\InjectConfiguration(package="Neos.Flow", path="http.baseUri")
      * @var string
      */
     protected $baseUri;
@@ -45,21 +38,17 @@ class NewsletterCommandController extends CommandController
     protected $subscriptions;
 
     /**
-     * We can't do this in constructor as we need configuration to be injected
+     * @Flow\Inject
+     * @var SubscribersService
      */
-    public function initializeObject() {
-        $request = $this->createRequest();
-        $request->setFormat('html');
-        $controllerContext = $this->createControllerContext($request);
-        $this->fusionMailService->setupObject($controllerContext, $request);
-    }
+    protected $subscribersService;
 
     /**
      * Import newsletter subscribers from CSV.
-     * CSV should be in the format `"user@email.com","User Name","subscriptionId1|sibscriptionId2"`
+     * CSV should be in the format `"user@email.com","User Name","subscriptionId1|subscriptionId2"`
      *
      * @param string $filename
-     * @return string
+     * @return void
      */
     public function importCsvCommand($filename)
     {
@@ -96,7 +85,7 @@ class NewsletterCommandController extends CommandController
      * @param string $subscription Subscription id to send newsletter to
      * @param string $interval Alternatively select all subscriptions with the given interval (useful for cron jobs)
      * @param bool $dryRun DryRun: generate messages but don't send
-     * @return string
+     * @return void
      */
     public function sendCommand($subscription = null, $interval = null, $dryRun = null)
     {
@@ -115,41 +104,34 @@ class NewsletterCommandController extends CommandController
             $this->sendAndExit(1);
         }
 
-        $nestedLetters = array_map([$this, 'generateLettersForSubscription'], $subscriptions);
-        $letters = array_reduce($nestedLetters, function ($acc, $item) {
-            return array_merge($acc, $item);
-        }, []);
-
-        if ($dryRun) {
-            $this->outputLine(print_r($letters, 1));
-        } else {
-            array_map(function($letter) {
-              $this->fusionMailService->sendLetter($letter);
-            }, $letters);
-        }
+        array_walk($subscriptions, function ($subscription) use ($dryRun) {
+            $this->sendLettersForSubscription($subscription, $dryRun);
+        });
     }
 
     /**
      * Generate a letter for each subscriber in the subscription
      *
      * @param array $subscription
-     * @return array Array of letters
+     * @param bool $dryRun
+     * @return void
      */
-    protected function generateLettersForSubscription($subscription)
+    protected function sendLettersForSubscription($subscription, $dryRun)
     {
-        $subscribers = $this->subscriberRepository->findBySubscriptionId($subscription['identifier'])->toArray();
+        $subscribers = $this->subscribersService->getSubscribers($subscription);
 
         $this->outputLine('Sending letters for subscription %s (%s subscribers)', [$subscription['identifier'], count($subscribers)]);
         $this->outputLine('-------------------------------------------------------------------------------');
-        $letters = array_map(function ($subscriber) use ($subscription) {
+
+        array_walk($subscribers, function ($subscriber) use ($subscription, $dryRun) {
             $this->outputLine('Sending a letter for %s', [$subscriber->getEmail()]);
-            $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
-            if (!$letter) {
-                $this->outputLine('<error>Nothing to send</error>');
+            if ($dryRun) {
+                $letter = $this->fusionMailService->generateSubscriptionLetter($subscriber, $subscription);
+                $this->outputLine(print_r($letter, true));
+            } else {
+                $this->fusionMailService->generateSubscriptionLetterAndSend($subscriber, $subscription);
             }
-            return $letter;
-        }, $subscribers);
-        return array_filter($letters);
+        });
     }
 
     /**
@@ -167,22 +149,4 @@ class NewsletterCommandController extends CommandController
         return $actionRequest;
     }
 
-    /**
-     * Creates a controller content context for live dimension
-     *
-     * @param ActionRequest $request
-     * @return ControllerContext
-     */
-    protected function createControllerContext($request)
-    {
-        $uriBuilder = new UriBuilder();
-        $uriBuilder->setRequest($request);
-        $controllerContext = new ControllerContext(
-            $request,
-            new Response(),
-            new Arguments([]),
-            $uriBuilder
-        );
-        return $controllerContext;
-    }
 }

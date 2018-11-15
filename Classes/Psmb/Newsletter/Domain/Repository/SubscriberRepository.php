@@ -1,9 +1,9 @@
 <?php
 namespace Psmb\Newsletter\Domain\Repository;
 
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\Repository;
 use Psmb\Newsletter\Domain\Model\Filter;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Persistence\Repository;
 
 /**
  * @Flow\Scope("singleton")
@@ -12,7 +12,7 @@ class SubscriberRepository extends Repository
 {
     /**
      * @param $subscriptionId
-     * @return \TYPO3\Flow\Persistence\QueryResultInterface
+     * @return \Neos\Flow\Persistence\QueryResultInterface
      */
     public function findBySubscriptionId($subscriptionId)
     {
@@ -24,7 +24,7 @@ class SubscriberRepository extends Repository
 
     /**
      * @param Filter $filter
-     * @return \TYPO3\Flow\Persistence\QueryResultInterface
+     * @return \Neos\Flow\Persistence\QueryResultInterface
      */
     public function findAllByFilter($filter)
     {
