@@ -154,7 +154,7 @@ Create a `Views.yaml` file in Configuration:
 
 ```
 -
-  requestFilter: 'isPackage("Psmb.Newsletter")'
+  requestFilter: 'isPackage("Psmb.Newsletter") && isController("Subscription")'
   options:
     templateRootPaths:
       - 'resource://Sfi.Site/Private/Newsletter/Templates/'
