@@ -134,4 +134,19 @@ class NewsletterCommandController extends CommandController
         });
     }
 
+    /**
+     * @return ActionRequest
+     */
+    protected function createRequest() {
+        $_SERVER['FLOW_REWRITEURLS'] = 1;
+        $httpRequest = Request::createFromEnvironment();
+        if ($this->baseUri) {
+            $baseUri = new Uri($this->baseUri);
+            $httpRequest->setBaseUri($baseUri);
+        }
+        $actionRequest = new ActionRequest($httpRequest);
+        $actionRequest->setFormat('html');
+        return $actionRequest;
+    }
+
 }

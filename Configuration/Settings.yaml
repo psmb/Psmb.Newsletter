@@ -33,6 +33,15 @@ Neos:
             - 'NodeTypes/*'
       requireJsPathMapping:
         Psmb.Newsletter/Views: 'resource://Psmb.Newsletter/Public/JavaScript/Inspector/Views'
+    modules:
+      management:
+        submodules:
+          newsletter:
+            label: 'Newsletter'
+            controller: 'Psmb\Newsletter\Controller\BackendController'
+            description: 'Manage all subscriber lists for your Newsletter. You can edit/delete/update each subscription individually. Keep in mind that all subscribers are detached from Neos users.'
+            icon: 'fas fa-envelope'
+            privilegeTarget: 'Psmb.Newsletter:BackendModule'
     fusion:
       autoInclude:
         Psmb.Newsletter: true
@@ -41,8 +50,12 @@ Neos:
         javascript:
           'Psmb.Newsletter:NewsletterView':
             resource: resource://Psmb.Newsletter/Public/JavaScript/NewsletterView/Plugin.js
-#Psmb:
-#  Newsletter:
+
+Psmb:
+  Newsletter:
+    module:
+      itemsPerPage: 10
+
 #    globalSettings:
 #      senderAddress: 'robot@server.com'
 #      senderName: 'Your robot'

@@ -258,5 +258,4 @@ class FusionMailService {
         $context = $this->contextFactory->create($contextProperties);
         return $context->getCurrentSiteNode();
     }
-
 }

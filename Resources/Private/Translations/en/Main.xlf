@@ -26,6 +26,7 @@
             <trans-unit id="flash.updated" xml:space="preserve">
                 <source>You have successfully changed the parameters of your subscription</source>
             </trans-unit>
+
             <trans-unit id="js.send" xml:space="preserve">
                 <source>Send</source>
             </trans-unit>
@@ -62,6 +63,68 @@
             </trans-unit>
             <trans-unit id="js.testEmailLabel" xml:space="preserve">
                 <source>Enter test email:</source>
+            </trans-unit>
+
+            <trans-unit id="flash.subscriber.updated" xml:space="preserve">
+                <source>The subscriber "{s}" has been updated.</source>
+            </trans-unit>
+            <trans-unit id="flash.subscriber.removed" xml:space="preserve">
+                <source>The subscriber "{s}" has been removed.</source>
+            </trans-unit>
+            <trans-unit id="flash.subscriber.added" xml:space="preserve">
+                <source>The subscriber "{s}" has been added.</source>
+            </trans-unit>
+            <trans-unit id="flash.csv" xml:space="preserve">
+                <source>Only CSV files are allowed!</source>
+            </trans-unit>
+            <trans-unit id="flash.file.error" xml:space="preserve">
+                <source>File is not readable or does not exist.</source>
+            </trans-unit>
+            <trans-unit id="flash.file.error" xml:space="preserve">
+                <source>Added: {0}, Updated: {1}, Corrupted: {2}</source>
+            </trans-unit>
+
+            <trans-unit id="backend.subscribers" xml:space="preserve">
+                <source>Newsletter Subscribers</source>
+            </trans-unit>
+            <trans-unit id="backend.name" xml:space="preserve">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="backend.email" xml:space="preserve">
+                <source>E-Mail</source>
+            </trans-unit>
+            <trans-unit id="backend.filter" xml:space="preserve">
+                <source>Filter Options:</source>
+            </trans-unit>
+            <trans-unit id="backend.subscriptions" xml:space="preserve">
+                <source>Subscriptions</source>
+            </trans-unit>
+            <trans-unit id="backend.subscribers.export" xml:space="preserve">
+                <source>Export subscribers</source>
+            </trans-unit>
+            <trans-unit id="backend.csv.upload" xml:space="preserve">
+                <source>Upload CSV</source>
+            </trans-unit>
+            <trans-unit id="backend.subscriber.add" xml:space="preserve">
+                <source>Add subscriber</source>
+            </trans-unit>
+            <trans-unit id="backend.subscriber.create" xml:space="preserve">
+                <source>Create subscriber</source>
+            </trans-unit>
+            <trans-unit id="backend.subscriber.update" xml:space="preserve">
+                <source>Update subscriber</source>
+            </trans-unit>
+            <trans-unit id="backend.modal.delete.header" xml:space="preserve">
+                <source>Do you really want to delete the subscriber "{subscriber}"</source>
+            </trans-unit>
+            <trans-unit id="backend.modal.delete.content" xml:space="preserve">
+                <source>This will delete the subscriber. No E-Mail will be sent out!</source>
+            </trans-unit>
+            <trans-unit id="backend.modal.delete.button" xml:space="preserve">
+                <source>Yes, delete subscriber</source>
+            </trans-unit>
+            <trans-unit id="backend.modal.filter.button" xml:space="preserve">
+                <source>Filter subscribers</source>
             </trans-unit>
         </body>
     </file>
