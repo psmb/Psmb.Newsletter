@@ -76,7 +76,7 @@ class NewsletterController extends ActionController
             });
         }
         $subscriptionsJsonArray = array_map(function ($item) {
-            return ['label' => $item['label'], 'value' => $item['identifier']];
+            return ['label' => isset($item['label']) ? $item['label'] : '', 'value' => $item['identifier']];
         }, $subscriptions);
         $this->view->assign('value', array_values($subscriptionsJsonArray));
     }
@@ -86,18 +86,42 @@ class NewsletterController extends ActionController
      *
      * @param string $subscription Subscription id to send newsletter to
      * @param NodeInterface $node Node of the current newsletter item
+     * @param array $dataSourceAdditionalArguments
      * @return void
      */
-    public function sendAction($subscription, NodeInterface $node)
+    public function sendAction($subscription, NodeInterface $node, array $dataSourceAdditionalArguments = null)
     {
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
         array_walk($subscriptions, function ($subscription) use ($node) {
             $subscription['isSendFromUi'] = true;
+            if ($dataSourceAdditionalArguments) {
+                $subscription['dataSourceAdditionalArguments'] = $dataSourceAdditionalArguments;
+            }
             $this->sendLettersForSubscription($subscription, $node);
         });
         $this->view->assign('value', ['status' => 'success']);
+    }
+
+    /**
+     * Registers a new subscriber
+     *
+     * @param string $subscription Subscription id to send newsletter to
+     * @param array $dataSourceAdditionalArguments
+     * @return void
+     */
+    public function previewAction($subscription, $dataSourceAdditionalArguments = null)
+    {
+        $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
+            return $item['identifier'] == $subscription;
+        });
+        $subscription = reset($subscriptions);
+        if ($dataSourceAdditionalArguments) {
+            $subscription['dataSourceAdditionalArguments'] = $dataSourceAdditionalArguments;
+        }
+        $subscribers = $this->subscribersService->getSubscribers($subscription);
+        $this->view->assign('value', $subscribers);
     }
 
     /**

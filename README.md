@@ -228,6 +228,42 @@ Psmb:
 
 Alternatively you may provide your custom datasources. See implementation of JsonDataSource.php to see how to do that.
 
+It is also possible to provide some additional arguments for the datasource that would be filled from other properties of a node.
+Here is an example NodeTypes.yaml for this:
+
+```
+'Psmb.Newsletter:NewsletterMixin':
+  abstract: true
+  ui:
+    inspector:
+      tabs:
+        newsletter:
+          label: i18n
+          position: 100
+          icon: icon-send
+      groups:
+        newsletter:
+          label: i18n
+          tab: newsletter
+      views:
+        newsletter:
+          viewOptions:
+            dataSourceAdditionalArguments:
+              sampleArgument: 'ClientEval:node.properties.sampleProperty'
+  properties:
+    sampleProperty:
+      type: DateTime
+      ui:
+        label: 'Subscribers since'
+        inspector:
+          group: newsletter
+          position: 1
+          editorOptions:
+            format: 'Y-m-d'
+```
+
+Then the dataSourceAdditionalArguments would be passed to a datasource. You may check out how Json datasource handles it.
+
 ## Acknowledgements
 
 This is my first Flow package, and it wouldn't have been possible without a support of the community by answering dozens of n00b questions on Slack, by Christian Müller in particular.

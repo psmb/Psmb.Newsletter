@@ -52,6 +52,9 @@
                 <source>Loading...</source>
             </trans-unit>
 
+            <trans-unit id="js.recepients" xml:space="preserve">
+                <source>Total number of recepients</source>
+            </trans-unit>
             <trans-unit id="js.confirmationTitle" xml:space="preserve">
                 <source>Send Newsletter</source>
             </trans-unit>

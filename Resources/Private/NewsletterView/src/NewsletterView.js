@@ -12,8 +12,8 @@ const fetchSubscriptions = nodeType => fetch(`/newsletter/getSubscriptions?nodeT
     credentials: 'include'
 }).then(response => response.json());
 
-const sendNewsletter = (focusedNodeContextPath, subscription, isTest, email) => {
-    const sendEndpointUrl = isTest ? '/newsletter/testSend' : '/newsletter/send';
+const sendNewsletter = (focusedNodeContextPath, subscription, isTest, email, dataSourceAdditionalArguments) => {
+    let sendEndpointUrl = isTest ? '/newsletter/testSend' : '/newsletter/send';
     const csrfToken = document.getElementById('appContainer').dataset.csrfToken;
     const data = new URLSearchParams();
     data.set('node', focusedNodeContextPath.replace(/user-.+\;/, 'live;'));
@@ -21,6 +21,11 @@ const sendNewsletter = (focusedNodeContextPath, subscription, isTest, email) => 
     data.set('__csrfToken', csrfToken);
     if (isTest && email) {
         data.set('email', email);
+    }
+    if (dataSourceAdditionalArguments) {
+        Object.keys(dataSourceAdditionalArguments).forEach(option => {
+            data.set('dataSourceAdditionalArguments[' + pair[0] + ']', dataSourceAdditionalArguments[option]);
+        });
     }
     return fetch(sendEndpointUrl, {
             credentials: 'include',
@@ -126,6 +131,8 @@ export default class NewsletterView extends Component {
                     translate={this.props.i18nRegistry.translate.bind(this.props.i18nRegistry)}
                     close={() => this.toggleConfirmationDialog(false)}
                     send={this.sendNewsletter}
+                    subscription={this.state.selectedSubscription}
+                    dataSourceAdditionalArguments={this.props.options && this.props.options.dataSourceAdditionalArguments}
                     />
             </div>
         );

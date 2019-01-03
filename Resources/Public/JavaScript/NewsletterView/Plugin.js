@@ -243,7 +243,7 @@
 	    });
 	};
 	
-	var _sendNewsletter = function _sendNewsletter(focusedNodeContextPath, subscription, isTest, email) {
+	var _sendNewsletter = function _sendNewsletter(focusedNodeContextPath, subscription, isTest, email, dataSourceAdditionalArguments) {
 	    var sendEndpointUrl = isTest ? '/newsletter/testSend' : '/newsletter/send';
 	    var csrfToken = document.getElementById('appContainer').dataset.csrfToken;
 	    var data = new URLSearchParams();
@@ -252,6 +252,11 @@
 	    data.set('__csrfToken', csrfToken);
 	    if (isTest && email) {
 	        data.set('email', email);
+	    }
+	    if (dataSourceAdditionalArguments) {
+	        Object.keys(dataSourceAdditionalArguments).forEach(function (option) {
+	            data.set('dataSourceAdditionalArguments[' + pair[0] + ']', dataSourceAdditionalArguments[option]);
+	        });
 	    }
 	    return fetch(sendEndpointUrl, {
 	        credentials: 'include',
@@ -400,7 +405,9 @@
 	                    close: function close() {
 	                        return _this5.toggleConfirmationDialog(false);
 	                    },
-	                    send: this.sendNewsletter
+	                    send: this.sendNewsletter,
+	                    subscription: this.state.selectedSubscription,
+	                    dataSourceAdditionalArguments: this.props.options && this.props.options.dataSourceAdditionalArguments
 	                })
 	            );
 	        }
@@ -621,6 +628,10 @@
 	    value: true
 	});
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _class, _temp2;
+	
 	var _react = __webpack_require__(8);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -633,41 +644,155 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var ConfirmationDialog = function ConfirmationDialog(_ref) {
-	    var isOpen = _ref.isOpen,
-	        translate = _ref.translate,
-	        close = _ref.close,
-	        send = _ref.send;
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	    return _react2.default.createElement(
-	        _reactUiComponents.Dialog,
-	        {
-	            isOpen: isOpen,
-	            title: translate('Psmb.Newsletter:Main:js.testConfirmationTitle'),
-	            onRequestClose: close,
-	            actions: [_react2.default.createElement(
-	                _reactUiComponents.Button,
-	                { onClick: close, style: 'clean' },
-	                translate('Neos.Neos:Main:cancel')
-	            ), _react2.default.createElement(
-	                _reactUiComponents.Button,
-	                { onClick: send, style: 'brand' },
-	                translate('Psmb.Newsletter:Main:js.send')
-	            )]
-	        },
-	        _react2.default.createElement(
-	            'div',
-	            { style: { padding: '16px' } },
-	            translate('Psmb.Newsletter:Main:js.confirmationDescription')
-	        )
-	    );
-	};
-	ConfirmationDialog.propTypes = {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ConfirmationDialog = (_temp2 = _class = function (_PureComponent) {
+	    _inherits(ConfirmationDialog, _PureComponent);
+	
+	    function ConfirmationDialog() {
+	        var _ref;
+	
+	        var _temp, _this, _ret;
+	
+	        _classCallCheck(this, ConfirmationDialog);
+	
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+	
+	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ConfirmationDialog.__proto__ || Object.getPrototypeOf(ConfirmationDialog)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	            isLoading: false,
+	            subscribers: []
+	        }, _temp), _possibleConstructorReturn(_this, _ret);
+	    }
+	
+	    _createClass(ConfirmationDialog, [{
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps) {
+	            if (this.props.subscription !== prevProps.subscription || prevProps.isOpen === false && this.props.isOpen === true) {
+	                this.fetchPreview();
+	            }
+	        }
+	    }, {
+	        key: 'fetchPreview',
+	        value: function fetchPreview() {
+	            var _this2 = this;
+	
+	            if (this.props.subscription && this.props.isOpen) {
+	                this.setState({ isLoading: true, subscribers: [] });
+	                var dataSourceAdditionalArguments = this.props.dataSourceAdditionalArguments;
+	                var data = new URLSearchParams();
+	                if (dataSourceAdditionalArguments) {
+	                    Object.keys(dataSourceAdditionalArguments).forEach(function (option) {
+	                        data.set('dataSourceAdditionalArguments[' + option + ']', dataSourceAdditionalArguments[option]);
+	                    });
+	                }
+	                fetch('/newsletter/preview?subscription=' + this.props.subscription + '&' + data.toString(), {
+	                    credentials: 'include'
+	                }).then(function (response) {
+	                    return response.json();
+	                }).then(function (subscribers) {
+	                    _this2.setState({ subscribers: subscribers, isLoading: false });
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props,
+	                isOpen = _props.isOpen,
+	                translate = _props.translate,
+	                close = _props.close,
+	                send = _props.send;
+	
+	
+	            var keys = this.state.subscribers[0] ? Object.keys(this.state.subscribers[0]) : [];
+	            return _react2.default.createElement(
+	                _reactUiComponents.Dialog,
+	                {
+	                    isOpen: isOpen,
+	                    title: translate('Psmb.Newsletter:Main:js.confirmationTitle'),
+	                    onRequestClose: close,
+	                    actions: [_react2.default.createElement(
+	                        _reactUiComponents.Button,
+	                        { onClick: close, style: 'clean' },
+	                        translate('Neos.Neos:Main:cancel')
+	                    ), _react2.default.createElement(
+	                        _reactUiComponents.Button,
+	                        { onClick: send, style: 'brand' },
+	                        translate('Psmb.Newsletter:Main:js.send')
+	                    )]
+	                },
+	                _react2.default.createElement(
+	                    'div',
+	                    { style: { padding: '16px' } },
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        translate('Psmb.Newsletter:Main:js.confirmationDescription')
+	                    ),
+	                    this.state.isLoading ? translate('Psmb.Newsletter:Main:js.loading') : _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        _react2.default.createElement(
+	                            'div',
+	                            { style: { padding: '16px 0' } },
+	                            translate('Psmb.Newsletter:Main:js.recepients'),
+	                            ': ',
+	                            _react2.default.createElement(
+	                                'strong',
+	                                null,
+	                                this.state.subscribers.length
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'table',
+	                            null,
+	                            _react2.default.createElement(
+	                                'tr',
+	                                null,
+	                                keys.map(function (key) {
+	                                    return _react2.default.createElement(
+	                                        'th',
+	                                        null,
+	                                        key
+	                                    );
+	                                })
+	                            ),
+	                            this.state.subscribers.map(function (subscriber) {
+	                                return _react2.default.createElement(
+	                                    'tr',
+	                                    null,
+	                                    keys.map(function (key) {
+	                                        return _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            subscriber[key]
+	                                        );
+	                                    })
+	                                );
+	                            })
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return ConfirmationDialog;
+	}(_react.PureComponent), _class.propTypes = {
 	    isOpen: _propTypes2.default.bool,
 	    translate: _propTypes2.default.func.isRequired,
 	    close: _propTypes2.default.func.isRequired,
-	    send: _propTypes2.default.func.isRequired
-	};
+	    send: _propTypes2.default.func.isRequired,
+	    subscription: _propTypes2.default.string.isRequired,
+	    dataSourceAdditionalArguments: _propTypes2.default.object
+	}, _temp2);
+	;
 	
 	exports.default = ConfirmationDialog;
 

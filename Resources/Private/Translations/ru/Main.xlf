@@ -67,6 +67,10 @@
                 <target>Загрузка...</target>
             </trans-unit>
 
+            <trans-unit id="js.recepients" xml:space="preserve">
+                <target>Общее количество адресатов</target>
+            </trans-unit>
+
             <trans-unit id="js.confirmationTitle" xml:space="preserve">
                 <source>Send newsletter</source>
                 <target>Отправить рассылку</target>

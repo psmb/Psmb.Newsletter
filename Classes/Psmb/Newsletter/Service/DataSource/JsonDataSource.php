@@ -20,7 +20,12 @@ class JsonDataSource extends AbstractDataSource
         if (!isset($subscription['dataSourceOptions']['uri'])) {
             throw new \Exception('dataSourceOptions.uri must be set for the Json datasource' . print_r($subscription, 1));
         }
-        $response = file_get_contents($subscription['dataSourceOptions']['uri']);
+        $uri = $subscription['dataSourceOptions']['uri'];
+        if (isset($subscription['dataSourceAdditionalArguments'])) {
+            $uri .= strpos($uri, '?') === false ? '?' : '&';
+            $uri .= http_build_query($subscription['dataSourceAdditionalArguments']);
+        }
+        $response = file_get_contents($uri);
         return json_decode($response, true);
     }
 }

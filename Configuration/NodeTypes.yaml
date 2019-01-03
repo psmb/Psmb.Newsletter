@@ -24,3 +24,17 @@
           label: 'Newsletter view'
           group: newsletter
           view: Psmb.Newsletter/Views/NewsletterView
+          # viewOptions:
+          #   dataSourceAdditionalArguments:
+          #     startDate: 'ClientEval:node.properties.sampleProperty'
+  # properties:
+  #   sampleProperty:
+  #     type: DateTime
+  #     ui:
+  #       label: 'Жертвователи с'
+  #       reloadIfChanged: true
+  #       inspector:
+  #         group: newsletter
+  #         position: 1
+  #         editorOptions:
+  #           format: 'Y-m-d'
