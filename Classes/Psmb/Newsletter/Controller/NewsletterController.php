@@ -94,7 +94,7 @@ class NewsletterController extends ActionController
         $subscriptions = array_filter($this->subscriptions, function ($item) use ($subscription) {
             return $item['identifier'] == $subscription;
         });
-        array_walk($subscriptions, function ($subscription) use ($node) {
+        array_walk($subscriptions, function ($subscription) use ($node, $dataSourceAdditionalArguments) {
             $subscription['isSendFromUi'] = true;
             if ($dataSourceAdditionalArguments) {
                 $subscription['dataSourceAdditionalArguments'] = $dataSourceAdditionalArguments;
