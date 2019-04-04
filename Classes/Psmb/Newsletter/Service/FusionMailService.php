@@ -131,6 +131,7 @@ class FusionMailService {
         $carbonCopyAddress = isset($letter['carbonCopyAddress']) ? $letter['carbonCopyAddress'] : null;
         $blindCarbonCopyAddress = isset($letter['blindCarbonCopyAddress']) ? $letter['blindCarbonCopyAddress'] : null;
         $format = isset($letter['format']) ? $letter['format'] : null;
+        $plainTextVariant = isset($letter['plaintext']) ? $letter['plaintext'] : null;
 
         if (!$subject) {
             throw new \Exception('"subject" must be set.', 1327060321);
@@ -160,6 +161,9 @@ class FusionMailService {
             $mail->setBody($body, 'text/plain');
         } else {
             $mail->setBody($body, 'text/html');
+            if ($plainTextVariant) {
+                $mail->addPart($plainTextVariant, 'text/plain');
+            }
         }
         $mail->send();
     }
